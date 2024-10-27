@@ -1,6 +1,5 @@
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
-const dbUtils = require("./mysql_header");
 dotenv.config()
 
 const connection = mysql.createConnection({
@@ -54,13 +53,13 @@ function closeConnection() {
     });
 }
 
-async function main() {
-    const newuser = await insertUser("B", "nikoyl@pidr.com", "sdfghghbjnm", "Blyadi", "stroka", "Registered User");
-}
+// async function main() {
+//     const newuser = await insertUser("Bdadxhgdhdg", "sdgsh@setspidr.com", "sdfghghbjnm", "Blyadi", "stroka", "Registered User");
+// }
 
-// Use an IIFE (Immediately Invoked Function Expression) to await main and closeConnection sequentially
-(async () => {
-    await main();
-    closeConnection();
-    connection.end();
-})();
+// // Use an IIFE (Immediately Invoked Function Expression) to await main and closeConnection sequentially
+// (async () => {
+//     await main();
+//     closeConnection();
+// })();
+closeConnection();
