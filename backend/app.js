@@ -1,15 +1,51 @@
-const dbUtils = require('./mysql_header');
+const express = require('express');
+const dotenv = require('dotenv');
+const { sequelize,
+    User,
+    Administrator,
+    Moderator,
+    RegisteredUser,
+    Category,
+    Product,
+    Farmer,
+    Customer,
+    Offer,
+    SelfHarvestEvent,
+    Order,
+    Review } = require('./models');
 
-async function main() {
- //   const user = await dbUtils.insertUser("AliceInWonderland", "aliceinwonderlend@example.com", "superpassword", "Alice", "rabbit hole", "Registered user");
-    const [user] = await dbUtils.getItemByColumn("user", "name", "Alice");
-    console.log(user);
-    const wasregistered = await dbUtils.registerUser(user.user_id, 0);
-    console.log(wasregistered);
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware for JSON parsing
+app.use(express.json());
+
+// Test route to confirm server is running
+app.get('/', (req, res) => {
+    res.send('Server is up and running!');
+});
+
+// Database connection and model synchronization
+async function initializeApp() {
+    try {
+        await sequelize.authenticate();
+        console.log('Database connection has been established successfully.');
+
+        // Synchronize models with the database
+        await sequelize.sync({ force: true });
+        console.log('Models synchronized with the database.');
+
+        // Start the server
+        app.listen(PORT, () => {
+            console.log(`Server is running on http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+        process.exit(1); // Exit the app if database connection fails
+    }
 }
 
-// Use an IIFE (Immediately Invoked Function Expression) to await main and closeConnection sequentially
-(async () => {
-    await main();  
-    dbUtils.closeConnection();  
-})();
+// Run the main function to initialize app and start server
+initializeApp();
