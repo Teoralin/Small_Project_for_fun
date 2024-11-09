@@ -9,6 +9,7 @@ const farmerRoutes = require('./routes/farmerRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
+const offerRoutes = require('./routes/offerRoutes');
 
 const { sequelize,
     User,
@@ -40,6 +41,7 @@ app.use('/farmers', farmerRoutes);
 app.use('/customers', customerRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
+app.use('/offers', offerRoutes);
 
 // Test route to confirm server is running
 app.get('/', (req, res) => {
