@@ -15,5 +15,5 @@ const RegisteredUser = sequelize.define('RegisteredUser', {
     tableName: 'RegisteredUsers',
 });
 
-RegisteredUser.belongsTo(User, { foreignKey: 'user_id' });
+RegisteredUser.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 module.exports = RegisteredUser;

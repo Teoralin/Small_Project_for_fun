@@ -1,5 +1,15 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
+const userRoutes = require('./routes/userRoutes');
+const registeredUserRoutes = require('./routes/registeredUserRoutes');
+const administratorRoutes = require('./routes/administratorRoutes');
+const moderatorRoutes = require('./routes/moderatorRoutes');
+const farmerRoutes = require('./routes/farmerRoutes');
+const customerRoutes = require('./routes/customerRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const productRoutes = require('./routes/productRoutes');
+
 const { sequelize,
     User,
     Administrator,
@@ -22,6 +32,15 @@ const PORT = process.env.PORT || 3000;
 // Middleware for JSON parsing
 app.use(express.json());
 
+app.use('/users', userRoutes);
+app.use('/registered-users', registeredUserRoutes);
+app.use('/administrators', administratorRoutes);
+app.use('/moderators', moderatorRoutes);
+app.use('/farmers', farmerRoutes);
+app.use('/customers', customerRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/products', productRoutes);
+
 // Test route to confirm server is running
 app.get('/', (req, res) => {
     res.send('Server is up and running!');
@@ -34,7 +53,7 @@ async function initializeApp() {
         console.log('Database connection has been established successfully.');
 
         // Synchronize models with the database
-        await sequelize.sync({ force: true });
+        await sequelize.sync({force: true });
         console.log('Models synchronized with the database.');
 
         // Start the server
