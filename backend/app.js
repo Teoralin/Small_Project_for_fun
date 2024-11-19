@@ -10,6 +10,7 @@ const customerRoutes = require('./routes/customerRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const offerRoutes = require('./routes/offerRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const { sequelize,
     User,
@@ -42,6 +43,8 @@ app.use('/customers', customerRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/offers', offerRoutes);
+// Add the auth routes
+app.use('/auth', authRoutes);
 
 // Test route to confirm server is running
 app.get('/', (req, res) => {
