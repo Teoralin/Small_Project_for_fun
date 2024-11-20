@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import{ useState } from 'react';
 import axios from 'axios';
 import classes from './registerPage.module.css';
 
@@ -10,6 +10,7 @@ export default function RegisterPage() {
         phone: '',
         password: '',
         confirmPassword: '',
+        isFarmer: false, // Add the isFarmer field
     });
 
     const [error, setError] = useState('');
@@ -17,10 +18,10 @@ export default function RegisterPage() {
 
     // Handle input change
     const handleChange = (e) => {
-        const { id, value } = e.target;
+        const { id, value, type, checked } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [id]: value,
+            [id]: type === 'checkbox' ? checked : value, // Handle checkbox for isFarmer
         }));
     };
 
@@ -35,12 +36,13 @@ export default function RegisterPage() {
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/auth/register', {
+            await axios.post('http://localhost:3000/auth/register', {
                 name: formData.name,
                 surname: formData.surname,
                 email: formData.email,
                 contact_info: formData.phone,
                 password: formData.password,
+                is_farmer: formData.isFarmer, // Include the isFarmer field
             });
 
             // Handle success
@@ -53,6 +55,7 @@ export default function RegisterPage() {
                 phone: '',
                 password: '',
                 confirmPassword: '',
+                isFarmer: false,
             });
         } catch (err) {
             // Handle error
@@ -130,6 +133,17 @@ export default function RegisterPage() {
                         placeholder="Confirm your password"
                         required
                     />
+                </div>
+                <div className={classes.formGroup}>
+                    <label htmlFor="isFarmer" className={classes.checkboxLabel}>
+                        <input
+                            type="checkbox"
+                            id="isFarmer"
+                            checked={formData.isFarmer}
+                            onChange={handleChange}
+                        />
+                        <p>Are you a farmer?</p>
+                    </label>
                 </div>
                 <button type="submit" className={classes.signUpButton}>
                     Sign Up

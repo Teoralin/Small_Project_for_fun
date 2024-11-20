@@ -6,6 +6,7 @@ import delivery from "../../assets/delivery.png";
 import paris from "../../assets/paris.png";
 import food from "../../assets/Photo.png";
 import {Link} from "react-router-dom";
+import hand from "../../assets/ph_hand-coins-thin.png";
 
 export default function HomePage() {
     return (
@@ -53,7 +54,7 @@ export default function HomePage() {
                 <img
                     src={food}
                     alt="Food Photo"
-                    className={`${classes.icon} ${classes.foodIcon}`}
+                    className={ classes.foodIcon}
                 />
 
             </div>
@@ -65,7 +66,25 @@ export default function HomePage() {
                         show all
                     </button>
                 </div>
+            </div>
 
+            <div className={classes.Self_Harvest}>
+                <div>
+                    <div className={classes.title}>
+                        <p>Self Harvest</p>
+                        <img
+                            src={hand}
+                            alt="hand Icon"
+                            className={classes.icon}
+                        />
+                    </div>
+
+                    <p className={classes.HarvestText}>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris elementum mauris vitae tortor.</p>
+
+                    <button type="show" className={classes.ShowAllButton}>
+                        show all
+                    </button>
+                </div>
             </div>
 
 

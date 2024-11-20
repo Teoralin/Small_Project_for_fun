@@ -29,7 +29,7 @@
 }
 
 .benefits {
-    margin-top: 220px;
+    margin-top: 250px;
     margin-left: 130px;
     display: flex;
     gap: 2rem;
@@ -64,8 +64,69 @@
 .compo {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .compo p {
-    font-size: 30px;
+    font-size: 40px;
+    font-family: poppins, sans-serif;
+    font-weight: 300;
+}
+
+.compo .ShowAllButton {
+    background-color: #F2F4FA;
+    border: none;
+    height: 48px;
+    padding: 16px 20px;
+    font-family: martel sans, sans-serif;
+    font-weight: bold;
+    color: #9093A6;
+    font-size: 16px;
+}
+
+.Self_Harvest{
+    display: grid;
+    justify-content: center;
+    background-color: #F2F4FA;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    font-family: martel sans, sans-serif;
+    font-weight: 300;
+    font-size: 40px;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+}
+
+.Self_Harvest img {
+    margin-top: 10px;
+    width: 48px;
+    height: 48px;
+}
+
+.HarvestText{
+    width: 500px;
+    font-family: martel sans, sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    color: #3F4255;
+}
+
+.Self_Harvest .ShowAllButton {
+    background-color: #ffffff;
+    border: none;
+    height: 48px;
+    padding: 16px 20px;
+    font-family: martel sans, sans-serif;
+    font-weight: bold;
+    color: #9093A6;
+    font-size: 16px;
+    margin: 50px auto;
+}
+
+.Self_Harvest:first-child {
+    display: contents;
 }

@@ -7,17 +7,17 @@ const authenticate = require('../middleware/auth');
 const router = express.Router();
 //TODO CODES ERROR
 // Apply authentication middleware
-router.get('/', authenticate, async (req, res) => {
-    try {
-        if (req.user.role !== 'Administrator') {
-            return res.status(403).json({ message: 'Access denied' });
-        }
-        const users = await User.findAll({ attributes: { exclude: ['password'] } });
-        res.status(200).json(users);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+// router.get('/', async (req, res) => {
+//     try {
+//         // if (req.user.role !== 'Administrator') {
+//         //     return res.status(403).json({ message: 'Access denied' });
+//         // }
+//         const users = await User.findAll({ attributes: { exclude: ['password'] } });
+//         res.status(200).json(users);
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// });
 
 // Create a new user
 router.post('/', async (req, res) => {
