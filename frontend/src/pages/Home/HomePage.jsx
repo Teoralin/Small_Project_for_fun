@@ -1,14 +1,41 @@
-import React from "react";
-import classes from "../Home/HomePage.module.css";
+import React, { useState, useEffect } from "react";
+import classes from "./HomePage.module.css";
 import userIcon from "../../assets/User.png";
 import time from "../../assets/time-eat.png";
 import delivery from "../../assets/delivery.png";
 import paris from "../../assets/paris.png";
 import food from "../../assets/Photo.png";
-import {Link} from "react-router-dom";
+import insta_1 from "../../assets/insta_1.png";
+import insta_2 from "../../assets/insta_2.png";
+import insta_3 from "../../assets/insta_3.png";
+import insta_4 from "../../assets/insta_4.png";
+import {Link, useNavigate} from "react-router-dom";
 import hand from "../../assets/ph_hand-coins-thin.png";
+import {jwtDecode} from 'jwt-decode';
 
 export default function HomePage() {
+    const [userRole, setUserRole] = useState(null);
+
+    const navigate = useNavigate();
+
+    const handleNavigateToFarmers = () => {
+        navigate('/farmers');
+    };
+
+    // Decode token and check the user's role
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                setUserRole(decodedToken.role); // Set the user's role from the token
+            } catch (error) {
+                console.error("Invalid token:", error);
+                localStorage.removeItem("token"); // Remove invalid token
+            }
+        }
+    }, []);
+
     return (
         <div className={classes.HomePage}>
             <div className={classes.welcomescreen}>
@@ -36,7 +63,7 @@ export default function HomePage() {
                     <div className={classes.benefitItem}>
                         <img
                             src={delivery}
-                            alt="Pelivery Icon"
+                            alt="Delivery Icon"
                             className={classes.icon}
                         />
                         <p>Free delivery from 999 CZK</p>
@@ -54,22 +81,25 @@ export default function HomePage() {
                 <img
                     src={food}
                     alt="Food Photo"
-                    className={ classes.foodIcon}
+                    className={`${classes.icon} ${classes.foodIcon}`}
                 />
-
             </div>
 
             <div className={classes.farmers}>
                 <div className={classes.compo}>
                     <p>Farmers</p>
-                    <button type="show" className={classes.ShowAllButton}>
-                        show all
+                    <button
+                        type="button"
+                        className={classes.ShowAllButton}
+                        onClick={handleNavigateToFarmers}
+                    >
+                        Show all
                     </button>
                 </div>
             </div>
 
             <div className={classes.Self_Harvest}>
-                <div>
+                <div className={classes.Harvest_compo}>
                     <div className={classes.title}>
                         <p>Self Harvest</p>
                         <img
@@ -79,7 +109,9 @@ export default function HomePage() {
                         />
                     </div>
 
-                    <p className={classes.HarvestText}>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris elementum mauris vitae tortor.</p>
+                    <p className={classes.HarvestText}>
+                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris elementum mauris vitae tortor.
+                    </p>
 
                     <button type="show" className={classes.ShowAllButton}>
                         show all
@@ -87,8 +119,50 @@ export default function HomePage() {
                 </div>
             </div>
 
+            <div className={classes.categories}>
+                <div className={classes.compo}>
+                    <p>Categories</p>
+                    <button type="show" className={classes.ShowAllButton}>
+                        show all
+                    </button>
+                </div>
+            </div>
 
-            <div><Link to="/users">Users</Link></div>
+            <div className={classes.instagram}>
+                <div className={classes.instagram_text}>
+                    <p>#YellowShop </p>
+                    <p> on instagram</p>
+                </div>
+                <div className={classes.instagram_img}>
+                    <img
+                        src={insta_1}
+                        alt="insta"
+                        className={classes.icon}
+                    />
+                    <img
+                        src={insta_2}
+                        alt="insta"
+                        className={classes.icon}
+                    />
+                    <img
+                        src={insta_3}
+                        alt="insta"
+                        className={classes.icon}
+                    />
+                    <img
+                        src={insta_4}
+                        alt="insta"
+                        className={classes.icon}
+                    />
+                </div>
+            </div>
+
+            {/* Only render this link if the user is an Administrator */}
+            {userRole === "Administrator" && (
+                <div>
+                <Link to="/users">Users</Link>
+                </div>
+            )}
         </div>
     );
 }

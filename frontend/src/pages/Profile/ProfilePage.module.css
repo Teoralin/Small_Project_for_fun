@@ -1,0 +1,35 @@
+.Options {
+    display: grid;
+    margin: 120px 60px;
+    gap: 30px;
+}
+
+.OptionButton {
+    width: 405px;
+    height: 56px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #313030;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+    font-family: martel sans, sans-serif;
+    line-height: 20px;
+}
+
+.OptionButtonSelected {
+    width: 405px;
+    height: 56px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #313030;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    background-color: #ebedf0;
+    font-family: martel sans, sans-serif;
+    line-height: 20px;
+}

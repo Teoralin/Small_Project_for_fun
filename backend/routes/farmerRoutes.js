@@ -1,6 +1,6 @@
 // routes/farmerRoutes.js
 const express = require('express');
-const { Farmer, User } = require('../models'); 
+const { Address, User } = require('../models');
 
 const router = express.Router();
 
@@ -12,11 +12,11 @@ router.post('/', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const farmer = await Farmer.create({
+        const farmer = await Address.create({
             user_id: req.body.user_id,
         });
 
-        res.status(201).json({ message: 'Farmer created successfully', farmer });
+        res.status(201).json({ message: 'Address added successfully', farmer });
     } catch (error) {
         console.error('Error creating farmer:', error);
         res.status(500).json({ error: error.message });
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
 // Get all farmers
 router.get('/', async (req, res) => {
     try {
-        const farmers = await Farmer.findAll({
+        const farmers = await Address.findAll({
             include: [{
                 model: User,
                 as: 'User', 
@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
 // Get a single farmer by ID
 router.get('/:id', async (req, res) => {
     try {
-        const farmer = await Farmer.findByPk(req.params.id, {
+        const farmer = await Address.findByPk(req.params.id, {
             include: [{
                 model: User,
                 as: 'User', 
@@ -61,7 +61,7 @@ router.get('/:id', async (req, res) => {
 // Update a farmer by ID
 router.put('/:id', async (req, res) => {
     try {
-        const farmer = await Farmer.findByPk(req.params.id);
+        const farmer = await Address.findByPk(req.params.id);
         if (!farmer) {
             return res.status(404).json({ message: 'Farmer not found' });
         }
@@ -83,7 +83,7 @@ router.put('/:id', async (req, res) => {
 // Delete a farmer by ID
 router.delete('/:id', async (req, res) => {
     try {
-        const farmer = await Farmer.findByPk(req.params.id);
+        const farmer = await Address.findByPk(req.params.id);
         if (!farmer) {
             return res.status(404).json({ message: 'Farmer not found' });
         }

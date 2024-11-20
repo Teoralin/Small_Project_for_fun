@@ -5,8 +5,7 @@ const Administrator = require('./Administrator');
 const Moderator = require('./Moderator');
 const Category = require('./Category');
 const Product = require('./Product');
-const Farmer = require('./Farmer');
-const Customer = require('./Customer');
+const Address = require('./Farmer');
 const Offer = require('./Offer');
 const SelfHarvestEvent = require('./SelfHarvestEvent');
 const Order = require('./Order');
@@ -21,8 +20,7 @@ module.exports = {
     Moderator,
     Category,
     Product,
-    Farmer,
-    Customer,
+    Address,
     Offer,
     SelfHarvestEvent,
     Order,

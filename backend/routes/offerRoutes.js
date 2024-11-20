@@ -1,5 +1,5 @@
 const express = require('express');
-const { Offer, Product, Farmer } = require('../models');
+const { Offer, Product, User } = require('../models');
 
 const router = express.Router();
 
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
         const offers = await Offer.findAll({
             include: [
                 { model: Product, attributes: ['name', 'description'] },
-                { model: Farmer, attributes: ['user_id'] }, // Adjust attributes as needed
+                { model: User, attributes: ['user_id'] }, // Adjust attributes as needed
             ],
         });
 
@@ -50,7 +50,7 @@ router.get('/:product_id/:user_id', async (req, res) => {
             where: { product_id, user_id },
             include: [
                 { model: Product, attributes: ['name', 'description'] },
-                { model: Farmer, attributes: ['user_id'] },
+                { model: User, attributes: ['user_id'] },
             ],
         });
 

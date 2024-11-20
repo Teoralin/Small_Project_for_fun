@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
 // Registration route
 router.post('/register', async (req, res) => {
     try {
-        const { email, password, name, surname, contact_info } = req.body;
+        const { email, password, name, surname, contact_info, is_farmer } = req.body;
 
         // Validate input
         if (!email || !password || !name || !surname) {
@@ -54,13 +54,14 @@ router.post('/register', async (req, res) => {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create the new user with the default role ('Registered User')
+        // Create the new user with the provided is_farmer field
         const newUser = await User.create({
             email,
             password: hashedPassword,
             name,
             surname,
             contact_info,
+            is_farmer: is_farmer || false, // Default to false if not provided
         });
 
         res.status(201).json({
@@ -71,7 +72,7 @@ router.post('/register', async (req, res) => {
                 name: newUser.name,
                 surname: newUser.surname,
                 contact_info: newUser.contact_info,
-                role: newUser.role, // Defaulted to "Registered User"
+                is_farmer: newUser.is_farmer,
             },
         });
     } catch (error) {

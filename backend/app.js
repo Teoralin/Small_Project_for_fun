@@ -5,8 +5,7 @@ const bcrypt = require('bcrypt');
 const userRoutes = require('./routes/userRoutes');
 const administratorRoutes = require('./routes/administratorRoutes');
 const moderatorRoutes = require('./routes/moderatorRoutes');
-const farmerRoutes = require('./routes/farmerRoutes');
-const customerRoutes = require('./routes/customerRoutes');
+const addressRoutes = require('./routes/farmerRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const offerRoutes = require('./routes/offerRoutes');
@@ -29,8 +28,7 @@ app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/administrators', administratorRoutes);
 app.use('/moderators', moderatorRoutes);
-app.use('/farmers', farmerRoutes);
-app.use('/customers', customerRoutes);
+app.use('/addresses', addressRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/offers', offerRoutes);
@@ -50,7 +48,7 @@ async function initializeApp() {
         console.log('Database connection has been established successfully.');
 
         // Synchronize models with the database
-        await sequelize.sync();
+        await sequelize.sync({force: true});
         console.log('Models synchronized with the database.');
 
         // Start the server

@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
 const User = require('./User'); 
 
-const Farmer = sequelize.define('Farmer', {
+const Address = sequelize.define('Address', {
     user_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -13,10 +13,26 @@ const Farmer = sequelize.define('Farmer', {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
+    street: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    house_number:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    city:{
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    post_code:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
 }, {
     tableName: 'Farmers',
 });
 
-Farmer.belongsTo(User, { foreignKey: 'user_id', as: 'User' });
+Address.belongsTo(User, { foreignKey: 'user_id', as: 'User' });
 
-module.exports = Farmer;
+module.exports = Address;

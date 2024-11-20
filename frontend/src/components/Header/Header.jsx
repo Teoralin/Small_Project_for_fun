@@ -35,7 +35,7 @@ export default function Header() {
                     <ul>
                         {user ? (
                             <li className={classes.menu_container}>
-                                <Link to="/dashboard" className={classes.user_link}>
+                                <Link to="/profile" className={classes.user_link}>
                                     <img
                                         src={userIcon}
                                         alt="User Icon"

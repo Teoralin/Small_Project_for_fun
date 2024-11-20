@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
-const Customer = require('./Customer'); // Assuming Customer model represents the user_id of the customer
+const User = require('./User'); // Assuming Customer model represents the user_id of the customer
 
 const Review = sequelize.define('Review', {
     review_id: {
@@ -29,7 +29,7 @@ const Review = sequelize.define('Review', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Customer,
+            model: User,
             key: 'user_id',
         },
         onUpdate: 'CASCADE',
@@ -39,6 +39,6 @@ const Review = sequelize.define('Review', {
     tableName: 'Reviews',
 });
 
-Review.belongsTo(Customer, { foreignKey: 'user_id', as: 'Customer' });
+Review.belongsTo(User, { foreignKey: 'user_id', as: 'User' });
 
 module.exports = Review;
