@@ -5,6 +5,7 @@ import time from "../../assets/time-eat.png";
 import delivery from "../../assets/delivery.png";
 import paris from "../../assets/paris.png";
 import food from "../../assets/Photo.png";
+import {Link} from "react-router-dom";
 
 export default function HomePage() {
     return (
@@ -56,6 +57,19 @@ export default function HomePage() {
                 />
 
             </div>
+
+            <div className={classes.farmers}>
+                <div className={classes.compo}>
+                    <p>Farmers</p>
+                    <button type="show" className={classes.ShowAllButton}>
+                        show all
+                    </button>
+                </div>
+
+            </div>
+
+
+            <div><Link to="/users">Users</Link></div>
         </div>
     );
 }

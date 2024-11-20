@@ -54,3 +54,18 @@
     top: 100px;
     right: 150px;
 }
+
+.farmers {
+    padding-top: 150px;
+    padding-left: 130px;
+    padding-right: 130px;
+}
+
+.compo {
+    display: flex;
+    justify-content: space-between;
+}
+
+.compo p {
+    font-size: 30px;
+}
