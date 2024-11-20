@@ -1,11 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import classes from './registerPage.module.css';
 
 export default function RegisterPage() {
+    const navigate = useNavigate();
+
+    const handleSignUp = (event) => {
+        event.preventDefault(); // Предотвращаем перезагрузку страницы
+        navigate('/'); // Перенаправляем на главную страницу
+    };
+
     return (
         <div className={classes.registerPage}>
             <div className={classes.logo}>YellowShop</div>
-            <form className={classes.registerForm}>
+            <form className={classes.registerForm} onSubmit={handleSignUp}>
                 <div className={classes.formGroup}>
                     <label htmlFor="name">Name</label>
                     <input

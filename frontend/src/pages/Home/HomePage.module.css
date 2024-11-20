@@ -1,0 +1,56 @@
+.heading {
+    font-size: 80px;
+    width: 800px;
+    padding-top: 120px;
+    padding-left: 130px;
+    font-family: poppins, serif;
+    color: #3F4255;
+    line-height: 90px;
+}
+
+.information {
+    display: flex;
+    gap: 2rem;
+    padding-top: 70px;
+    padding-left: 130px;
+}
+
+.info {
+    display: grid;
+    justify-content: center;
+    text-align: center;
+    border: 2px solid #FFE145;
+    color: #3F4255;
+    border-radius: 10px;
+    height: 100px;
+    width: fit-content;
+    padding: 10px 30px;
+    font-family: martel sans, sans-serif;
+}
+
+.benefits {
+    margin-top: 220px;
+    margin-left: 130px;
+    display: flex;
+    gap: 2rem;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    width: fit-content;
+    padding: 30px 30px;
+}
+
+.benefitItem {
+    font-family: martel sans, sans-serif;
+    display: flex;
+    gap: 1rem;
+    width: 250px;
+}
+.benefitItem img {
+    width: 48px;
+    height: 48px;
+}
+
+.foodIcon {
+    position: absolute;
+    top: 100px;
+    right: 150px;
+}
