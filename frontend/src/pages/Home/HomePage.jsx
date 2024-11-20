@@ -1,7 +1,61 @@
 import React from "react";
+import classes from "../Home/HomePage.module.css";
+import userIcon from "../../assets/User.png";
+import time from "../../assets/time-eat.png";
+import delivery from "../../assets/delivery.png";
+import paris from "../../assets/paris.png";
+import food from "../../assets/Photo.png";
 
 export default function HomePage() {
     return (
-        <div>Home Page</div>
-    )
+        <div className={classes.HomePage}>
+            <div className={classes.welcomescreen}>
+                <div className={classes.heading}>Your Food court at home</div>
+                <div className={classes.information}>
+                    <div className={classes.info}>
+                        <h2>Delivery</h2>
+                        <p>Order in</p>
+                    </div>
+                    <div className={classes.info}>
+                        <h2>Self harvest</h2>
+                        <p>Grab and go</p>
+                    </div>
+                </div>
+
+                <div className={classes.benefits}>
+                    <div className={classes.benefitItem}>
+                        <img
+                            src={time}
+                            alt="Time Icon"
+                            className={classes.icon}
+                        />
+                        <p>Fast delivery in less than 42 hours</p>
+                    </div>
+                    <div className={classes.benefitItem}>
+                        <img
+                            src={delivery}
+                            alt="Pelivery Icon"
+                            className={classes.icon}
+                        />
+                        <p>Free delivery from 999 CZK</p>
+                    </div>
+                    <div className={classes.benefitItem}>
+                        <img
+                            src={paris}
+                            alt="Paris Icon"
+                            className={classes.icon}
+                        />
+                        <p>Only fresh and Czech products</p>
+                    </div>
+                </div>
+
+                <img
+                    src={food}
+                    alt="Food Photo"
+                    className={`${classes.icon} ${classes.foodIcon}`}
+                />
+
+            </div>
+        </div>
+    );
 }
