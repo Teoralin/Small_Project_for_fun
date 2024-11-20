@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors'); // Import cors
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const userRoutes = require('./routes/userRoutes');
@@ -11,28 +12,17 @@ const productRoutes = require('./routes/productRoutes');
 const offerRoutes = require('./routes/offerRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
-const cors = require('cors');
 
-const { sequelize,
-    User,
-    Administrator,
-    Moderator,
-    Category,
-    Product,
-    Farmer,
-    Customer,
-    Offer,
-    SelfHarvestEvent,
-    Order,
-    Review } = require('./models');
+const { sequelize } = require('./models');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Enable CORS
+app.use(cors()); // Add this line
 
-app.use(cors())
 // Middleware for JSON parsing
 app.use(express.json());
 
@@ -60,7 +50,7 @@ async function initializeApp() {
         console.log('Database connection has been established successfully.');
 
         // Synchronize models with the database
-        await sequelize.sync({force: false });
+        await sequelize.sync();
         console.log('Models synchronized with the database.');
 
         // Start the server
