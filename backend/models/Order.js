@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
-const Customer = require('./Customer'); // Assuming Customer model represents the user_id of the customer
+const Customer = require('./Customer');
 
 const Order = sequelize.define('Order', {
     order_id: {

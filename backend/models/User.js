@@ -33,6 +33,10 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: 'Registered User', // Default to "Registered User"
     },
+    is_farmer: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
 }, {
     tableName: 'Users',
 });

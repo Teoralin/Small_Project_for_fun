@@ -3,7 +3,6 @@ const cors = require('cors'); // Import cors
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const userRoutes = require('./routes/userRoutes');
-const registeredUserRoutes = require('./routes/registeredUserRoutes');
 const administratorRoutes = require('./routes/administratorRoutes');
 const moderatorRoutes = require('./routes/moderatorRoutes');
 const farmerRoutes = require('./routes/farmerRoutes');
@@ -11,6 +10,7 @@ const customerRoutes = require('./routes/customerRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const offerRoutes = require('./routes/offerRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const { sequelize } = require('./models');
@@ -27,7 +27,6 @@ app.use(cors()); // Add this line
 app.use(express.json());
 
 app.use('/users', userRoutes);
-app.use('/registered-users', registeredUserRoutes);
 app.use('/administrators', administratorRoutes);
 app.use('/moderators', moderatorRoutes);
 app.use('/farmers', farmerRoutes);
@@ -35,6 +34,8 @@ app.use('/customers', customerRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/offers', offerRoutes);
+app.use('/orders', orderRoutes);
+// Add the auth routes
 app.use('/auth', authRoutes);
 
 // Test route to confirm server is running
@@ -58,9 +59,8 @@ async function initializeApp() {
         });
     } catch (error) {
         console.error('Unable to connect to the database:', error);
-        process.exit(1); // Exit the app if database connection fails
+        process.exit(1); 
     }
 }
 
-// Run the main function to initialize app and start server
 initializeApp();

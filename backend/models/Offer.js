@@ -1,12 +1,16 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
 const Product = require('./Product');
-const Farmer = require('./Farmer'); // Assuming Farmer model represents the user_id of the farmer
+const Farmer = require('./Farmer'); 
 
 const Offer = sequelize.define('Offer', {
-    product_id: {
+    offer_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+    },
+    product_id: {
+        type: DataTypes.INTEGER,
         references: {
             model: Product,
             key: 'product_id',
@@ -16,7 +20,6 @@ const Offer = sequelize.define('Offer', {
     },
     user_id: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         references: {
             model: Farmer,
             key: 'user_id',
