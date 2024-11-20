@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import classes from './loginPage.module.css';
+import Key from "../../assets/Key.png";
+import MailIcon from "../../assets/Mail.png";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -47,25 +49,40 @@ export default function LoginPage() {
             <form className={classes.loginForm} onSubmit={handleLogin}>
                 <div className={classes.formGroup}>
                     <label htmlFor="email">Email Address</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="Enter your email"
-                        required
-                    />
+                    <div className={classes.form}>
+                        <img
+                            src={MailIcon}
+                            alt="Mail Icon"
+                            className={classes.icon}
+                        />
+                        <input
+                            type="email"
+                            id="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Enter your email"
+                            required
+                        />
+                    </div>
                 </div>
                 <div className={classes.formGroup}>
                     <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="Enter your password"
-                        required
-                    />
+                    <div className={classes.form}>
+                        <img
+                            src={Key}
+                            alt="Key Icon"
+                            className={classes.icon}
+                        />
+                        <input
+                            type="password"
+                            id="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Enter your password"
+                            required
+                        />
+                    </div>
+
                 </div>
                 <button type="submit" className={classes.loginButton}>
                     Log In
