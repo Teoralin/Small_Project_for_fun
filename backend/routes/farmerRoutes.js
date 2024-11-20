@@ -1,19 +1,17 @@
 // routes/farmerRoutes.js
 const express = require('express');
-const { Farmer, RegisteredUser } = require('../models'); // Import Farmer and RegisteredUser models
+const { Farmer, User } = require('../models'); 
 
 const router = express.Router();
 
 // Create a new farmer
 router.post('/', async (req, res) => {
     try {
-        // Check if the registered user exists
-        const registeredUser = await RegisteredUser.findByPk(req.body.user_id);
-        if (!registeredUser) {
-            return res.status(404).json({ message: 'RegisteredUser not found' });
+        const dUser = await User.findByPk(req.body.user_id);
+        if (!User) {
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Create the farmer and associate it with the registered user
         const farmer = await Farmer.create({
             user_id: req.body.user_id,
         });
@@ -30,8 +28,8 @@ router.get('/', async (req, res) => {
     try {
         const farmers = await Farmer.findAll({
             include: [{
-                model: RegisteredUser,
-                as: 'RegisteredUser', // Including associated RegisteredUser
+                model: User,
+                as: 'User', 
             }]
         });
         res.status(200).json(farmers);
@@ -45,8 +43,8 @@ router.get('/:id', async (req, res) => {
     try {
         const farmer = await Farmer.findByPk(req.params.id, {
             include: [{
-                model: RegisteredUser,
-                as: 'RegisteredUser', // Including associated RegisteredUser
+                model: User,
+                as: 'User', 
             }]
         });
 
@@ -68,11 +66,10 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Farmer not found' });
         }
 
-        // Optionally, check if the registered user exists before updating
         if (req.body.user_id) {
-            const registeredUser = await RegisteredUser.findByPk(req.body.user_id);
-            if (!registeredUser) {
-                return res.status(404).json({ message: 'RegisteredUser not found' });
+            const User = await User.findByPk(req.body.user_id);
+            if (!User) {
+                return res.status(404).json({ message: 'User not found' });
             }
         }
 
