@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
-const Farmer = require('./Farmer');
+const Farmer = require('./Address');
 
 const SelfHarvestEvent = sequelize.define('SelfHarvestEvent', {
     event_id: {

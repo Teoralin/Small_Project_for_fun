@@ -3,9 +3,14 @@ const sequelize = require('../dbconfig/sequelize');
 const User = require('./User'); 
 
 const Address = sequelize.define('Address', {
-    user_id: {
+    address_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
             model: User,
             key: 'user_id',
@@ -30,7 +35,7 @@ const Address = sequelize.define('Address', {
         allowNull: false,
     },
 }, {
-    tableName: 'Farmers',
+    tableName: 'Address',
 });
 
 Address.belongsTo(User, { foreignKey: 'user_id', as: 'User' });

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
 const bcrypt = require('bcrypt');
+//const Address = require('./Address');
 
 const User = sequelize.define('User', {
     user_id: {
@@ -40,7 +41,7 @@ const User = sequelize.define('User', {
 }, {
     tableName: 'Users',
 });
-
+//User.hasOne(Address, { foreignKey: 'address_id', as: 'Address', onDelete: 'CASCADE' });
 // Method to compare hashed password
 User.prototype.comparePassword = async function (password) {
     return bcrypt.compare(password, this.password);
