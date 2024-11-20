@@ -11,6 +11,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const offerRoutes = require('./routes/offerRoutes');
 const authRoutes = require('./routes/authRoutes');
+const cors = require('cors');
 
 const { sequelize,
     User,
@@ -31,6 +32,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+app.use(cors())
 // Middleware for JSON parsing
 app.use(express.json());
 
@@ -58,7 +61,7 @@ async function initializeApp() {
         console.log('Database connection has been established successfully.');
 
         // Synchronize models with the database
-        await sequelize.sync({force: true });
+        await sequelize.sync({force: false });
         console.log('Models synchronized with the database.');
 
         // Start the server

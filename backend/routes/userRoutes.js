@@ -5,7 +5,7 @@ const User = require('../models/User');
 const authenticate = require('../middleware/auth');
 
 const router = express.Router();
-
+//TODO CODES ERROR
 // Apply authentication middleware
 router.get('/', authenticate, async (req, res) => {
     try {
