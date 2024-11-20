@@ -4,13 +4,14 @@ import userIcon from "../../assets/User.png";
 import time from "../../assets/time-eat.png";
 import delivery from "../../assets/delivery.png";
 import paris from "../../assets/paris.png";
-import food from "../../assets/Photo.png";
+import food from "../../assets/Plate.png";
 import insta_1 from "../../assets/insta_1.png";
 import insta_2 from "../../assets/insta_2.png";
-import insta_3 from "../../assets/insta_3.png";
-import insta_4 from "../../assets/insta_4.png";
+import insta_3 from "../../assets/Insta_3.png";
+import insta_4 from "../../assets/Insta_4.png";
+import insta_5 from "../../assets/Insta_5.png";
 import {Link, useNavigate} from "react-router-dom";
-import hand from "../../assets/ph_hand-coins-thin.png";
+import hand from "../../assets/Harvest_icon.png";
 import {jwtDecode} from 'jwt-decode';
 
 export default function HomePage() {
@@ -18,8 +19,9 @@ export default function HomePage() {
 
     const navigate = useNavigate();
 
-    const handleNavigateToFarmers = () => {
-        navigate('/farmers');
+
+    const handleNavigate = (path) => {
+        navigate(path);
     };
 
     // Decode token and check the user's role
@@ -91,7 +93,7 @@ export default function HomePage() {
                     <button
                         type="button"
                         className={classes.ShowAllButton}
-                        onClick={handleNavigateToFarmers}
+                        onClick={() => handleNavigate('/farmers')}
                     >
                         Show all
                     </button>
@@ -113,7 +115,10 @@ export default function HomePage() {
                         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris elementum mauris vitae tortor.
                     </p>
 
-                    <button type="show" className={classes.ShowAllButton}>
+                    <button type="show"
+                            className={classes.ShowAllButton}
+                            onClick={() => handleNavigate('/harvests')}
+                    >
                         show all
                     </button>
                 </div>
@@ -122,7 +127,10 @@ export default function HomePage() {
             <div className={classes.categories}>
                 <div className={classes.compo}>
                     <p>Categories</p>
-                    <button type="show" className={classes.ShowAllButton}>
+                    <button type="show"
+                            className={classes.ShowAllButton}
+                            onClick={() => handleNavigate('/categories')}
+                    >
                         show all
                     </button>
                 </div>
@@ -151,6 +159,11 @@ export default function HomePage() {
                     />
                     <img
                         src={insta_4}
+                        alt="insta"
+                        className={classes.icon}
+                    />
+                    <img
+                        src={insta_5}
                         alt="insta"
                         className={classes.icon}
                     />

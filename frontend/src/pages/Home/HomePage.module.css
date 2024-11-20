@@ -139,9 +139,7 @@
 }
 
 .instagram {
-    padding-top: 50px;
-    padding-left: 130px;
-    padding-right: 130px;
+    padding: 50px 130px;
 }
 
 .instagram_text {
@@ -154,6 +152,6 @@
 
 .instagram_img {
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
 }
 

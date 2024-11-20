@@ -3,7 +3,7 @@ import classes from "./Header.module.css";
 import { Link } from "react-router-dom";
 import userIcon from "../../assets/User.png";
 import cartIcon from "../../assets/Сart.png";
-import leftIcon from "../../assets/left.png";
+import leftIcon from "../../assets/Left.png";
 
 export default function Header() {
     const user = {
@@ -45,7 +45,7 @@ export default function Header() {
                                 </Link>
                                 <div className={classes.menu}>
                                     <Link to="/profile">Profile</Link>
-                                    <Link to="/orders">Orders</Link>
+                                    <Link to="/ordersList">Orders</Link>
                                     <a onClick={logout}>Logout</a>
                                 </div>
                             </li>

@@ -1,0 +1,57 @@
+.OrdersListPage {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.Options {
+    margin: 120px 60px;
+}
+
+.OptionButton {
+    width: 405px;
+    height: 56px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #313030;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+    font-family: martel sans, sans-serif;
+    line-height: 20px;
+    margin-bottom: 20px;
+
+    display: grid;
+    align-content: center;
+    justify-content: start;
+}
+
+.OptionButtonSelected {
+    width: 405px;
+    height: 56px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #313030;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    background-color: #ebedf0;
+    font-family: martel sans, sans-serif;
+    line-height: 20px;
+    margin-bottom: 20px;
+
+    display: grid;
+    align-content: center;
+    justify-content: start;
+}
+
+.Orders {
+    display: grid;
+    justify-content: center;
+    margin: 120px 60px;
+    font-family: martel sans, sans-serif;
+    font-weight: 300;
+    font-size: 40px;
+}
