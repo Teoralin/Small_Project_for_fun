@@ -42,7 +42,7 @@ export default function EditUserListPage() {
     }
 
     return (
-        <div className={classes.OffersListPage}>
+        <div className={classes.EditUsersListPage}>
             <div className={classes.Options}>
                 <button type="Option"
                         className={classes.OptionButton}
@@ -116,7 +116,7 @@ export default function EditUserListPage() {
                                             src={Edit_User}
                                             alt="Edit User Icon"
                                             className={classes.icon}
-                                            onClick={() => handleNavigate('/profile')}
+                                            onClick={() => handleNavigate('/editUser')}
                                         />
                                     </div>
                                     <div className={classes.separator}></div>
