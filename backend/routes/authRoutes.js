@@ -2,6 +2,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const Address = require('../models/Address');
+const sequelize = require('../dbconfig/sequelize');
 
 const router = express.Router();
 
@@ -38,8 +40,9 @@ router.post('/login', async (req, res) => {
 // Registration route
 router.post('/register', async (req, res) => {
     try {
-        const { email, password, name, surname, contact_info, is_farmer } = req.body;
+        const { email, password, name, surname, contact_info, is_farmer, address} = req.body;
 
+        const transaction = await sequelize.transaction();
         // Validate input
         if (!email || !password || !name || !surname) {
             return res.status(400).json({ message: 'All required fields must be provided.' });
@@ -61,9 +64,33 @@ router.post('/register', async (req, res) => {
             name,
             surname,
             contact_info,
-            is_farmer: is_farmer || false, // Default to false if not provided
-        });
+            is_farmer: is_farmer || false,
+        },
 
+        { transaction }
+    );
+
+        if (is_farmer && address) {
+            const { street, house_number, city, post_code } = address;
+
+            // Validate address fields
+            if (!street || !house_number || !city || !post_code) {
+                throw new Error('All address fields must be provided for a farmer.');
+            }
+
+            await Address.create(
+                {
+                    user_id: newUser.user_id,  
+                    street,
+                    house_number,
+                    city,
+                    post_code,
+                },
+                { transaction }
+            );
+        }
+
+        await transaction.commit();
         res.status(201).json({
             message: 'User registered successfully',
             user: {

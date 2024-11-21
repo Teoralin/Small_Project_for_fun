@@ -14,19 +14,45 @@ export default function RegisterPage() {
         phone: '',
         password: '',
         confirmPassword: '',
-        isFarmer: false, // Add the isFarmer field
+        isFarmer: false,
+        address: { 
+            street: '',
+            houseNumber: '',
+            city: '',
+            postCode: '',
+    }
     });
 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
     // Handle input change
+    // const handleChange = (e) => {
+    //     const { id, value, type, checked } = e.target;
+    //     setFormData((prevData) => ({
+    //         ...prevData,
+    //         [id]: type === 'checkbox' ? checked : value, 
+    //     }));
+    // };
+
     const handleChange = (e) => {
-        const { id, value, type, checked } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [id]: type === 'checkbox' ? checked : value, 
-        }));
+        const { id, value, type, checked, dataset } = e.target;
+
+        if (dataset.group === "address") {
+            // Handle nested address field changes
+            setFormData((prevData) => ({
+                ...prevData,
+                address: {
+                    ...prevData.address,
+                    [id]: value,
+                },
+            }));
+        } else {
+            setFormData((prevData) => ({
+                ...prevData,
+                [id]: type === 'checkbox' ? checked : value,
+            }));
+        }
     };
 
     // Handle form submission
@@ -40,14 +66,35 @@ export default function RegisterPage() {
         }
 
         try {
-            await axios.post('http://localhost:3000/auth/register', {
+            // await axios.post('http://localhost:3000/auth/register', {
+            //     name: formData.name,
+            //     surname: formData.surname,
+            //     email: formData.email,
+            //     contact_info: formData.phone,
+            //     password: formData.password,
+            //     is_farmer: formData.isFarmer, 
+            // });
+            const payload = {
                 name: formData.name,
                 surname: formData.surname,
                 email: formData.email,
                 contact_info: formData.phone,
                 password: formData.password,
-                is_farmer: formData.isFarmer, // Include the isFarmer field
-            });
+                is_farmer: formData.isFarmer,
+            };
+    
+            // Include address if the user is a farmer
+            if (formData.isFarmer) {
+                payload.address = {
+                    street: formData.address.street,
+                    house_number: formData.address.houseNumber,
+                    city: formData.address.city,
+                    post_code: formData.address.postCode,
+                };
+            }
+    
+            // Send the request to the server
+            await axios.post('http://localhost:3000/auth/register', payload);
 
             // Handle success
             setSuccess('User registered successfully!');
@@ -60,7 +107,12 @@ export default function RegisterPage() {
                 password: '',
                 confirmPassword: '',
                 isFarmer: false,
-            });
+                address: { 
+                    street: '',
+                    houseNumber: '',
+                    city: '',
+                    postCode: '',
+            }});
         } catch (err) {
             // Handle error
             setError(err.response?.data?.message || 'Something went wrong');
@@ -180,17 +232,98 @@ export default function RegisterPage() {
                         />
                     </div>
                 </div>
-                <div className={classes.formGroup}>
-                    <label htmlFor="isFarmer" className={classes.checkboxLabel}>
-                    <input
-                            type="checkbox"
-                            id="isFarmer"
-                            checked={formData.isFarmer}
-                            onChange={handleChange}
-                        />
-                        <p>Are you a farmer?</p>
-                    </label>
-                </div>
+                        <div className={classes.formGroup}>
+                            <label htmlFor="isFarmer" className={classes.checkboxLabel}>
+                            <input
+                                    type="checkbox"
+                                    id="isFarmer"
+                                    checked={formData.isFarmer}
+                                    onChange={handleChange}
+                                />
+                                <p>Are you a farmer?</p>
+                            </label>
+                        </div>
+
+                        {formData.isFarmer && (
+                    <>
+                        <div className={classes.formGroup}>
+                            <label htmlFor="street">Street</label>
+                            <div className={classes.form}>
+                                <img
+                                    src={User_light}
+                                    alt="User_light Icon"
+                                    className={classes.icon}
+                                />
+                                <input
+                                    type="text"
+                                    id="street"
+                                    data-group="address"
+                                    value={formData.address.street}
+                                    onChange={handleChange}
+                                    placeholder="Enter your street"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className={classes.formGroup}>
+                            <label htmlFor="houseNumber">House number</label>
+                            <div className={classes.form}>
+                                <img
+                                    src={User_light}
+                                    alt="User_light Icon"
+                                    className={classes.icon}
+                                />
+                                <input
+                                    type="text"
+                                    id="houseNumber"
+                                    data-group="address"
+                                    value={formData.address.houseNumber}
+                                    onChange={handleChange}
+                                    placeholder="Enter your house number"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className={classes.formGroup}>
+                            <label htmlFor="city">City</label>
+                            <div className={classes.form}>
+                                <img
+                                    src={User_light}
+                                    alt="User_light Icon"
+                                    className={classes.icon}
+                                />
+                                <input
+                                    type="text"
+                                    id="city"
+                                    data-group="address"
+                                    value={formData.address.city}
+                                    onChange={handleChange}
+                                    placeholder="Enter your city"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className={classes.formGroup}>
+                            <label htmlFor="postCode">Postcode</label>
+                            <div className={classes.form}>
+                                <img
+                                    src={User_light}
+                                    alt="User_light Icon"
+                                    className={classes.icon}
+                                />
+                                <input
+                                    type="text"
+                                    id="postCode"
+                                    data-group="address"
+                                    value={formData.address.postCode}
+                                    onChange={handleChange}
+                                    placeholder="Enter your city"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        </>
+                )}
                 <button type="submit" className={classes.signUpButton}>
                     Sign Up
                 </button>
