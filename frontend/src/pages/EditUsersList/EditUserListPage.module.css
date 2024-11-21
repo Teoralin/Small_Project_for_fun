@@ -1,0 +1,156 @@
+.OffersListPage {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.Options {
+    margin: 120px 60px;
+    grid-column: span 1;
+}
+
+.OptionButton {
+    width: 405px;
+    height: 56px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #313030;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+    font-family: martel sans, sans-serif;
+    line-height: 20px;
+    margin-bottom: 20px;
+
+    display: grid;
+    align-content: center;
+    justify-content: start;
+}
+
+.OptionButtonSelected {
+    width: 405px;
+    height: 56px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #313030;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    background-color: #ebedf0;
+    font-family: martel sans, sans-serif;
+    line-height: 20px;
+    margin-bottom: 20px;
+
+    display: grid;
+    align-content: center;
+    justify-content: start;
+}
+
+.ManageUsers {
+    grid-column: span 3;
+    margin-right: 100px;
+}
+
+.Title {
+    display: grid;
+    justify-content: center;
+    margin: 120px 60px 20px 60px;
+    font-family: martel sans, sans-serif;
+    font-weight: 300;
+    font-size: 40px;
+}
+
+.search {
+    display: flex;
+    margin-left: 30px;
+    margin-bottom: 60px;
+}
+
+.searchContainer {
+    justify-content: center;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 8px;
+    letter-spacing: 0.5px;
+    flex-wrap: wrap;
+    font: 300 16px Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    width: 100%;
+    margin-right: 15px;
+}
+
+.searchIcon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    object-position: center;
+    width: 24px;
+    margin-left: 15px;
+
+}
+
+.searchInput {
+    padding-top: 11px;
+    flex: 1;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+@media (max-width: 991px) {
+    .searchInput {
+        max-width: 100%;
+    }
+}
+
+.SearchButton {
+    width: fit-content;
+    height: 70px;
+    padding: 20px;
+    background-color: #FFE145;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #B79C10;
+}
+
+ul {
+    list-style: none;
+}
+
+.separator {
+    background: var(--Gray-light, #d4d7e5); /* Цвет линии */
+    height: 1px; /* Толщина линии */
+    width: 100%; /* Линия будет растягиваться на всю ширину */
+    margin: 10px 0; /* Отступы сверху и снизу линии */
+}
+
+.editButton {
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.userCompo {
+    display: flex;
+    justify-content: space-between;
+    font-size: 25px;
+    padding: 10px;
+}
+
+.userCompo img {
+    cursor: pointer;
+}
+
+.UserInfo {
+    font-family: martel sans, sans-serif;
+    font-weight: 300;
+    line-height: 28px;
+    margin: 10px 0px;
+}

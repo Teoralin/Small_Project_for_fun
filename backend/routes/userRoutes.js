@@ -67,16 +67,24 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
-        if (user) {
-            // If the password is being updated, hash it before saving
-            if (req.body.password) {
-                req.body.password = await bcrypt.hash(req.body.password, 10);
-            }
-            await user.update(req.body);
-            res.status(200).json({ message: 'User updated successfully', user });
-        } else {
-            res.status(404).json({ message: 'User not found' });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
+
+        // If password is being updated, verify current password and hash the new password
+        if (req.body.password) {
+            const isMatch = await bcrypt.compare(req.body.currentPassword, user.password);
+            if (!isMatch) {
+                return res.status(401).json({ message: 'Current password is incorrect' });
+            }
+
+            req.body.password = await bcrypt.hash(req.body.password, 10);
+        }
+
+        await user.update(req.body);
+
+        res.status(200).json({ message: 'User updated successfully', user });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

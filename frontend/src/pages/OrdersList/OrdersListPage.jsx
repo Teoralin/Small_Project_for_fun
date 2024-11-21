@@ -31,6 +31,12 @@ export default function OrdersListPage() {
                 >
                     Offers
                 </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/editUsersList')}
+                >
+                    Manage Users
+                </button>
             </div>
 
             <div className={classes.Orders}>

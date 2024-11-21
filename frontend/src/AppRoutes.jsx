@@ -9,6 +9,7 @@ import ProfilePage from "./pages/Profile/ProfilePage.jsx";
 import OrdersListPage from "./pages/OrdersList/OrdersListPage.jsx";
 import OffersListPage from "./pages/OffersList/OffersListPage.jsx";
 import SelfHarvestListPage from "./pages/SelfHarvestList/SelfHarvestListPage.jsx";
+import EditUserListPage from "./pages/EditUsersList/EditUserListPage.jsx";
 
 export default function AppRoutes() {
     return (
@@ -22,6 +23,7 @@ export default function AppRoutes() {
             <Route path="/ordersList" element={<OrdersListPage />} />
             <Route path="/offersList" element={<OffersListPage />} />
             <Route path="/harvestList" element={<SelfHarvestListPage />} />
+            <Route path="/editUsersList" element={<EditUserListPage />} />
         </Routes>
     )
 }

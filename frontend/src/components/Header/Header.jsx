@@ -1,20 +1,56 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import classes from "./Header.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
+import axios from "axios";
 import userIcon from "../../assets/User.png";
 import cartIcon from "../../assets/Сart.png";
 import leftIcon from "../../assets/Left.png";
 
 export default function Header() {
-    const user = {
-        name: 'John',
+    const [userName, setUserName] = useState(null);
+    const navigate = useNavigate();
+
+    // Check if the user is logged in and fetch their name
+    useEffect(() => {
+        const fetchUserName = async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                setUserName(null); // User is not logged in
+                return;
+            }
+
+            try {
+                const decodedToken = jwtDecode(token);
+                const userId = decodedToken.userId;
+
+                const response = await axios.get(`http://localhost:3000/users/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setUserName(response.data.name); // Set the user's name
+            } catch (err) {
+                console.error("Error fetching user data:", err);
+                setUserName(null);
+            }
+        };
+
+        fetchUserName();
+    }, []);
+
+    // Logout logic
+    const logout = () => {
+        localStorage.removeItem("token"); // Remove token from localStorage
+        setUserName(null); // Reset userName state
+        navigate("/login"); // Redirect to the login page
     };
 
     const cart = {
-        totalCount: 10,
+        totalCount: 10, // Placeholder for cart items
     };
-
-    const logout = () => {};
 
     return (
         <header className={classes.header}>
@@ -30,10 +66,9 @@ export default function Header() {
                     </Link>
                 </div>
 
-
                 <nav>
                     <ul>
-                        {user ? (
+                        {userName ? (
                             <li className={classes.menu_container}>
                                 <Link to="/profile" className={classes.user_link}>
                                     <img
@@ -41,16 +76,20 @@ export default function Header() {
                                         alt="User Icon"
                                         className={classes.icon}
                                     />
-                                    {user.name}
+                                    {userName}
                                 </Link>
                                 <div className={classes.menu}>
                                     <Link to="/profile">Profile</Link>
                                     <Link to="/ordersList">Orders</Link>
-                                    <a onClick={logout}>Logout</a>
+                                    <a onClick={logout} style={{ cursor: "pointer" }}>
+                                        Logout
+                                    </a>
                                 </div>
                             </li>
                         ) : (
-                            <Link to="/login">Login</Link>
+                            <li>
+                                <Link to="/login">Log in</Link>
+                            </li>
                         )}
 
                         <li>
@@ -60,14 +99,8 @@ export default function Header() {
                                     alt="Cart Icon"
                                     className={classes.icon}
                                 />
-                                {cart.totalCount > 0 && (
-                                    <span className={classes.cart_count}>{cart.totalCount}</span>
-                                )}
+                                {cart.totalCount > 0 && <span>{cart.totalCount}</span>}
                             </Link>
-                        </li>
-
-                        <li>
-                            <Link to="/login">login</Link>
                         </li>
                     </ul>
                 </nav>

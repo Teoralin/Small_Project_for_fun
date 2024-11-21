@@ -1,0 +1,133 @@
+import React, {useEffect, useState} from 'react';
+import classes from "./EditUserListPage.module.css";
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
+import Edit_User from "../../assets/Edit_User.png";
+
+export default function EditUserListPage() {
+    const navigate = useNavigate();
+
+
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
+
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);  // For error handling
+
+    useEffect(() => {
+        // Fetch users from the API using axios
+        async function fetchUsers() {
+            try {
+                const response = await axios.get('http://localhost:3000/users'); // Adjust the API URL
+                setUsers(response.data);  // Set users data
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                setError('An error occurred while fetching users');  // Set error state
+            } finally {
+                setLoading(false);  // Set loading to false once the request is complete
+            }
+        }
+
+        fetchUsers();
+    }, []);  // Empty dependency array to run the effect once on mount
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    return (
+        <div className={classes.OffersListPage}>
+            <div className={classes.Options}>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/profile')}
+                >
+                    Contact information
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/ordersList')}
+                >
+                    Orders
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/offersList')}
+                >
+                    Offers
+                </button>
+                <button type="Option"
+                        className={classes.OptionButtonSelected}
+                        onClick={() => handleNavigate('/editUsersList')}
+                >
+                    Manage Users
+                </button>
+            </div>
+
+
+            <div className={classes.ManageUsers}>
+                <div className={classes.Title}>
+                    <p>Manage Users</p>
+                </div>
+
+                <div className={classes.search}>
+                    <form className={classes.searchContainer} role="search">
+                        <img
+                            loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/39d3ffbacde2115b1f3ab9876df77e6f4cacb5d6b56a2314860468854d0f9fcd?placeholderIfAbsent=true&apiKey=e1ef14f8847548e5b6a397fcefa70042"
+                            className={classes.searchIcon}
+                            alt=""
+                        />
+                        <input
+                            type="search"
+                            id="userSearch"
+                            className={classes.searchInput}
+                            placeholder="Search user"
+                            //onChange={handleChange}
+                            aria-label="Search user"
+                        />
+                    </form>
+
+                    <button type="search" className={classes.SearchButton}>
+                        Search
+                    </button>
+
+                </div>
+
+                <div>
+                    {users.length === 0 ? (
+                        <p>No users found.</p>
+                    ) : (
+                        <ul className={classes.UserComponent}>
+                            <div className={classes.separator}></div>
+                            {users.map(user => (
+                                <li key={user.id}>
+                                    <div className={classes.userCompo}>
+                                        <div className={classes.UserInfo}>
+                                            {user.name} {user.surname}
+                                        </div>
+                                        <img
+                                            src={Edit_User}
+                                            alt="Edit User Icon"
+                                            className={classes.icon}
+                                            onClick={() => handleNavigate('/profile')}
+                                        />
+                                    </div>
+                                    <div className={classes.separator}></div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
+
+
+        </div>
+    )
+}
