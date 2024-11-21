@@ -19,11 +19,15 @@ const Category = sequelize.define('Category', {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: 'Categories', // references this table
+            model: 'Categories', 
             key: 'category_id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
+    },
+    was_approved:{
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
     },
 }, {
     tableName: 'Categories',
