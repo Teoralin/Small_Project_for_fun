@@ -116,7 +116,7 @@ export default function EditUserListPage() {
                                             src={Edit_User}
                                             alt="Edit User Icon"
                                             className={classes.icon}
-                                            onClick={() => handleNavigate('/editUser')}
+                                            onClick={() => handleNavigate(`/editUser/${user.user_id}`)}
                                         />
                                     </div>
                                     <div className={classes.separator}></div>

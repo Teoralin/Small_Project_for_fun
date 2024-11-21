@@ -25,7 +25,7 @@ export default function AppRoutes() {
             <Route path="/offersList" element={<OffersListPage />} />
             <Route path="/harvestList" element={<SelfHarvestListPage />} />
             <Route path="/editUsersList" element={<EditUserListPage />} />
-            <Route path="/editUser" element={<EditUserPage />} />
+            <Route path="/editUser/:id" element={<EditUserPage />} />
         </Routes>
     )
 }
