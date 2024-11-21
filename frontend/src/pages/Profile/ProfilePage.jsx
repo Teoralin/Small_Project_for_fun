@@ -1,8 +1,25 @@
 import { useEffect, useState } from 'react';
+import classes from "./ProfilePage.module.css";
+import { Link, useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
+import User_light from "../../assets/User_light.png";
+import MailIcon from "../../assets/Mail.png";
+import Phone from "../../assets/Phone.png";
+import Key from "../../assets/Key.png";
+import Point from "../../assets/Map_Point.png";
+import House from "../../assets/House.png";
+
 
 export default function ProfilePage() {
+
+    const navigate = useNavigate();
+
+
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
+
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState('');
     const [addressData, setAddressData] = useState(null);
@@ -212,15 +229,45 @@ export default function ProfilePage() {
     }
 
     return (
-        <div>
-            <h1>Your Profile</h1>
+        <div className={classes.ProfilePage}>
+            <div className={classes.Options}>
+                <button type="Option"
+                        className={classes.OptionButtonSelected}
+                        onClick={() => handleNavigate('/profile')}
+                >
+                    Contact information
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/ordersList')}
+                >
+                    Orders
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/offersList')}
+                >
+                    Offers
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/editUsersList')}
+                >
+                    Manage Users
+                </button>
+            </div>
+
+            <div className={classes.Contacts}>
+                <p>Contact information</p>
+
+            </div>
             <div>
                 <div>
-                    <strong>Name:</strong>
                     {isEditing.name ? (
                         <input
                             type="text"
                             value={updatedData.name || ''}
+                            placeholder="Enter your name"
                             onChange={(e) => handleInputChange('name', e.target.value)}
                         />
                     ) : (
