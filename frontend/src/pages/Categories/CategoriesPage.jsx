@@ -160,7 +160,7 @@ export default function CategoriesPage() {
                 ))
             )}
 
-            {(userRole === 'Moderator' || userRole === 'Administrator') && (
+            {(userRole === 'Moderator' || userRole === 'Administrator' || userRole === 'Registered User') && (
                 <div>
                     <button onClick={() => setShowForm(!showForm)}>
                         {showForm ? 'Cancel' : 'Add Category'}
