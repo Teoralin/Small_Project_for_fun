@@ -261,7 +261,7 @@ export default function ProfilePage() {
                 {userRole === "Moderator" && (
                     <button type="Option"
                             className={classes.OptionButton}
-                            onClick={() => handleNavigate('/editCategoriesList')}
+                            onClick={() => handleNavigate('/categories')}
                     >
                         Manage Categories
                     </button>
@@ -270,75 +270,131 @@ export default function ProfilePage() {
 
             <div className={classes.Contacts}>
                 <p>Contact information</p>
+                <div className={classes.registerForm}>
+                    <div className={classes.formGroup}>
+                        <label htmlFor="name">Name</label>
+                        <div className={classes.form}>
+                            <div className={classes.formLeft}>
+                                <img
+                                    src={User_light}
+                                    alt="User_light Icon"
+                                    className={classes.icon}
+                                />
+                                {isEditing.name ? (
+                                    <input
+                                        type="text"
+                                        value={updatedData.name || ''}
+                                        placeholder="Enter your name"
+                                        onChange={(e) => handleInputChange('name', e.target.value)}
+                                    />
+                                ) : (
+                                    <span>{userData.name}</span>
+                                )}
+                            </div>
+                            <button onClick={() => handleEdit('name')} disabled={isEditing.name}>
+                                Edit
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div className={classes.formGroup}>
+                        <label htmlFor="surname">Surname</label>
+                        <div className={classes.form}>
+                            <div className={classes.formLeft}>
+                                <img
+                                    src={User_light}
+                                    alt="User_light Icon"
+                                    className={classes.icon}
+                                />
+                                {isEditing.surname ? (
+                                    <input
+                                        type="text"
+                                        value={updatedData.surname || ''}
+                                        onChange={(e) => handleInputChange('surname', e.target.value)}
+                                    />
+                                ) : (
+                                    <span>{userData.surname}</span>
+                                )}
+                            </div>
+                                <button onClick={() => handleEdit('surname')} disabled={isEditing.surname}>
+                                    Edit
+                                </button>
+                        </div>
+                    </div>
+
+
+                    <div className={classes.formGroup}>
+                        <label htmlFor="email">Email Address</label>
+                        <div className={classes.form}>
+                            <div className={classes.formLeft}>
+                                <img
+                                    src={MailIcon}
+                                    alt="Mail Icon"
+                                    className={classes.icon}
+                                />
+                                {isEditing.email ? (
+                                    <input
+                                        type="email"
+                                        value={updatedData.email || ''}
+                                        onChange={(e) => handleInputChange('email', e.target.value)}
+                                    />
+                                ) : (
+                                    <span>{userData.email}</span>
+                                )}
+                            </div>
+                            <button onClick={() => handleEdit('email')} disabled={isEditing.email}>
+                                Edit
+                            </button>
+                            </div>
+                        </div>
+
+
+                        <div className={classes.formGroup}>
+                        <label htmlFor="phone">Phone Number</label>
+                            <div className={classes.form}>
+                                <div className={classes.formLeft}>
+                                    <img
+                                        src={Phone}
+                                        alt="Phone Icon"
+                                        className={classes.icon}
+                                    />
+                                    {isEditing.contact_info ? (
+                                        <input
+                                            type="tel"
+                                            value={updatedData.contact_info || ''}
+                                            onChange={(e) => handleInputChange('contact_info', e.target.value)}
+                                        />
+                                    ) : (
+                                        <span>{userData.contact_info}</span>
+                                    )}
+                                </div>
+                                <button onClick={() => handleEdit('contact_info')} disabled={isEditing.contact_info}>
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+
+                    <div className={classes.formGroup}>
+                        <div className={classes.form}>
+                            <div className={classes.formLeft}>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                {(isEditing.name || isEditing.surname || isEditing.email || isEditing.contact_info) && (
+                    <button onClick={handleSubmit}>
+                        Submit Changes
+                    </button>
+                )}
 
             </div>
-            <div>
-                <div>
-                    {isEditing.name ? (
-                        <input
-                            type="text"
-                            value={updatedData.name || ''}
-                            placeholder="Enter your name"
-                            onChange={(e) => handleInputChange('name', e.target.value)}
-                        />
-                    ) : (
-                        <span>{userData.name}</span>
-                    )}
-                    <button onClick={() => handleEdit('name')} disabled={isEditing.name}>
-                        Edit
-                    </button>
-                </div>
-                <div>
-                    <strong>Surname:</strong>
-                    {isEditing.surname ? (
-                        <input
-                            type="text"
-                            value={updatedData.surname || ''}
-                            onChange={(e) => handleInputChange('surname', e.target.value)}
-                        />
-                    ) : (
-                        <span>{userData.surname}</span>
-                    )}
-                    <button onClick={() => handleEdit('surname')} disabled={isEditing.surname}>
-                        Edit
-                    </button>
-                </div>
-                <div>
-                    <strong>Email:</strong>
-                    {isEditing.email ? (
-                        <input
-                            type="email"
-                            value={updatedData.email || ''}
-                            onChange={(e) => handleInputChange('email', e.target.value)}
-                        />
-                    ) : (
-                        <span>{userData.email}</span>
-                    )}
-                    <button onClick={() => handleEdit('email')} disabled={isEditing.email}>
-                        Edit
-                    </button>
-                </div>
-                <div>
-                    <strong>Phone:</strong>
-                    {isEditing.contact_info ? (
-                        <input
-                            type="tel"
-                            value={updatedData.contact_info || ''}
-                            onChange={(e) => handleInputChange('contact_info', e.target.value)}
-                        />
-                    ) : (
-                        <span>{userData.contact_info}</span>
-                    )}
-                    <button onClick={() => handleEdit('contact_info')} disabled={isEditing.contact_info}>
-                        Edit
-                    </button>
-                </div>
-            </div>
-            {(isEditing.name || isEditing.surname || isEditing.email || isEditing.contact_info) && (
-                <button onClick={handleSubmit}>
-                    Submit Changes
-                </button>
-            )}
+
+
+
 
             {userData.is_farmer && (
                 <div>

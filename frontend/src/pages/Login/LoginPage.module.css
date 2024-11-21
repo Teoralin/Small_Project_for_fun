@@ -57,7 +57,7 @@ label {
     display: flex;
 }
 
-input {
+.loginPage input {
     padding: 10px;
     border: 1px solid #ffffff;
     font-size: 1rem;
