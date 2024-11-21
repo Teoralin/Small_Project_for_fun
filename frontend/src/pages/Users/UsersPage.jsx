@@ -7,36 +7,21 @@ export default function UsersPage() {
     const [loading, setLoading] = useState(true);
     const [filteredUsers, setFilteredUsers] = useState([]); 
     const [searchTerm, setSearchTerm] = useState('');
-    const [error, setError] = useState(null);  // For error handling
+    const [error, setError] = useState(null);  
 
-    // useEffect(() => {
-    //     // Fetch users from the API using axios
-    //     async function fetchUsers() {
-    //         try {
-    //             const response = await axios.get('http://localhost:3000/users'); // Adjust the API URL
-    //             setUsers(response.data);  // Set users data
-    //         } catch (error) {
-    //             console.error('Error fetching users:', error);
-    //             setError('An error occurred while fetching users');  // Set error state
-    //         } finally {
-    //             setLoading(false);  // Set loading to false once the request is complete
-    //         }
-    //     }
 
-    //     fetchUsers();
-    // }, []);  
     useEffect(() => {
         // Fetch users from the API using axios
         async function fetchUsers() {
             try {
-                const response = await axios.get('http://localhost:3000/users'); // Adjust the API URL
-                setUsers(response.data); // Set users data
-                setFilteredUsers(response.data); // Initialize filteredUsers
+                const response = await axios.get('http://localhost:3000/users');  
+                setUsers(response.data); 
+                setFilteredUsers(response.data);  
             } catch (error) {
                 console.error('Error fetching users:', error);
                 setError('An error occurred while fetching users'); // Set error state
             } finally {
-                setLoading(false); // Set loading to false once the request is complete
+                setLoading(false); 
             }
         }
 
@@ -75,7 +60,7 @@ export default function UsersPage() {
                     />
                     <input
                         type="search"
-                        id="farmerSearch"
+                        id="userSearch"
                         className={classes.searchInput}
                         placeholder="Search user"
                         value={searchTerm}
