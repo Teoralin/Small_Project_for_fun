@@ -26,14 +26,6 @@ export default function RegisterPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    // Handle input change
-    // const handleChange = (e) => {
-    //     const { id, value, type, checked } = e.target;
-    //     setFormData((prevData) => ({
-    //         ...prevData,
-    //         [id]: type === 'checkbox' ? checked : value, 
-    //     }));
-    // };
 
     const handleChange = (e) => {
         const { id, value, type, checked, dataset } = e.target;
@@ -66,14 +58,7 @@ export default function RegisterPage() {
         }
 
         try {
-            // await axios.post('http://localhost:3000/auth/register', {
-            //     name: formData.name,
-            //     surname: formData.surname,
-            //     email: formData.email,
-            //     contact_info: formData.phone,
-            //     password: formData.password,
-            //     is_farmer: formData.isFarmer, 
-            // });
+
             const payload = {
                 name: formData.name,
                 surname: formData.surname,
