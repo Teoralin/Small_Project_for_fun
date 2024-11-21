@@ -14,7 +14,7 @@ import House from "../../assets/House.png";
 export default function ProfilePage() {
 
     const navigate = useNavigate();
-
+    const [userRole, setUserRole] = useState(null);
 
     const handleNavigate = (path) => {
         navigate(path);
@@ -50,6 +50,7 @@ export default function ProfilePage() {
                 }
 
                 const decodedToken = jwtDecode(token);
+                setUserRole(decodedToken.role);
                 const userId = decodedToken.userId;
 
                 const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
@@ -249,12 +250,14 @@ export default function ProfilePage() {
                 >
                     Offers
                 </button>
+                {userRole === "Administrator" && (
                 <button type="Option"
                         className={classes.OptionButton}
                         onClick={() => handleNavigate('/editUsersList')}
                 >
                     Manage Users
                 </button>
+                )}
             </div>
 
             <div className={classes.Contacts}>

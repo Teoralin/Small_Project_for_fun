@@ -3,6 +3,7 @@ import classes from "./EditUserListPage.module.css";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import Edit_User from "../../assets/Edit_User.png";
+import {jwtDecode} from 'jwt-decode';
 
 export default function EditUserListPage() {
     const navigate = useNavigate();
@@ -14,14 +15,42 @@ export default function EditUserListPage() {
 
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);  // For error handling
+    const [error, setError] = useState(null);
+    const [isAuthorized, setIsAuthorized] = useState(false);
+    const [filteredUsers, setFilteredUsers] = useState([]); 
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        const checkAuthorization = () => {
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                setError('Access denied. Please log in.');
+                return;
+            }
+
+            try {
+                const decodedToken = jwtDecode(token);
+                if (decodedToken.role !== 'Administrator') {
+                    setError('Access denied. Insufficient permissions.');
+                } else {
+                    setIsAuthorized(true); // User is authorized
+                }
+            } catch (err) {
+                setError('Invalid token. Please log in again.');
+            }
+        };
+
+        checkAuthorization();
+    }, );
 
     useEffect(() => {
         // Fetch users from the API using axios
         async function fetchUsers() {
             try {
                 const response = await axios.get('http://localhost:3000/users'); // Adjust the API URL
-                setUsers(response.data);  // Set users data
+                setUsers(response.data);   
+                setFilteredUsers(response.data); 
             } catch (error) {
                 console.error('Error fetching users:', error);
                 setError('An error occurred while fetching users');  // Set error state
@@ -33,6 +62,19 @@ export default function EditUserListPage() {
         fetchUsers();
     }, []);  // Empty dependency array to run the effect once on mount
 
+
+    const handleSearchChange = (event) => {
+        const term = event.target.value.toLowerCase();
+        setSearchTerm(term);
+
+        // Filter users based on the search term
+        const filtered = users.filter((user) =>
+            user.name.toLowerCase().includes(term) || 
+            user.surname.toLowerCase().includes(term)
+        );
+        setFilteredUsers(filtered);
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -43,6 +85,7 @@ export default function EditUserListPage() {
 
     return (
         <div className={classes.EditUsersListPage}>
+
             <div className={classes.Options}>
                 <button type="Option"
                         className={classes.OptionButton}
@@ -89,7 +132,7 @@ export default function EditUserListPage() {
                             id="userSearch"
                             className={classes.searchInput}
                             placeholder="Search user"
-                            //onChange={handleChange}
+                            onChange={handleSearchChange}
                             aria-label="Search user"
                         />
                     </form>
@@ -106,7 +149,7 @@ export default function EditUserListPage() {
                     ) : (
                         <ul className={classes.UserComponent}>
                             <div className={classes.separator}></div>
-                            {users.map(user => (
+                            {filteredUsers.map(user => (
                                 <li key={user.id}>
                                     <div className={classes.userCompo}>
                                         <div className={classes.UserInfo}>
