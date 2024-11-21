@@ -1,0 +1,46 @@
+.userPage {
+    margin: 124px 80px 50px 80px;
+}
+
+.PageTitle {
+    display: flex;
+    font-size: 40px;
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    color: #3F4255;
+}
+
+.icon {
+    margin-top: 6px;
+    width: 48px;
+    height: 48px;
+}
+
+.UserComponent {
+    display: flex;
+    gap: 30px;
+    padding: 0px;
+}
+
+.userCompo {
+    list-style: none;
+    display: grid;
+    width: 296px;
+    height: 296px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+}
+
+.userCompo img {
+    margin: 0;
+}
+.UserInfo {
+    height: 112px;
+    display: grid;
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    font-size: 25px;
+    font-family: martel sans, sans-serif;
+    line-height: 30px;
+}
+

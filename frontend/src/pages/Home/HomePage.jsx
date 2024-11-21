@@ -117,7 +117,7 @@ export default function HomePage() {
 
                     <button type="show"
                             className={classes.ShowAllButton}
-                            onClick={() => handleNavigate('/harvests')}
+                            onClick={() => handleNavigate('/harvestList')}
                     >
                         show all
                     </button>

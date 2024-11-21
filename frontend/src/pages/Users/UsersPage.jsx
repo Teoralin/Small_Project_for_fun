@@ -34,15 +34,26 @@ export default function UsersPage() {
 
     return (
         <div className={classes.userPage}>
-            <div className={classes.logo}>YellowShop</div>
-                <h1>Users</h1>
-                {users.length === 0 ? (
-                    <p>No users found.</p>
-                ) : (
-                    <ul>
+            <div className={classes.PageTitle}>
+                <p>Users</p>
+            </div>
+            {users.length === 0 ? (
+                <p>No users found.</p>
+            ) : (
+                    <ul className={classes.UserComponent}>
                         {users.map(user => (
-                            <li key={user.id}>
-                                {user.name} - {user.email}
+                            <li key={user.id} className={classes.userCompo}>
+                                <div>
+                                    <img
+                                        src="https://via.placeholder.com/296x184"
+                                        alt="User Avatar"
+                                    />
+                                </div>
+
+                                <div className={classes.UserInfo}>
+                                    {user.name} <br/>
+                                    {user.surname}
+                                </div>
                             </li>
                         ))}
                     </ul>

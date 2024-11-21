@@ -1,11 +1,10 @@
 import React from 'react';
-import classes from './FarmersPage.module.css';
+import classes from "./SelfHarvestListPage.module.css";
+import Apple from "../../assets/Apple.png";
 
-export default function FarmersPage() {
-
-
+export default function SelfHarvestListPage() {
     return (
-        <div className={classes.FarmersPage}>
+        <div className={classes.SelfHarvestListPage}>
             <div className={classes.search}>
                 <form className={classes.searchContainer} role="search">
                     <img
@@ -16,24 +15,27 @@ export default function FarmersPage() {
                     />
                     <input
                         type="search"
-                        id="farmerSearch"
+                        id="eventSearch"
                         className={classes.searchInput}
-                        placeholder="Search farmer"
+                        placeholder="Search event"
                         //onChange={handleChange}
-                        aria-label="Search farmer"
+                        aria-label="Search event"
                     />
                 </form>
 
                 <button type="search" className={classes.SearchButton}>
                     Search
                 </button>
-
             </div>
 
             <div className={classes.PageTitle}>
-                <p>Farmers</p>
+                <p>Self Harvest </p>
+                <img
+                    src={Apple}
+                    alt="Apple Icon"
+                    className={classes.icon}
+                />
             </div>
-
         </div>
     )
 }
