@@ -25,7 +25,7 @@ export default function RegisterPage() {
         const { id, value, type, checked } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [id]: type === 'checkbox' ? checked : value, // Handle checkbox for isFarmer
+            [id]: type === 'checkbox' ? checked : value, 
         }));
     };
 
