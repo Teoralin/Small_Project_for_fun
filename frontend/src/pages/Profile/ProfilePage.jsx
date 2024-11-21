@@ -258,6 +258,14 @@ export default function ProfilePage() {
                     Manage Users
                 </button>
                 )}
+                {userRole === "Moderator" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/editCategoriesList')}
+                    >
+                        Manage Categories
+                    </button>
+                )}
             </div>
 
             <div className={classes.Contacts}>
