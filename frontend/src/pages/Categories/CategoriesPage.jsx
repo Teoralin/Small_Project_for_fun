@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
+import classes from './CategoriesPage.module.css';
 
 export default function CategoriesPage() {
     const { id } = useParams(); // Get the category ID from the URL params (if provided)
@@ -46,9 +47,11 @@ export default function CategoriesPage() {
 
                 if (id) {
                     setParentCategory(response.data);
-                    setCategories(response.data.Subcategories || []);
+                    setCategories(response.data.Subcategories || []); // Fetch subcategories
                 } else {
-                    setCategories(response.data.filter((cat) => !cat.parent_category_id));
+                    // For top-level categories, filter only parent categories (those without a parent)
+                    const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
+                    setCategories(parentCategories);
                 }
             } catch (err) {
                 setError('Error fetching categories');
@@ -90,7 +93,8 @@ export default function CategoriesPage() {
             if (id) {
                 setCategories(response.data.Subcategories || []);
             } else {
-                setCategories(response.data.filter((cat) => !cat.parent_category_id));
+                const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
+                setCategories(parentCategories);
             }
         } catch (err) {
             setError('Error adding category');
@@ -111,7 +115,7 @@ export default function CategoriesPage() {
     }
 
     return (
-        <div>
+        <div className={classes.CategoriesPage}>
             {id ? (
                 // If viewing a specific category, show its name and subcategories
                 <>
@@ -121,25 +125,25 @@ export default function CategoriesPage() {
                     <p>{parentCategory?.description}</p>
                     {categories.length > 0 ? (
                         categories.map((category) => (
-                            <h1
+                            <button
                                 key={category.category_id}
                                 onClick={() => handleNavigate(category.category_id)}
-                                style={{ cursor: 'pointer' }} // Make it clear the h1 is clickable
+                                className={classes.categoryButton}
                             >
                                 {category.name}
-                            </h1>
+                            </button>
                         ))
                     ) : (
                         <p>No subcategories found</p>
                     )}
                 </>
             ) : (
-                // If viewing the top-level categories, list all parent categories
+                // If viewing the top-level categories, list only parent categories
                 categories.map((category) => (
                     <div key={category.category_id}>
                         <h1
                             onClick={() => handleNavigate(category.category_id)}
-                            style={{ cursor: 'pointer' }} // Make it clear the h1 is clickable
+                            style={{ cursor: 'pointer' }}
                         >
                             {category.name}
                         </h1>
@@ -147,6 +151,7 @@ export default function CategoriesPage() {
                             <button
                                 key={sub.category_id}
                                 onClick={() => handleNavigate(sub.category_id)}
+                                className={classes.categoryButton}
                             >
                                 {sub.name}
                             </button>
@@ -155,7 +160,6 @@ export default function CategoriesPage() {
                 ))
             )}
 
-            {/* Add Category Button (only for Moderators or Administrators) */}
             {(userRole === 'Moderator' || userRole === 'Administrator') && (
                 <div>
                     <button onClick={() => setShowForm(!showForm)}>

@@ -28,8 +28,8 @@ router.get('/', async (req, res) => {
         const categories = await Category.findAll({
             include: {
                 model: Category,
-                as: 'ParentCategory',
-                attributes: ['category_id', 'name'], // Include parent category details
+                as: 'Subcategories', // Include subcategories
+                attributes: ['category_id', 'name', 'description'], // Specify fields for subcategories
             },
         });
 
@@ -46,7 +46,7 @@ router.get('/:id', async (req, res) => {
         const category = await Category.findByPk(req.params.id, {
             include: [
                 { model: Category, as: 'ParentCategory', attributes: ['category_id', 'name'] },
-                { model: Category, as: 'Subcategories', attributes: ['category_id', 'name'] },
+                { model: Category, as: 'Subcategories', attributes: ['category_id', 'name', 'description'] }, // Include subcategories
             ],
         });
 
@@ -60,6 +60,7 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 
 // Update a category by ID
 router.put('/:id', async (req, res) => {
