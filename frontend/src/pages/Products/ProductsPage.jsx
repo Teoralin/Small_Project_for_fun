@@ -9,10 +9,11 @@ export default function ProductsPage() {
     const [offers, setOffers] = useState([]); // Offers for this product
     const [isFarmer, setIsFarmer] = useState(false); // Check if the user is a farmer
     const [showForm, setShowForm] = useState(false); // Toggle add offer form
+    const [purchaseOffer, setPurchaseOffer] = useState(null); // Offer being purchased
+    const [purchaseQuantity, setPurchaseQuantity] = useState(0); // Quantity to purchase
     const [newOffer, setNewOffer] = useState({
         price: '',
         quantity: '',
-        status: 'Available',
         is_pickable: false,
     });
     const [error, setError] = useState('');
@@ -86,7 +87,7 @@ export default function ProductsPage() {
             setSuccessMessage('Offer added successfully!');
             setError('');
             setShowForm(false);
-            setNewOffer({ price: '', quantity: '', status: 'Available', is_pickable: false });
+            setNewOffer({ price: '', quantity: '', is_pickable: false });
 
             // Refresh offers
             const offersResponse = await axios.get('http://localhost:3000/offers');
@@ -97,6 +98,61 @@ export default function ProductsPage() {
         } catch (err) {
             console.error('Error adding offer:', err);
             setError('Error adding offer.');
+        }
+    };
+
+    // Handle starting the purchase process
+    const handlePurchaseClick = (offer) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            setError('You must be logged in to purchase.');
+            return;
+        }
+
+        try {
+            const decodedToken = jwtDecode(token);
+            if (!decodedToken.role) {
+                setError('Only registered users can purchase.');
+                return;
+            }
+
+            setPurchaseOffer(offer); // Set the current offer being purchased
+            setPurchaseQuantity(0); // Reset quantity
+            setError('');
+        } catch (err) {
+            console.error('Error decoding token:', err);
+            setError('Invalid token.');
+        }
+    };
+
+    // Handle submitting the purchase
+    const handleSubmitPurchase = async () => {
+        if (purchaseQuantity <= 0 || purchaseQuantity > purchaseOffer.quantity) {
+            setError('Invalid quantity. Please check the available stock.');
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        try {
+            await axios.post(
+                'http://localhost:3000/cart/add',
+                {
+                    offer_id: purchaseOffer.offer_id,
+                    quantity: purchaseQuantity,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            setSuccessMessage('Item added to cart successfully!');
+            setError('');
+            setPurchaseOffer(null); // Reset purchase offer
+        } catch (err) {
+            console.error('Error adding to cart:', err);
+            setError('Error adding item to cart.');
         }
     };
 
@@ -120,10 +176,12 @@ export default function ProductsPage() {
                         <li key={offer.offer_id} style={{ marginBottom: '15px' }}>
                             <p><strong>Price:</strong> {offer.price} CZK</p>
                             <p><strong>Quantity:</strong> {offer.quantity}</p>
-                            <p><strong>Status:</strong> {offer.status}</p>
                             <p>
                                 <strong>Pickable:</strong> {offer.is_pickable ? 'Yes' : 'No'}
                             </p>
+                            <button onClick={() => handlePurchaseClick(offer)}>
+                                Purchase
+                            </button>
                         </li>
                     ))}
                 </ul>
@@ -131,8 +189,26 @@ export default function ProductsPage() {
                 <p>No offers available for this product.</p>
             )}
 
+            {/* Purchase Form */}
+            {purchaseOffer && (
+                <div>
+                    <h3>Purchase Offer</h3>
+                    <p><strong>Price:</strong> {purchaseOffer.price} CZK</p>
+                    <p><strong>Available Quantity:</strong> {purchaseOffer.quantity}</p>
+                    <label>
+                        Quantity:
+                        <input
+                            type="number"
+                            value={purchaseQuantity}
+                            onChange={(e) => setPurchaseQuantity(parseInt(e.target.value, 10))}
+                        />
+                    </label>
+                    <button onClick={handleSubmitPurchase}>Submit Purchase</button>
+                </div>
+            )}
+
             {/* Add Offer Button for Farmers */}
-            {(
+            {isFarmer && (
                 <div>
                     <button onClick={() => setShowForm(!showForm)}>
                         {showForm ? 'Cancel' : 'Add Offer'}

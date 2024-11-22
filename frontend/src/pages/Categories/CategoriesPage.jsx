@@ -267,6 +267,7 @@ export default function CategoriesPage() {
     return (
         <div className={classes.CategoriesPage}>
             <div className={classes.PageTitle}>
+                <p>Categories</p>
             </div>
             {id ? (
                 <>
@@ -274,8 +275,7 @@ export default function CategoriesPage() {
                         {parentCategory?.name}
                     </p>
                     <p>{parentCategory?.description}</p>
-
-                    {categories.length > 0 && (
+                    {categories.length > 0 &&
                         categories.map((category) => (
                             <div key={category.category_id}>
                                 <button
@@ -286,29 +286,20 @@ export default function CategoriesPage() {
                                 </button>
                                 <div className={classes.separator}></div>
                             </div>
-                        ))
-                    )}
+                        ))}
 
                     {products.length > 0 && (
                         <>
-                            <div className={classes.ProductsList}>
-                                {products.map((product) => (
-                                    // eslint-disable-next-line react/jsx-key
-                                    <div className={classes.Products}>
-                                        <img
-                                            src="https://via.placeholder.com/296x184"
-                                            alt="User Avatar"
-                                        />
-                                        <p
-                                            key={product.product_id}
-                                            onClick={() => handleNavigateToProduct(product.product_id)}
-                                            className={classes.ProductText}
-                                        >
-                                            {product.name}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
+                            <h2>Products</h2>
+                            {products.map((product) => (
+                                <p
+                                    key={product.product_id}
+                                    onClick={() => handleNavigateToProduct(product.product_id)}
+                                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                >
+                                    {product.name}
+                                </p>
+                            ))}
                         </>
                     )}
 
