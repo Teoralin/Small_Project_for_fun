@@ -13,9 +13,16 @@ import insta_5 from "../../assets/Insta_5.png";
 import {Link, useNavigate} from "react-router-dom";
 import hand from "../../assets/Harvest_icon.png";
 import {jwtDecode} from 'jwt-decode';
+import axios from 'axios';
 
 export default function HomePage() {
     const [userRole, setUserRole] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [filteredUsers, setFilteredUsers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [error, setError] = useState(null);
+    const [scrollPosition, setScrollPosition] = useState(0);
 
     const navigate = useNavigate();
 
@@ -37,6 +44,47 @@ export default function HomePage() {
             }
         }
     }, []);
+
+    const handleSearchChange = (event) => {
+        const term = event.target.value.toLowerCase();
+        setSearchTerm(term);
+
+        const filtered = users.filter((user) =>
+            user.name.toLowerCase().includes(term) ||
+            user.surname.toLowerCase().includes(term)
+        );
+        setFilteredUsers(filtered);
+    };
+
+    useEffect(() => {
+        // Fetch users from the API using axios
+        async function fetchUsers() {
+            try {
+                const response = await axios.get('http://localhost:3000/users'); // Adjust the API URL
+
+                // Filter users who have 'is_farmer' set to true
+                const farmerUsers = response.data.filter(user => user.is_farmer === true);
+
+                setUsers(farmerUsers); // Set filtered users
+                setFilteredUsers(farmerUsers); // Initialize filteredUsers
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                setError('An error occurred while fetching users'); // Set error state
+            } finally {
+                setLoading(false); // Set loading to false once the request is complete
+            }
+        }
+
+        fetchUsers();
+    }, []); // Empty dependency array to run the effect once on mount
+
+    const handleScrollLeft = () => {
+        setScrollPosition(scrollPosition - 300); // Прокручиваем влево
+    };
+
+    const handleScrollRight = () => {
+        setScrollPosition(scrollPosition + 300); // Прокручиваем вправо
+    };
 
     return (
         <div className={classes.HomePage}>
@@ -98,6 +146,47 @@ export default function HomePage() {
                         Show all
                     </button>
                 </div>
+
+                {filteredUsers.length === 0 ? (
+                    <p>No users found.</p>
+                ) : (
+                    <div className={classes.scrollContainer}>
+                        <button
+                            onClick={handleScrollLeft}
+                            className={classes.scrollButton}
+                            disabled={scrollPosition <= 0}
+                        >
+                            &#8592; {/* Стрелка влево */}
+                        </button>
+                        <ul
+                            className={classes.UserComponent}
+                            style={{ transform: `translateX(-${scrollPosition}px)` }}
+                        >
+                            {filteredUsers.map((user) => (
+                                <li key={user.id} className={classes.userCompo}>
+                                    <div>
+                                        <img
+                                            src="https://via.placeholder.com/296x184"
+                                            alt="User Avatar"
+                                        />
+                                    </div>
+
+                                    <div className={classes.UserInfo}>
+                                        {user.name} <br />
+                                        {user.surname}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                        <button
+                            onClick={handleScrollRight}
+                            className={classes.scrollButton}
+                            disabled={scrollPosition >= (filteredUsers.length - 5) * 300}
+                        >
+                            &#8594; {/* Стрелка вправо */}
+                        </button>
+                    </div>
+                )}
             </div>
 
             <div className={classes.Self_Harvest}>

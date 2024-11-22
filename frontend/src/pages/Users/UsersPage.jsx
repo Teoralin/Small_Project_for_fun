@@ -5,39 +5,45 @@ import classes from './UsersPage.module.css';
 export default function UsersPage() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filteredUsers, setFilteredUsers] = useState([]); 
+    const [filteredUsers, setFilteredUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [error, setError] = useState(null);  
-
+    const [error, setError] = useState(null);
+    const [scrollPosition, setScrollPosition] = useState(0);
 
     useEffect(() => {
-        // Fetch users from the API using axios
         async function fetchUsers() {
             try {
-                const response = await axios.get('http://localhost:3000/users');  
-                setUsers(response.data); 
-                setFilteredUsers(response.data);  
+                const response = await axios.get('http://localhost:3000/users');
+                setUsers(response.data);
+                setFilteredUsers(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
-                setError('An error occurred while fetching users'); // Set error state
+                setError('An error occurred while fetching users');
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         }
 
         fetchUsers();
-    }, []); // Empty dependency array to run the effect once on mount
+    }, []);
 
     const handleSearchChange = (event) => {
         const term = event.target.value.toLowerCase();
         setSearchTerm(term);
 
-        // Filter users based on the search term
         const filtered = users.filter((user) =>
-            user.name.toLowerCase().includes(term) || 
+            user.name.toLowerCase().includes(term) ||
             user.surname.toLowerCase().includes(term)
         );
         setFilteredUsers(filtered);
+    };
+
+    const handleScrollLeft = () => {
+        setScrollPosition(scrollPosition - 300);  // Прокручиваем влево
+    };
+
+    const handleScrollRight = () => {
+        setScrollPosition(scrollPosition + 300);  // Прокручиваем вправо
     };
 
     if (loading) {
@@ -77,23 +83,42 @@ export default function UsersPage() {
             {filteredUsers.length === 0 ? (
                 <p>No users found.</p>
             ) : (
-                <ul className={classes.UserComponent}>
-                    {filteredUsers.map((user) => (
-                        <li key={user.id} className={classes.userCompo}>
-                            <div>
-                                <img
-                                    src="https://via.placeholder.com/296x184"
-                                    alt="User Avatar"
-                                />
-                            </div>
+                <div className={classes.scrollContainer}>
+                    <button
+                        onClick={handleScrollLeft}
+                        className={classes.scrollButton}
+                        disabled={scrollPosition <= 0}
+                    >
+                        &#8592; {/* Стрелка влево */}
+                    </button>
+                    <ul
+                        className={classes.UserComponent}
+                        style={{ transform: `translateX(-${scrollPosition}px)` }}
+                    >
+                        {filteredUsers.map((user) => (
+                            <li key={user.id} className={classes.userCompo}>
+                                <div>
+                                    <img
+                                        src="https://via.placeholder.com/296x184"
+                                        alt="User Avatar"
+                                    />
+                                </div>
 
-                            <div className={classes.UserInfo}>
-                                {user.name} <br />
-                                {user.surname}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+                                <div className={classes.UserInfo}>
+                                    {user.name} <br />
+                                    {user.surname}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                    <button
+                        onClick={handleScrollRight}
+                        className={classes.scrollButton}
+                        disabled={scrollPosition >= (filteredUsers.length - 5) * 300}
+                    >
+                        &#8594; {/* Стрелка вправо */}
+                    </button>
+                </div>
             )}
         </div>
     );

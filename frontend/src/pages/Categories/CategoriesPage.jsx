@@ -275,7 +275,7 @@ export default function CategoriesPage() {
                         {parentCategory?.name}
                     </p>
                     <p>{parentCategory?.description}</p>
-                    {categories.length > 0 ? (
+                    {categories.length > 0 &&
                         categories.map((category) => (
                             <div key={category.category_id}>
                                 <button
@@ -286,10 +286,7 @@ export default function CategoriesPage() {
                                 </button>
                                 <div className={classes.separator}></div>
                             </div>
-                        ))
-                    ) : (
-                        <p>No subcategories found</p>
-                    )}
+                        ))}
 
                     {products.length > 0 && (
                         <>

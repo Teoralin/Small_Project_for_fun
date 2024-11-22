@@ -51,7 +51,7 @@ export default function FarmersPage() {
         return <div>{error}</div>;
     }
     return (
-        <div className={classes.farmersPage}>
+        <div className={classes.FarmersPage}>
             <div className={classes.search}>
                 <form className={classes.searchContainer} role="search">
                     <img
