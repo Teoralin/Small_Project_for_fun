@@ -43,7 +43,6 @@ export default function EditUserPage() {
         checkAuthorization();
     }, );
 
-
     const handleNavigate = (path) => {
         navigate(path);
     };
@@ -230,28 +229,32 @@ export default function EditUserPage() {
                         </div>
 
                         <div className={classes.ButtonsCompo}>
-                            <button onClick={handleUpgrade} className={classes.buttonUser}>
-                                <img
-                                    src={Upgrade}
-                                    alt="Upgrade Icon"
-                                    className={classes.icon}
-                                />
-                                Upgrade to Moderator
-                            </button>
+                            {user.role === 'Registered User' && (
+                                <button onClick={handleUpgrade} className={classes.buttonUser}>
+                                    <img
+                                        src={Upgrade}
+                                        alt="Upgrade Icon"
+                                        className={classes.icon}
+                                    />
+                                    Upgrade to Moderator
+                                </button>
+                            )}
 
-                            <button onClick={handleDowngrade} className={classes.buttonUser}>
-                                <img
-                                    src={Downgrade}
-                                    alt="Upgrade Icon"
-                                    className={classes.icon}
-                                />
-                                Downgrade to Registered User
-                            </button>
+                            {user.role === 'Moderator' && (
+                                <button onClick={handleDowngrade} className={classes.buttonUser}>
+                                    <img
+                                        src={Downgrade}
+                                        alt="Downgrade Icon"
+                                        className={classes.icon}
+                                    />
+                                    Downgrade to Registered User
+                                </button>
+                            )}
 
                             <button onClick={handleDelete} className={classes.buttonUser}>
                                 <img
                                     src={Delete}
-                                    alt="Upgrade Icon"
+                                    alt="Delete Icon"
                                     className={classes.icon}
                                 />
                                 Delete User
@@ -264,4 +267,5 @@ export default function EditUserPage() {
         </div>
     );
 }
+
 
