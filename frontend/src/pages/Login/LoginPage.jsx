@@ -4,12 +4,10 @@ import axios from 'axios';
 import classes from './loginPage.module.css';
 import Key from "../../assets/Key.png";
 import MailIcon from "../../assets/Mail.png";
-import { useUserContext } from '../../context/userContext';
 import { jwtDecode } from 'jwt-decode';
 
 
 export default function LoginPage() {
-    const { login } = useUserContext(); // Get login function from UserContext
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -44,7 +42,6 @@ export default function LoginPage() {
             const decodedToken = jwtDecode(response.data.token);
             console.log(decodedToken);
 
-            login(decodedToken.name);
             navigate('/');
 
             //login(decodedToken.name); // Pass the user's name to the login function
