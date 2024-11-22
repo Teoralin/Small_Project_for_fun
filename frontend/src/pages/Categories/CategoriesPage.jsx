@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
@@ -8,10 +8,12 @@ export default function CategoriesPage() {
     const { id } = useParams(); // Get the category ID from the URL params (if provided)
     const [categories, setCategories] = useState([]);
     const [parentCategory, setParentCategory] = useState(null);
+    const [products, setProducts] = useState([]); // Products in the current category
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [newCategory, setNewCategory] = useState({ name: '', description: '' });
+    const [newProduct, setNewProduct] = useState({ name: '', description: '' }); // For product creation
     const [userRole, setUserRole] = useState('');
     const navigate = useNavigate();
 
@@ -35,35 +37,42 @@ export default function CategoriesPage() {
         checkUserRole();
     }, []);
 
-    // Fetch categories from the backend
+    // Fetch categories and products from the backend
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchCategoryData = async () => {
             try {
-                const response = await axios.get(
-                    id
-                        ? `http://localhost:3000/categories/${id}` // Fetch a single category and its children
-                        : 'http://localhost:3000/categories' // Fetch all categories
-                );
-
                 if (id) {
-                    setParentCategory(response.data);
-                    setCategories(response.data.Subcategories || []); // Fetch subcategories
+                    const categoryResponse = await axios.get(`http://localhost:3000/categories/${id}`);
+                    setParentCategory(categoryResponse.data);
+                    setCategories(categoryResponse.data.Subcategories || []);
+
+                    const productResponse = await axios.get('http://localhost:3000/products');
+                    const categoryProducts = productResponse.data.filter(
+                        (product) => product.category_id === parseInt(id)
+                    );
+                    setProducts(categoryProducts);
                 } else {
-                    // For top-level categories, filter only parent categories (those without a parent)
-                    const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
-                    setCategories(parentCategories);
+                    const categoryResponse = await axios.get('http://localhost:3000/categories');
+                    const parentCategories = categoryResponse.data.filter(
+                        (cat) => !cat.parent_category_id
+                    );
+                    setCategories(parentCategories); // Top-level parent categories
                 }
             } catch (err) {
-                setError('Error fetching categories');
+                setError('Error fetching data');
                 console.error(err);
             }
         };
 
-        fetchCategories();
+        fetchCategoryData();
     }, [id]);
 
     const handleNavigate = (categoryId) => {
         navigate(`/categories/${categoryId}`); // Navigate to the child category page
+    };
+
+    const handleNavigateToProduct = (productId) => {
+        navigate(`/product/${productId}`); // Navigate to the product details page
     };
 
     const handleAddCategory = async () => {
@@ -102,6 +111,35 @@ export default function CategoriesPage() {
         }
     };
 
+    const handleAddProduct = async () => {
+        try {
+            const payload = {
+                ...newProduct,
+                category_id: id, // Associate the product with the current category
+            };
+
+            await axios.post('http://localhost:3000/products', payload, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            setSuccessMessage('Product added successfully!');
+            setError('');
+            setNewProduct({ name: '', description: '' });
+
+            // Refresh products
+            const productResponse = await axios.get('http://localhost:3000/products');
+            const categoryProducts = productResponse.data.filter(
+                (product) => product.category_id === parseInt(id)
+            );
+            setProducts(categoryProducts);
+        } catch (err) {
+            setError('Error adding product');
+            console.error(err);
+        }
+    };
+
     const handleDeleteCategory = async () => {
         if (!id) return; // No category to delete if id is not provided
 
@@ -120,13 +158,24 @@ export default function CategoriesPage() {
         }
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e, form) => {
         const { name, value } = e.target;
-        setNewCategory((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+
+        // Dynamically update the correct state
+        if (form === 'category') {
+            setNewCategory((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        } else if (form === 'product') {
+            setNewProduct((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
     };
+
+    const isLeafCategory = categories.length === 0; // Category has no subcategories
 
     if (error) {
         return <div>{error}</div>;
@@ -159,14 +208,56 @@ export default function CategoriesPage() {
                         <p>No subcategories found</p>
                     )}
 
-                    {/* Remove Current Category Button */}
-                    {(userRole === 'Moderator' || userRole === 'Administrator') && (
-                        <button
-                            onClick={handleDeleteCategory}
-                        >
-                            Remove Current Category
-                        </button>
+                    {products.length > 0 && (
+                        <>
+                            <h2>Products</h2>
+                            {products.map((product) => (
+                                <p
+                                    key={product.product_id}
+                                    onClick={() => handleNavigateToProduct(product.product_id)}
+                                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                >
+                                    {product.name}
+                                </p>
+                            ))}
+                        </>
                     )}
+
+                    {/* Add Product Button (for leaf categories only) */}
+                    {isLeafCategory && (userRole === 'Moderator'
+                        || userRole === 'Administrator'
+                        || userRole === 'Registered User') && (
+                        <div>
+                            <h2>Add Product</h2>
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Product Name"
+                                value={newProduct.name}
+                                onChange={(e) => handleInputChange(e, 'product')}
+                            />
+                            <input
+                                type="text"
+                                name="description"
+                                placeholder="Product Description"
+                                value={newProduct.description}
+                                onChange={(e) => handleInputChange(e, 'product')}
+                            />
+                            <button onClick={handleAddProduct}>Add Product</button>
+                        </div>
+                    )}
+
+                    {/* Remove Current Category Button (if no subcategories and no products) */}
+                    {isLeafCategory &&
+                        products.length === 0 &&
+                        (userRole === 'Moderator' || userRole === 'Administrator' || userRole === 'Registered User') && (
+                            <button
+                                onClick={handleDeleteCategory}
+                                className={classes.removeButton}
+                            >
+                                Remove Current Category
+                            </button>
+                        )}
                 </>
             ) : (
                 categories.map((category) => (
@@ -202,7 +293,9 @@ export default function CategoriesPage() {
             )}
 
 
-            {(userRole === 'Moderator' || userRole === 'Administrator' || userRole === 'Registered User') && (
+            {products.length === 0 && (userRole === 'Moderator'
+                || userRole === 'Administrator'
+                || userRole === 'Registered User') && (
                 <div>
                     <div className={classes.AddCompo}>
                         <button onClick={() => setShowForm(!showForm)} className={classes.categoryButton}>
@@ -220,14 +313,14 @@ export default function CategoriesPage() {
                                     name="name"
                                     placeholder="Category Name"
                                     value={newCategory.name}
-                                    onChange={handleInputChange}
+                                    onChange={(e) => handleInputChange(e, 'category')}
                                 />
                                 <input
                                     type="text"
                                     name="description"
                                     placeholder="Category Description"
                                     value={newCategory.description}
-                                    onChange={handleInputChange}
+                                    onChange={(e) => handleInputChange(e, 'category')}
                                 />
                                 <button onClick={handleAddCategory}>Submit</button>
                             </div>
