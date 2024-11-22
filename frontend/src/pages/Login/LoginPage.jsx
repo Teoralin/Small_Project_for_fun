@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import {useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import classes from './loginPage.module.css';
@@ -34,7 +34,6 @@ export default function LoginPage() {
 
             // Save the JWT token (in localStorage or cookies)
             localStorage.setItem('token', response.data.token);
-
             // Navigate to the home page
             navigate('/');
         } catch (err) {

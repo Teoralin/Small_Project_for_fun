@@ -120,10 +120,10 @@
 }
 
 .EditUsersListPage .separator {
-    background: var(--Gray-light, #d4d7e5); /* Цвет линии */
-    height: 1px; /* Толщина линии */
-    width: 100%; /* Линия будет растягиваться на всю ширину */
-    margin: 10px 0; /* Отступы сверху и снизу линии */
+    background: var(--Gray-light, #d4d7e5);
+    height: 1px;
+    width: 100%;
+    margin: 10px 0;
 }
 
 .EditUsersListPage .editButton {

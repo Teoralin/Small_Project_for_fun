@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
@@ -102,6 +102,24 @@ export default function CategoriesPage() {
         }
     };
 
+    const handleDeleteCategory = async () => {
+        if (!id) return; // No category to delete if id is not provided
+
+        try {
+            await axios.delete(`http://localhost:3000/categories/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            setSuccessMessage('Category deleted successfully!');
+            navigate('/categories'); // Redirect to the top-level categories after deletion
+        } catch (err) {
+            setError('Error deleting category');
+            console.error(err);
+        }
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewCategory((prev) => ({
@@ -116,75 +134,106 @@ export default function CategoriesPage() {
 
     return (
         <div className={classes.CategoriesPage}>
+            <div className={classes.PageTitle}>
+                <p>Categories</p>
+            </div>
             {id ? (
-                // If viewing a specific category, show its name and subcategories
                 <>
-                    <h1 onClick={() => handleNavigate(parentCategory?.category_id)}>
+                    <p onClick={() => handleNavigate(parentCategory?.category_id)} className={classes.CategoryName}>
                         {parentCategory?.name}
-                    </h1>
+                    </p>
                     <p>{parentCategory?.description}</p>
                     {categories.length > 0 ? (
                         categories.map((category) => (
-                            <button
-                                key={category.category_id}
-                                onClick={() => handleNavigate(category.category_id)}
-                                className={classes.categoryButton}
-                            >
-                                {category.name}
-                            </button>
+                            <div key={category.category_id}>
+                                <button
+                                    onClick={() => handleNavigate(category.category_id)}
+                                    className={classes.categoryButton}
+                                >
+                                    {category.name}
+                                </button>
+                                <div className={classes.separator}></div>
+                            </div>
                         ))
                     ) : (
                         <p>No subcategories found</p>
                     )}
+
+                    {/* Remove Current Category Button */}
+                    {(userRole === 'Moderator' || userRole === 'Administrator') && (
+                        <button
+                            onClick={handleDeleteCategory}
+                        >
+                            Remove Current Category
+                        </button>
+                    )}
                 </>
             ) : (
-                // If viewing the top-level categories, list only parent categories
                 categories.map((category) => (
                     <div key={category.category_id}>
-                        <h1
-                            onClick={() => handleNavigate(category.category_id)}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            {category.name}
-                        </h1>
-                        {category.Subcategories?.map((sub) => (
-                            <button
-                                key={sub.category_id}
-                                onClick={() => handleNavigate(sub.category_id)}
-                                className={classes.categoryButton}
+                        <div className={classes.CategoryCompo}>
+                            <p
+                                onClick={() => handleNavigate(category.category_id)}
+                                style={{cursor: 'pointer'}}
+                                className={classes.CategoryName}
                             >
-                                {sub.name}
-                            </button>
-                        ))}
+                                {category.name}
+                            </p>
+                            <div className={classes.SubcategoryCompo}>
+                                {category.Subcategories?.map((sub) => (
+                                    <div key={sub.category_id}>
+                                        <button
+                                            onClick={() => handleNavigate(sub.category_id)}
+                                            className={classes.categoryButton}
+                                        >
+                                            <img
+                                                src="https://via.placeholder.com/48x48"
+                                                alt="User Avatar"
+                                            />
+                                            {sub.name}
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className={classes.separator}></div>
                     </div>
                 ))
             )}
 
+
             {(userRole === 'Moderator' || userRole === 'Administrator' || userRole === 'Registered User') && (
                 <div>
-                    <button onClick={() => setShowForm(!showForm)}>
-                        {showForm ? 'Cancel' : 'Add Category'}
-                    </button>
+                    <div className={classes.AddCompo}>
+                        <button onClick={() => setShowForm(!showForm)} className={classes.categoryButton}>
+                            <img
+                                src="https://via.placeholder.com/48x48"
+                                alt="User Avatar"
+                            />
+                            {showForm ? 'Cancel' : 'Add Category'}
+                        </button>
 
-                    {showForm && (
-                        <div>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Category Name"
-                                value={newCategory.name}
-                                onChange={handleInputChange}
-                            />
-                            <input
-                                type="text"
-                                name="description"
-                                placeholder="Category Description"
-                                value={newCategory.description}
-                                onChange={handleInputChange}
-                            />
-                            <button onClick={handleAddCategory}>Submit</button>
-                        </div>
-                    )}
+                        {showForm && (
+                            <div className={classes.AddInput}>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Category Name"
+                                    value={newCategory.name}
+                                    onChange={handleInputChange}
+                                />
+                                <input
+                                    type="text"
+                                    name="description"
+                                    placeholder="Category Description"
+                                    value={newCategory.description}
+                                    onChange={handleInputChange}
+                                />
+                                <button onClick={handleAddCategory}>Submit</button>
+                            </div>
+                        )}
+                    </div>
+                    <div className={classes.separator}></div>
                 </div>
             )}
 

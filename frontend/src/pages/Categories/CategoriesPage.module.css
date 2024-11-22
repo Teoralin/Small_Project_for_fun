@@ -1,3 +1,64 @@
 .CategoriesPage {
     margin: 5em;
 }
+
+.CategoriesPage .PageTitle {
+    display: flex;
+    font-size: 40px;
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    color: #3F4255;
+}
+
+.CategoriesPage .CategoryName {
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 30px;
+}
+
+.CategoriesPage .separator {
+    background: var(--Gray-light, #d4d7e5);
+    height: 1px;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.CategoriesPage .CategoryCompo {
+    margin-left: 1rem;
+}
+
+.CategoriesPage .SubcategoryCompo {
+    display: flex;
+    gap: 27px;
+    margin-left: 1rem;
+}
+
+.CategoriesPage img {
+    margin: auto;
+}
+
+.CategoriesPage .categoryButton {
+    margin: 10px;
+    background: #ffffff;
+    height: 136px;
+    width: 136px;
+    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+    display: grid;
+    justify-items: center;
+    border: none;
+}
+
+.CategoriesPage .AddCompo {
+    display: flex;
+    margin-left: 37px;
+}
+
+.CategoriesPage .AddInput {
+    margin: 10px 30px;
+    display: grid;
+    gap: 16px;
+}
+
+.CategoriesPage .AddInput input {
+    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+}

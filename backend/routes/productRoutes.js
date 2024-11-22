@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
         const product = await Product.create({
             name,
             description,
-            category_id, //: category_id || null,  // Optional category
+            category_id, //: category_id || null
         });
 
         res.status(201).json({ message: 'Product created successfully', product });
