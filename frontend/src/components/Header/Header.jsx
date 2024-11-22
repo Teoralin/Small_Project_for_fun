@@ -1,79 +1,77 @@
-import { Link, useNavigate } from "react-router-dom";
-import classes from "./Header.module.css";
-import {jwtDecode} from "jwt-decode";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Import useLocation
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import classes from "./Header.module.css";
 import userIcon from "../../assets/User.png";
 import cartIcon from "../../assets/Сart.png";
 import leftIcon from "../../assets/Left.png";
-import { useUserContext } from "../../context/userContext";
-import { useState, useEffect } from "react";
 
 export default function Header() {
-    const { userName, setUserName } = useUserContext(); // Get userName and logout from the UserContext
+    const [userName, setUserName] = useState(null);
     const [cartCount, setCartCount] = useState(0); // Number of items in the cart
     const navigate = useNavigate();
+    const location = useLocation(); // Detect route changes
 
     // Check if the user is logged in and fetch their name
-    useEffect(() => {
-        const fetchUserName = async () => {
-            const token = localStorage.getItem("token");
+    const fetchUserName = async () => {
+        const token = localStorage.getItem("token");
 
-            if (!token) {
-                setUserName(null); // User is not logged in
-                return;
-            }
+        if (!token) {
+            setUserName(null); // User is not logged in
+            return;
+        }
 
-            try {
-                const decodedToken = jwtDecode(token);
-                const userId = decodedToken.userId;
+        try {
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.userId;
 
-                const response = await axios.get(`http://localhost:3000/users/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+            const response = await axios.get(`http://localhost:3000/users/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
-                setUserName(response.data.name); // Set the user's name
-            } catch (err) {
-                console.error("Error fetching user data:", err);
-                setUserName(null);
-            }
-        };
-
-        fetchUserName();
-    }, []);
+            setUserName(response.data.name); // Set the user's name
+        } catch (err) {
+            console.error("Error fetching user data:", err);
+            setUserName(null);
+        }
+    };
 
     // Fetch the cart count
+    const fetchCartCount = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            setCartCount(0); // Reset cart count if the user is not logged in
+            return;
+        }
+
+        try {
+            const response = await axios.get("http://localhost:3000/cart", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setCartCount(response.data.length); // Set cart count based on the number of items
+        } catch (err) {
+            console.error("Error fetching cart data:", err);
+            setCartCount(0);
+        }
+    };
+
+    // Use useEffect to trigger updates when the location changes
     useEffect(() => {
-        const fetchCartCount = async () => {
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                setCartCount(0); // Reset cart count if the user is not logged in
-                return;
-            }
-
-            try {
-                const response = await axios.get("http://localhost:3000/cart", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                setCartCount(response.data.length); // Set cart count based on the number of items
-            } catch (err) {
-                console.error("Error fetching cart data:", err);
-                setCartCount(0);
-            }
-        };
-
+        fetchUserName();
         fetchCartCount();
-    }, []);
+    }, [location]); // Re-run on route change
 
     // Logout logic
     const logout = () => {
-        localStorage.removeItem("token"); 
-        setUserName(''); 
+        localStorage.removeItem("token"); // Remove token from localStorage
+        setUserName(null); // Reset userName state
         setCartCount(0); // Reset cart count
         navigate("/login"); // Redirect to the login page
     };
@@ -97,7 +95,6 @@ export default function Header() {
                 <nav>
                     <ul>
                         {userName ? (
-                            // If user is logged in, show user name and logout option
                             <li className={classes.menu_container}>
                                 <Link to="/profile" className={classes.user_link}>
                                     <img
@@ -105,7 +102,7 @@ export default function Header() {
                                         alt="User Icon"
                                         className={classes.icon}
                                     />
-                                    {userName} {/* Display the logged-in user's name */}
+                                    {userName}
                                 </Link>
                                 <div className={classes.menu}>
                                     <Link to="/profile">Profile</Link>
@@ -116,7 +113,6 @@ export default function Header() {
                                 </div>
                             </li>
                         ) : (
-                            // If user is not logged in, show "Log in" link
                             <li>
                                 <Link to="/login">Log in</Link>
                             </li>
