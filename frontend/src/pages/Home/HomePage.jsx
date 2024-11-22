@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import classes from "./HomePage.module.css";
-import userIcon from "../../assets/User.png";
+//import userIcon from "../../assets/User.png";
 import time from "../../assets/time-eat.png";
 import delivery from "../../assets/delivery.png";
 import paris from "../../assets/paris.png";
@@ -21,7 +21,7 @@ export default function HomePage() {
     const [loading, setLoading] = useState(true);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [error, setError] = useState(null);
+   const [error, setError] = useState(null);
     const [scrollPosition, setScrollPosition] = useState(0);
 
     const navigate = useNavigate();
@@ -34,6 +34,7 @@ export default function HomePage() {
     // Decode token and check the user's role
     useEffect(() => {
         const token = localStorage.getItem("token");
+        console.log(token);
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);

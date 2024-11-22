@@ -1,6 +1,7 @@
 // src/contexts/UserContext.jsx
 import React, { createContext, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
+import { Navigate } from 'react-router-dom';
 
 // Create a Context for the User
 const UserContext = createContext();
@@ -18,7 +19,8 @@ export const UserProvider = ({ children }) => {
 
   const logout = () => {
     setUserName(null);
-    localStorage.removeItem('token'); // Remove JWT token
+    localStorage.removeItem('token'); 
+    //Navigate('/login')
   };
 
   return (

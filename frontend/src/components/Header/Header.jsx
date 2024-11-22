@@ -1,79 +1,52 @@
 import { Link, useNavigate } from "react-router-dom";
 import classes from "./Header.module.css";
-import { Link, useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import userIcon from "../../assets/User.png";
 import cartIcon from "../../assets/Сart.png";
 import leftIcon from "../../assets/Left.png";
-import { useUserContext } from "../../context/userContext"; // Import the custom hook
+import { useUserContext } from "../../context/userContext";
+import { useState, useEffect } from "react";
 
 export default function Header() {
-    const { userName, logout } = useUserContext(); // Get userName and logout from the UserContext
+    const { userName, setUserName } = useUserContext(); // Get userName and logout from the UserContext
     const [cartCount, setCartCount] = useState(0); // Number of items in the cart
     const navigate = useNavigate();
 
-    // Check if the user is logged in and fetch their name
-    useEffect(() => {
-        const fetchUserName = async () => {
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                setUserName(null); // User is not logged in
-                return;
-            }
-
-            try {
-                const decodedToken = jwtDecode(token);
-                const userId = decodedToken.userId;
-
-                const response = await axios.get(`http://localhost:3000/users/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                setUserName(response.data.name); // Set the user's name
-            } catch (err) {
-                console.error("Error fetching user data:", err);
-                setUserName(null);
-            }
-        };
-
-        fetchUserName();
-    }, []);
-
-    // Fetch the cart count
     useEffect(() => {
         const fetchCartCount = async () => {
             const token = localStorage.getItem("token");
-
             if (!token) {
-                setCartCount(0); // Reset cart count if the user is not logged in
+                setCartCount(0); // Reset cart count if user is not logged in
                 return;
             }
-
+    
             try {
                 const response = await axios.get("http://localhost:3000/cart", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
-                setCartCount(response.data.length); // Set cart count based on the number of items
+                setCartCount(response.data.length); // Update cart count
             } catch (err) {
                 console.error("Error fetching cart data:", err);
-                setCartCount(0);
+                setCartCount(0); // Handle errors by resetting cart count
             }
         };
-
-        fetchCartCount();
+    
+        fetchCartCount(); // Fetch cart count initially
+    
+        const interval = setInterval(() => {
+            fetchCartCount(); // Periodically fetch cart count
+        }, 5000); // Fetch every 5 seconds
+    
+        return () => clearInterval(interval); // Cleanup interval on component unmount
     }, []);
 
     // Logout logic
     const logout = () => {
-        localStorage.removeItem("token"); // Remove token from localStorage
-        setUserName(null); // Reset userName state
+        localStorage.removeItem("token"); 
+        setUserName(null); 
         setCartCount(0); // Reset cart count
         navigate("/login"); // Redirect to the login page
     };
@@ -110,7 +83,7 @@ export default function Header() {
                                 <div className={classes.menu}>
                                     <Link to="/profile">Profile</Link>
                                     <Link to="/ordersList">Orders</Link>
-                                    <a onClick={handleLogout} style={{ cursor: "pointer" }}>
+                                    <a onClick={logout} style={{ cursor: "pointer" }}>
                                         Logout
                                     </a>
                                 </div>
