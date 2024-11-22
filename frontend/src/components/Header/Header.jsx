@@ -1,56 +1,23 @@
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import classes from "./Header.module.css";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
-import axios from "axios";
 import userIcon from "../../assets/User.png";
 import cartIcon from "../../assets/Сart.png";
 import leftIcon from "../../assets/Left.png";
+import { useUserContext } from "../../context/userContext"; // Import the custom hook
 
 export default function Header() {
-    const [userName, setUserName] = useState(null);
+    const { userName, logout } = useUserContext(); // Get userName and logout from the UserContext
     const navigate = useNavigate();
-    const location = useLocation(); // Get the current URL
-
-    // Check if the user is logged in and fetch their name
-    useEffect(() => {
-        const fetchUserName = async () => {
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                setUserName(null); // User is not logged in
-                return;
-            }
-
-            try {
-                const decodedToken = jwtDecode(token);
-                const userId = decodedToken.userId;
-
-                const response = await axios.get(`http://localhost:3000/users/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                setUserName(response.data.name); // Set the user's name
-            } catch (err) {
-                console.error("Error fetching user data:", err);
-                setUserName(null);
-            }
-        };
-
-        fetchUserName();
-    }, []);
-
-    // Logout logic
-    const logout = () => {
-        localStorage.removeItem("token"); // Remove token from localStorage
-        setUserName(null); // Reset userName state
-        navigate("/login"); // Redirect to the login page
-    };
 
     const cart = {
         totalCount: 10, // Placeholder for cart items
+    };
+
+    console.log(userName);
+    // Logout logic
+    const handleLogout = () => {
+        logout(); // Calls logout from the context to reset userName and remove token
+        navigate("/login"); // Redirects the user to the login page
     };
 
     return (
@@ -72,6 +39,7 @@ export default function Header() {
                 <nav>
                     <ul>
                         {userName ? (
+                            // If user is logged in, show user name and logout option
                             <li className={classes.menu_container}>
                                 <Link to="/profile" className={classes.user_link}>
                                     <img
@@ -79,17 +47,18 @@ export default function Header() {
                                         alt="User Icon"
                                         className={classes.icon}
                                     />
-                                    {userName}
+                                    {userName} {/* Display the logged-in user's name */}
                                 </Link>
                                 <div className={classes.menu}>
                                     <Link to="/profile">Profile</Link>
                                     <Link to="/ordersList">Orders</Link>
-                                    <a onClick={logout} style={{ cursor: "pointer" }}>
+                                    <a onClick={handleLogout} style={{ cursor: "pointer" }}>
                                         Logout
                                     </a>
                                 </div>
                             </li>
                         ) : (
+                            // If user is not logged in, show "Log in" link
                             <li>
                                 <Link to="/login">Log in</Link>
                             </li>

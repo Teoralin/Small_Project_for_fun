@@ -30,7 +30,7 @@ export default function HomePage() {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
-                setUserRole(decodedToken.role); // Set the user's role from the token
+                setUserRole(decodedToken.role); 
             } catch (error) {
                 console.error("Invalid token:", error);
                 localStorage.removeItem("token"); // Remove invalid token
