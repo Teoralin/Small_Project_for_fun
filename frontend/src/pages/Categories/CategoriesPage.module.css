@@ -62,3 +62,30 @@
 .CategoriesPage .AddInput input {
     box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
 }
+
+
+.CategoriesPage .ProductsList {
+    display: flex;
+    gap: 24px;
+}
+
+.CategoriesPage .Products {
+    display: grid;
+    height: 334px;
+    width: 296px;
+    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+}
+
+.CategoriesPage .Products img {
+    margin: 0;
+}
+
+.CategoriesPage .ProductText {
+    cursor: pointer;
+    display: grid;
+    justify-content: center;
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 30px;
+    height: 150px;
+}
