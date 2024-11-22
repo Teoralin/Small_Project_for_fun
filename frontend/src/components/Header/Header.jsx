@@ -13,40 +13,67 @@ export default function Header() {
     const [cartCount, setCartCount] = useState(0); // Number of items in the cart
     const navigate = useNavigate();
 
+    // Check if the user is logged in and fetch their name
+    useEffect(() => {
+        const fetchUserName = async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                setUserName(null); // User is not logged in
+                return;
+            }
+
+            try {
+                const decodedToken = jwtDecode(token);
+                const userId = decodedToken.userId;
+
+                const response = await axios.get(`http://localhost:3000/users/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setUserName(response.data.name); // Set the user's name
+            } catch (err) {
+                console.error("Error fetching user data:", err);
+                setUserName(null);
+            }
+        };
+
+        fetchUserName();
+    }, []);
+
+    // Fetch the cart count
     useEffect(() => {
         const fetchCartCount = async () => {
             const token = localStorage.getItem("token");
+
             if (!token) {
-                setCartCount(0); // Reset cart count if user is not logged in
+                setCartCount(0); // Reset cart count if the user is not logged in
                 return;
             }
-    
+
             try {
                 const response = await axios.get("http://localhost:3000/cart", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setCartCount(response.data.length); // Update cart count
+
+                setCartCount(response.data.length); // Set cart count based on the number of items
             } catch (err) {
                 console.error("Error fetching cart data:", err);
-                setCartCount(0); // Handle errors by resetting cart count
+                setCartCount(0);
             }
         };
-    
-        fetchCartCount(); // Fetch cart count initially
-    
-        const interval = setInterval(() => {
-            fetchCartCount(); // Periodically fetch cart count
-        }, 5000); // Fetch every 5 seconds
-    
-        return () => clearInterval(interval); // Cleanup interval on component unmount
+
+        fetchCartCount();
     }, []);
 
     // Logout logic
     const logout = () => {
         localStorage.removeItem("token"); 
-        setUserName(null); 
+        setUserName(''); 
         setCartCount(0); // Reset cart count
         navigate("/login"); // Redirect to the login page
     };
