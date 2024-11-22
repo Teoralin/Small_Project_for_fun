@@ -1,11 +1,15 @@
-import {useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import classes from './loginPage.module.css';
 import Key from "../../assets/Key.png";
 import MailIcon from "../../assets/Mail.png";
+import { useUserContext } from '../../context/userContext';
+import { jwtDecode } from 'jwt-decode';
+
 
 export default function LoginPage() {
+    const { login } = useUserContext(); // Get login function from UserContext
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -31,9 +35,21 @@ export default function LoginPage() {
                 email: formData.email,
                 password: formData.password,
             });
-
+            
             // Save the JWT token (in localStorage or cookies)
             localStorage.setItem('token', response.data.token);
+            const token = localStorage.getItem("token");
+            console.log(token);
+            // Call the login function from UserContext to update the global state
+            const decodedToken = jwtDecode(response.data.token);
+            console.log(decodedToken);
+
+            login(decodedToken.name);
+            navigate('/');
+
+            //login(decodedToken.name); // Pass the user's name to the login function
+            console.log(decodedToken.name);
+
             // Navigate to the home page
             navigate('/');
         } catch (err) {
@@ -81,7 +97,6 @@ export default function LoginPage() {
                             required
                         />
                     </div>
-
                 </div>
                 <button type="submit" className={classes.loginButton}>
                     Log In
@@ -95,4 +110,3 @@ export default function LoginPage() {
         </div>
     );
 }
-
