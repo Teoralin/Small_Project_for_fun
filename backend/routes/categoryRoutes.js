@@ -6,13 +6,14 @@ const router = express.Router();
 // Create a new category
 router.post('/', async (req, res) => {
     try {
-        const { name, description, parent_category_id } = req.body;
+        const { name, description, parent_category_id, was_approved } = req.body;
 
         // Create new category
         const category = await Category.create({
             name,
             description,
             parent_category_id: parent_category_id || null,
+            was_approved: was_approved || false,
         });
 
         res.status(201).json({ message: 'Category created successfully', category });
@@ -71,6 +72,7 @@ router.put('/:id', async (req, res) => {
                 name: req.body.name || category.name,
                 description: req.body.description || category.description,
                 parent_category_id: req.body.parent_category_id || category.parent_category_id,
+                was_approved: req.body.was_approved !== false ? req.body.was_approved : category.was_approved,
             });
 
             res.status(200).json({ message: 'Category updated successfully', updatedCategory });

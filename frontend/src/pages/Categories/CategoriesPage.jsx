@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useAsyncError, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import classes from './CategoriesPage.module.css';
@@ -8,11 +8,12 @@ export default function CategoriesPage() {
     const { id } = useParams(); // Get the category ID from the URL params (if provided)
     const [categories, setCategories] = useState([]);
     const [parentCategory, setParentCategory] = useState(null);
+    const [suggestedCategory, setSuggestedCategory] = useState(null);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [newCategory, setNewCategory] = useState({ name: '', description: '' });
-    const [userRole, setUserRole] = useState('');
+    const [userRole, setUserRole] = useState(null);
     const navigate = useNavigate();
 
     // Check the user's role
@@ -26,7 +27,7 @@ export default function CategoriesPage() {
 
             try {
                 const decodedToken = jwtDecode(token);
-                setUserRole(decodedToken.role); // Extract role from the token
+                setUserRole(decodedToken.role); 
             } catch (err) {
                 console.error('Error decoding token:', err);
             }
@@ -46,12 +47,40 @@ export default function CategoriesPage() {
                 );
 
                 if (id) {
-                    setParentCategory(response.data);
-                    setCategories(response.data.Subcategories || []); // Fetch subcategories
+                    // setParentCategory(response.data);
+                    // setCategories(response.data.Subcategories || []); // Fetch subcategories
+                    const fetchedCategory = response.data;
+
+                // Parent category should be approved
+                if (fetchedCategory.was_approved) {
+                    setParentCategory(fetchedCategory);
                 } else {
-                    // For top-level categories, filter only parent categories (those without a parent)
-                    const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
-                    setCategories(parentCategories);
+                    setParentCategory(null);
+                }
+
+                // Subcategories: separate approved and unapproved
+                const approvedSubcategories = fetchedCategory.Subcategories?.filter(
+                    (sub) => sub.was_approved
+                ) || [];
+                const unapprovedSubcategories = fetchedCategory.Subcategories?.filter(
+                    (sub) => !sub.was_approved
+                ) || [];
+
+                setCategories(approvedSubcategories);
+                setSuggestedCategory(unapprovedSubcategories);
+                } else {
+
+                    // const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
+                    // setCategories(parentCategories);
+                    const approvedParentCategories = response.data.filter(
+                        (cat) => cat.was_approved && !cat.parent_category_id
+                    );
+                    const unapprovedCategories = response.data.filter(
+                        (cat) => !cat.was_approved
+                    );
+    
+                    setCategories(approvedParentCategories);
+                    setSuggestedCategory(unapprovedCategories);
                 }
             } catch (err) {
                 setError('Error fetching categories');
@@ -68,9 +97,18 @@ export default function CategoriesPage() {
 
     const handleAddCategory = async () => {
         try {
+            const token = localStorage.getItem('token');
+                if (!token) {
+                    setError('User is not logged in');
+                    return;
+                }
+
+                const decodedToken = jwtDecode(token);
+                console.log('Decoded token:', decodedToken);
             const payload = {
                 ...newCategory,
-                parent_category_id: id || null, // Use parent category ID if on a subcategory page
+                parent_category_id: id || null,
+                was_approved: decodedToken.role?.toLowerCase() === 'moderator' ? true : false, 
             };
 
             await axios.post('http://localhost:3000/categories', payload, {
@@ -117,6 +155,45 @@ export default function CategoriesPage() {
         } catch (err) {
             setError('Error deleting category');
             console.error(err);
+        }
+    };
+
+    const handleDeleteCategoryFromSuggested = async (id) => {
+        if (!id) return; 
+
+        try {
+            await axios.delete(`http://localhost:3000/categories/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            setSuccessMessage('Category deleted successfully!');
+            window.location.reload();
+        } catch (err) {
+            setError('Error deleting category');
+            console.error(err);
+        }
+    };
+
+    const handleApproveCategory = async (categoryId) => {
+        try {
+
+            await axios.put(
+                `http://localhost:3000/categories/${categoryId}`,
+                { was_approved: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }
+            );
+            setSuccessMessage('Category approved successfully!');
+    
+            window.location.reload();
+        } catch (error) {
+            setError('Error approving category.');
+            console.error(error);
         }
     };
 
@@ -234,6 +311,34 @@ export default function CategoriesPage() {
                         )}
                     </div>
                     <div className={classes.separator}></div>
+                </div>
+            )}
+
+            {userRole === 'Moderator' && suggestedCategory?.length > 0 && (
+                <div className={classes.SuggestedCategories}>
+                    <h3>Suggested Categories (Pending Approval)</h3>
+                    <ul>
+                        {suggestedCategory.map((category) => (
+                            <li key={category.category_id} className={classes.CategoryItem}>
+                                <div>
+                                    <p><strong>Name:</strong> {category.name}</p>
+                                    <p><strong>Description:</strong> {category.description}</p>
+                                </div>
+                                <button
+                                    className={classes.ApproveButton}
+                                    onClick={() => handleApproveCategory(category.category_id)}
+                                >
+                                    Approve
+                                </button>
+                                <button
+                                    className={classes.DisapproveButton}
+                                    onClick={() => handleDeleteCategoryFromSuggested(category.category_id)}
+                                >
+                                    Remove this Category
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )}
 
