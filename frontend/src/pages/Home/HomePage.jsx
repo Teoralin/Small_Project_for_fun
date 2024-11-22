@@ -164,7 +164,7 @@ export default function HomePage() {
                             style={{ transform: `translateX(-${scrollPosition}px)` }}
                         >
                             {filteredUsers.map((user) => (
-                                <li key={user.id} className={classes.userCompo}>
+                                <li key={user.user_id} className={classes.userCompo}>
                                     <div>
                                         <img
                                             src="https://via.placeholder.com/296x184"
