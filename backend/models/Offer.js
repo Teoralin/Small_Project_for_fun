@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
 const Product = require('./Product');
-const Farmer = require('./Address'); 
+const User = require('./User');
 
 const Offer = sequelize.define('Offer', {
     offer_id: {
@@ -21,7 +21,7 @@ const Offer = sequelize.define('Offer', {
     user_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: Farmer,
+            model: User,
             key: 'user_id',
         },
         onUpdate: 'CASCADE',
@@ -37,7 +37,7 @@ const Offer = sequelize.define('Offer', {
     },
     status: {
         type: DataTypes.ENUM('Available', 'Sold'),
-        allowNull: false,
+        defaultValue: 'Available',
     },
     is_pickable: {
         type: DataTypes.BOOLEAN,
@@ -48,6 +48,6 @@ const Offer = sequelize.define('Offer', {
 });
 
 Offer.belongsTo(Product, { foreignKey: 'product_id' });
-Offer.belongsTo(Farmer, { foreignKey: 'user_id' });
+Offer.belongsTo(User, { foreignKey: 'user_id' });
 
 module.exports = Offer;

@@ -117,7 +117,7 @@ export default function CategoriesPage() {
     };
 
     const handleNavigateToProduct = (productId) => {
-        navigate(`/product/${productId}`); // Navigate to the product details page
+        navigate(`/products/${productId}`); // Navigate to the product details page
     };
 
     const handleAddCategory = async () => {
