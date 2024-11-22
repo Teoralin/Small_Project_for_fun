@@ -7,9 +7,9 @@ import classes from './CategoriesPage.module.css';
 export default function CategoriesPage() {
     const { id } = useParams(); // Get the category ID from the URL params (if provided)
     const [categories, setCategories] = useState([]);
-    const [parentCategory, setParentCategory] = useState(null);
+    const [parentCategory, setParentCategory] = useState([]);
     const [products, setProducts] = useState([]); // Products in the current category
-    const [suggestedCategory, setSuggestedCategory] = useState(null);
+    const [suggestedCategory, setSuggestedCategory] = useState([]);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [showForm, setShowForm] = useState(false);
@@ -47,10 +47,9 @@ export default function CategoriesPage() {
                         ? `http://localhost:3000/categories/${id}` // Fetch a single category and its children
                         : 'http://localhost:3000/categories' // Fetch all categories
                 );
+                const fetchedCategory = response.data;
                 
                 if (id) {
-                    const fetchedCategory = response.data;
-                    console.log(response.data);
                 
                     if (fetchedCategory.was_approved && !fetchedCategory.parent_category_id) {
                         setParentCategory(fetchedCategory);
@@ -59,7 +58,7 @@ export default function CategoriesPage() {
                     }
                 
                     // Subcategories: Separate approved and unapproved subcategories
-                    console.log(fetchedCategory.Subcategories)
+                   
                     const approvedSubcategories = fetchedCategory.Subcategories?.filter(
                         (sub) => sub.was_approved
                     ) || [];
@@ -80,27 +79,29 @@ export default function CategoriesPage() {
                 
                 } else {
                     // When no `id` it is main
-                    
-                    const approvedParentCategories = response.data.filter(
-                        (cat) => cat.was_approved && !cat.parent_category_id
-                    );
+                    // const approvedParentCategories = fetchedCategory.filter(
+                    //     (cat) => cat.was_approved && !cat.parent_category_id
+                    // ) || [];
+                    // const approvedParentCategories = response.data.filter(
+                    //     (cat) => cat.was_approved && !cat.parent_category_id
+                    // );
                 
-                    // Filter out unapproved categories
-                    const unapprovedCategories = response.data.filter(
-                        (cat) => !cat.was_approved && !cat.parent_category_id
-                    );
+                    // // Filter out unapproved categories
+                    // const unapprovedCategories = response.data.filter(
+                    //     (cat) => !cat.was_approved && !cat.parent_category_id
+                    // );
 
-                    setParentCategory(approvedParentCategories);
+                   // setParentCategory(approvedParentCategories);
                 
                     // Set the suggestedCategory (unapproved categories)
-                    setSuggestedCategory(unapprovedCategories);
+                    //setSuggestedCategory(unapprovedCategories);
                 
                     // Fetch and set top-level parent categories (if needed)
                     const categoryResponse = await axios.get('http://localhost:3000/categories');
                     const parentCategories = categoryResponse.data.filter(
                         (cat) => !cat.parent_category_id && cat.was_approved
                     );
-                    setCategories(parentCategories); // Top-level parent categories
+                    setCategories(parentCategories); 
                 }
                 
             } catch (err) {
@@ -148,33 +149,6 @@ export default function CategoriesPage() {
             setNewCategory({ name: '', description: '' });
 
             window.location.reload();
-        //    if (response.data.was_approved) {
-        //     // If the category was approved, update the categories list
-        //     if (id) {
-        //         // If we're on a subcategory page, fetch and update subcategories
-        //         setCategories((prevCategories) => [
-        //             ...prevCategories,
-        //             response.data, // Add the newly approved category
-        //         ]);
-        //     } else {
-        //         // If we're on the main page, fetch and update the parent categories
-        //         const parentCategories = await axios.get('http://localhost:3000/categories');
-        //         setCategories(
-        //             parentCategories.data.filter((cat) => !cat.parent_category_id)
-        //         );
-        //     }
-        // }
-            // const response = await axios.get(
-            //     id
-            //         ? `http://localhost:3000/categories/${id}`
-            //         : 'http://localhost:3000/categories'
-            // );
-            // if (id) {
-            //     setCategories(response.data.Subcategories || []);
-            // } else {
-            //     const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
-            //     setCategories(parentCategories);
-            // }
         } catch (err) {
             setError('Error adding category');
             console.error(err);
@@ -285,7 +259,7 @@ export default function CategoriesPage() {
     };
 
     const isLeafCategory = categories.length === 0; // Category has no subcategories
-
+    console.log(categories);
     if (error) {
         return <div>{error}</div>;
     }
@@ -380,7 +354,10 @@ export default function CategoriesPage() {
                                 {category.name}
                             </p>
                             <div className={classes.SubcategoryCompo}>
-                                {category.Subcategories?.map((sub) => (
+                            {category.Subcategories?.filter(
+                                    (sub) => sub.was_approved === true || userRole === "Moderator" // Show unapproved categories only to Moderators
+                                )
+                                .map((sub) => (
                                     <div key={sub.category_id}>
                                         <button
                                             onClick={() => handleNavigate(sub.category_id)}
@@ -391,6 +368,9 @@ export default function CategoriesPage() {
                                                 alt="User Avatar"
                                             />
                                             {sub.name}
+                                            {!sub.was_approved && userRole === "Moderator" && (
+                                                <span style={{ color: "red" }}> (Pending Approval)</span>
+                                            )} 
                                         </button>
                                     </div>
                                 ))}

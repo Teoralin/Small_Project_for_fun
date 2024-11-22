@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
             include: {
                 model: Category,
                 as: 'Subcategories', // Include subcategories
-                attributes: ['category_id', 'name', 'description'], // Specify fields for subcategories
+                attributes: ['category_id', 'name', 'description', 'was_approved'], // Specify fields for subcategories
             },
         });
 
