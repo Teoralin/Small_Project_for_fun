@@ -12,6 +12,7 @@ import SelfHarvestListPage from "./pages/SelfHarvestList/SelfHarvestListPage.jsx
 import EditUserListPage from "./pages/EditUsersList/EditUserListPage.jsx";
 import EditUserPage from "./pages/EditUser/EditUserPage.jsx";
 import CategoriesPage from "./pages/Categories/CategoriesPage.jsx";
+import ProductsPage from "./pages/Products/ProductsPage.jsx";
 
 export default function AppRoutes() {
     return (
@@ -29,6 +30,7 @@ export default function AppRoutes() {
             <Route path="/editUser/:id" element={<EditUserPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/categories/:id" element={<CategoriesPage />} />
+            <Route path="/products/:id" element={<ProductsPage />} />
         </Routes>
     )
 }
