@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import classes from "./Header.module.css";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import userIcon from "../../assets/User.png";
@@ -9,8 +9,8 @@ import leftIcon from "../../assets/Left.png";
 
 export default function Header() {
     const [userName, setUserName] = useState(null);
+    const [cartCount, setCartCount] = useState(0); // Number of items in the cart
     const navigate = useNavigate();
-    const location = useLocation(); // Get the current URL
 
     // Check if the user is logged in and fetch their name
     useEffect(() => {
@@ -42,15 +42,39 @@ export default function Header() {
         fetchUserName();
     }, []);
 
+    // Fetch the cart count
+    useEffect(() => {
+        const fetchCartCount = async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                setCartCount(0); // Reset cart count if the user is not logged in
+                return;
+            }
+
+            try {
+                const response = await axios.get("http://localhost:3000/cart", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setCartCount(response.data.length); // Set cart count based on the number of items
+            } catch (err) {
+                console.error("Error fetching cart data:", err);
+                setCartCount(0);
+            }
+        };
+
+        fetchCartCount();
+    }, []);
+
     // Logout logic
     const logout = () => {
         localStorage.removeItem("token"); // Remove token from localStorage
         setUserName(null); // Reset userName state
+        setCartCount(0); // Reset cart count
         navigate("/login"); // Redirect to the login page
-    };
-
-    const cart = {
-        totalCount: 10, // Placeholder for cart items
     };
 
     return (
@@ -102,7 +126,7 @@ export default function Header() {
                                     alt="Cart Icon"
                                     className={classes.icon}
                                 />
-                                {cart.totalCount > 0 && <span>{cart.totalCount}</span>}
+                                {cartCount >= 0 && <span>{cartCount}</span>}
                             </Link>
                         </li>
                     </ul>

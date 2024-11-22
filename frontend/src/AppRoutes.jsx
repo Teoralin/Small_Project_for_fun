@@ -13,6 +13,7 @@ import EditUserListPage from "./pages/EditUsersList/EditUserListPage.jsx";
 import EditUserPage from "./pages/EditUser/EditUserPage.jsx";
 import CategoriesPage from "./pages/Categories/CategoriesPage.jsx";
 import ProductsPage from "./pages/Products/ProductsPage.jsx";
+import CartPage from "./pages/Cart/CartPage.jsx";
 
 export default function AppRoutes() {
     return (
@@ -31,6 +32,7 @@ export default function AppRoutes() {
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/categories/:id" element={<CategoriesPage />} />
             <Route path="/products/:id" element={<ProductsPage />} />
+            <Route path="/cart" element={<CartPage />} />
         </Routes>
     )
 }

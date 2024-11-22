@@ -65,6 +65,38 @@ router.get('/:product_id/:user_id', async (req, res) => {
     }
 });
 
+// Retrieve a specific offer by offer_id
+router.get('/:offer_id', async (req, res) => {
+    try {
+        const { offer_id } = req.params;
+
+        const offer = await Offer.findOne({
+            where: { offer_id },
+            include: [
+                {
+                    model: Product,
+                    attributes: ['name', 'description'], // Include product details
+                },
+                {
+                    model: User,
+                    as: 'User',
+                    attributes: ['user_id'], // Include user details (if needed)
+                },
+            ],
+        });
+
+        if (offer) {
+            res.status(200).json(offer); // Send the offer details as a response
+        } else {
+            res.status(404).json({ message: 'Offer not found' });
+        }
+    } catch (error) {
+        console.error('Error retrieving offer:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 // Update an offer by product_id and user_id
 router.put('/:product_id/:user_id', async (req, res) => {
     try {
