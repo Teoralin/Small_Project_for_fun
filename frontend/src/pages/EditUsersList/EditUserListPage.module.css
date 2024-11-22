@@ -120,7 +120,7 @@
 }
 
 .EditUsersListPage .separator {
-    background: var(--Gray-light, #d4d7e5);
+    background: #d4d7e5;
     height: 1px;
     width: 100%;
     margin: 10px 0;

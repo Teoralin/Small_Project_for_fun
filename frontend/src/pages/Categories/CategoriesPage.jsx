@@ -267,7 +267,6 @@ export default function CategoriesPage() {
     return (
         <div className={classes.CategoriesPage}>
             <div className={classes.PageTitle}>
-                <p>Categories</p>
             </div>
             {id ? (
                 <>
@@ -290,42 +289,62 @@ export default function CategoriesPage() {
 
                     {products.length > 0 && (
                         <>
-                            <h2>Products</h2>
-                            {products.map((product) => (
-                                <p
-                                    key={product.product_id}
-                                    onClick={() => handleNavigateToProduct(product.product_id)}
-                                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                                >
-                                    {product.name}
-                                </p>
-                            ))}
+                            <div className={classes.ProductsList}>
+                                {products.map((product) => (
+                                    // eslint-disable-next-line react/jsx-key
+                                    <div className={classes.Products}>
+                                        <img
+                                            src="https://via.placeholder.com/296x184"
+                                            alt="User Avatar"
+                                        />
+                                        <p
+                                            key={product.product_id}
+                                            onClick={() => handleNavigateToProduct(product.product_id)}
+                                            className={classes.ProductText}
+                                        >
+                                            {product.name}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
                         </>
                     )}
 
-                    {/* Add Product Button (for leaf categories only) */}
                     {isLeafCategory && (userRole === 'Moderator'
                         || userRole === 'Administrator'
                         || userRole === 'Registered User') && (
-                        <div>
-                            <h2>Add Product</h2>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Product Name"
-                                value={newProduct.name}
-                                onChange={(e) => handleInputChange(e, 'product')}
-                            />
-                            <input
-                                type="text"
-                                name="description"
-                                placeholder="Product Description"
-                                value={newProduct.description}
-                                onChange={(e) => handleInputChange(e, 'product')}
-                            />
-                            <button onClick={handleAddProduct}>Add Product</button>
+                        <div className={classes.ProductsCompo}>
+                            <div className={classes.Products}>
+                                <button
+                                    onClick={() => setShowForm(!showForm)}
+                                    className={classes.categoryButton}
+                                >
+                                    {showForm ? 'Cancel' : 'Add Product'}
+                                </button>
+                            </div>
+
+                            {showForm && (
+                                <div className={classes.AddInput}>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        placeholder="Product Name"
+                                        value={newProduct.name}
+                                        onChange={(e) => handleInputChange(e, 'product')}
+                                    />
+                                    <input
+                                        type="text"
+                                        name="description"
+                                        placeholder="Product Description"
+                                        value={newProduct.description}
+                                        onChange={(e) => handleInputChange(e, 'product')}
+                                    />
+                                    <button onClick={handleAddProduct}>Add Product</button>
+                                </div>
+                            )}
                         </div>
                     )}
+
 
                     {/* Remove Current Category Button (if no subcategories and no products) */}
                     {isLeafCategory &&

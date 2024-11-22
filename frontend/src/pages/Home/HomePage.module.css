@@ -176,30 +176,30 @@
 .HomePage .scrollContainer {
     display: flex;
     align-items: center;
-    width: 100%; /* Ограничиваем ширину контейнера */
+    width: 100%;
     position: relative;
-    overflow-x: hidden; /* Запрещаем вертикальную прокрутку */
-    overflow-y: hidden; /* Отключаем вертикальную прокрутку */
-    max-width: calc(296px * 5.4 + 30px * 4); /* Максимальная ширина для 5 пользователей с отступами */
+    overflow-x: hidden;
+    overflow-y: hidden;
+    max-width: calc(296px * 5.4 + 30px * 4);
     margin-bottom: 100px;
     padding: 30px;
 }
 
 .HomePage .UserComponent {
     display: flex;
-    transition: transform 0.3s ease; /* Плавная прокрутка */
+    transition: transform 0.3s ease;
     list-style: none;
     padding: 0;
     margin: 0;
-    white-space: nowrap; /* Это важно для горизонтальной прокрутки */
+    white-space: nowrap;
 }
 
 .HomePage .userCompo {
     list-style: none;
-    display: inline-block;  /* Элементы должны располагаться в одну строку */
+    display: inline-block;
     width: 296px;
     height: 296px;
-    margin-right: 30px;  /* Отступ между пользователями */
+    margin-right: 30px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.03);
 }
 
@@ -211,7 +211,7 @@
     z-index: 10;
     position: absolute;
     top: 50%;
-    transform: translateY(-50%); /* Центрируем кнопку по вертикали */
+    transform: translateY(-50%);
     padding: 8px;
     color: #333;
     transition: background-color 0.3s;

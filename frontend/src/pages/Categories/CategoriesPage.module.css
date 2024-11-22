@@ -17,7 +17,7 @@
 }
 
 .CategoriesPage .separator {
-    background: var(--Gray-light, #d4d7e5);
+    background: #d4d7e5;
     height: 1px;
     width: 100%;
     margin: 10px 0;
@@ -53,16 +53,21 @@
     margin-left: 37px;
 }
 
+
+
 .CategoriesPage .AddInput {
-    margin: 10px 30px;
-    display: grid;
-    gap: 16px;
+    margin: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .CategoriesPage .AddInput input {
     box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
-
 
 .CategoriesPage .ProductsList {
     display: flex;
@@ -74,6 +79,7 @@
     height: 334px;
     width: 296px;
     box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+    cursor: pointer;
 }
 
 .CategoriesPage .Products img {
@@ -89,3 +95,41 @@
     font-size: 30px;
     height: 150px;
 }
+
+.CategoriesPage .categoryButton {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: white;  /* Цвет фона кнопки */
+    border: none;
+    padding: 20px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+.CategoriesPage .categoryButton:hover {
+    background-color: #f0f0f0;  /* Светлый фон при наведении */
+}
+
+
+
+.CategoriesPage .AddInput button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.CategoriesPage .AddInput button:hover {
+    background-color: #0056b3;
+}
+
+.CategoriesPage .ProductsCompo {
+    display: flex;
+}
+
+
