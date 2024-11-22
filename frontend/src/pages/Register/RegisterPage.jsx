@@ -5,6 +5,8 @@ import MailIcon from "../../assets/Mail.png";
 import Key from "../../assets/Key.png";
 import User_light from "../../assets/User_light.png";
 import Phone from "../../assets/Phone.png";
+import Point from "../../assets/Map_Point.png";
+import House from "../../assets/House.png";
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -217,98 +219,98 @@ export default function RegisterPage() {
                         />
                     </div>
                 </div>
-                        <div className={classes.formGroup}>
-                            <label htmlFor="isFarmer" className={classes.checkboxLabel}>
-                            <input
-                                    type="checkbox"
-                                    id="isFarmer"
-                                    checked={formData.isFarmer}
-                                    onChange={handleChange}
-                                />
-                                <p>Are you a farmer?</p>
-                            </label>
-                        </div>
+                <div className={classes.checkbox}>
+                    <label htmlFor="isFarmer" className={classes.checkboxLabel}>
+                    <input
+                            type="checkbox"
+                            id="isFarmer"
+                            checked={formData.isFarmer}
+                            onChange={handleChange}
+                        />
+                        <p>Are you a farmer?</p>
+                    </label>
+                </div>
 
                         {formData.isFarmer && (
-                    <>
-                        <div className={classes.formGroup}>
-                            <label htmlFor="street">Street</label>
-                            <div className={classes.form}>
-                                <img
-                                    src={User_light}
-                                    alt="User_light Icon"
-                                    className={classes.icon}
-                                />
-                                <input
-                                    type="text"
-                                    id="street"
-                                    data-group="address"
-                                    value={formData.address.street}
-                                    onChange={handleChange}
-                                    placeholder="Enter your street"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className={classes.formGroup}>
-                            <label htmlFor="houseNumber">House number</label>
-                            <div className={classes.form}>
-                                <img
-                                    src={User_light}
-                                    alt="User_light Icon"
-                                    className={classes.icon}
-                                />
-                                <input
-                                    type="text"
-                                    id="houseNumber"
-                                    data-group="address"
-                                    value={formData.address.houseNumber}
-                                    onChange={handleChange}
-                                    placeholder="Enter your house number"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className={classes.formGroup}>
-                            <label htmlFor="city">City</label>
-                            <div className={classes.form}>
-                                <img
-                                    src={User_light}
-                                    alt="User_light Icon"
-                                    className={classes.icon}
-                                />
-                                <input
-                                    type="text"
-                                    id="city"
-                                    data-group="address"
-                                    value={formData.address.city}
-                                    onChange={handleChange}
-                                    placeholder="Enter your city"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className={classes.formGroup}>
-                            <label htmlFor="postCode">Postcode</label>
-                            <div className={classes.form}>
-                                <img
-                                    src={User_light}
-                                    alt="User_light Icon"
-                                    className={classes.icon}
-                                />
-                                <input
-                                    type="text"
-                                    id="postCode"
-                                    data-group="address"
-                                    value={formData.address.postCode}
-                                    onChange={handleChange}
-                                    placeholder="Enter your city"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        </>
-                )}
+                            <>
+                                <div className={classes.formGroup}>
+                                    <label htmlFor="city">City</label>
+                                    <div className={classes.form}>
+                                        <img
+                                            src={House}
+                                            alt="House Icon"
+                                            className={classes.icon}
+                                        />
+                                        <input
+                                            type="text"
+                                            id="city"
+                                            data-group="address"
+                                            value={formData.address.city}
+                                            onChange={handleChange}
+                                            placeholder="Enter your city"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className={classes.formGroup}>
+                                    <label htmlFor="street">Street</label>
+                                    <div className={classes.form}>
+                                        <img
+                                            src={House}
+                                            alt="House Icon"
+                                            className={classes.icon}
+                                        />
+                                        <input
+                                            type="text"
+                                            id="street"
+                                            data-group="address"
+                                            value={formData.address.street}
+                                            onChange={handleChange}
+                                            placeholder="Enter your street"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className={classes.formGroup}>
+                                    <label htmlFor="houseNumber">House number</label>
+                                    <div className={classes.form}>
+                                        <img
+                                            src={Point}
+                                            alt="Point Icon"
+                                            className={classes.icon}
+                                        />
+                                        <input
+                                            type="text"
+                                            id="houseNumber"
+                                            data-group="address"
+                                            value={formData.address.houseNumber}
+                                            onChange={handleChange}
+                                            placeholder="Enter your house number"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className={classes.formGroup}>
+                                    <label htmlFor="postCode">Postcode</label>
+                                    <div className={classes.form}>
+                                        <img
+                                            src={Point}
+                                            alt="Point Icon"
+                                            className={classes.icon}
+                                        />
+                                        <input
+                                            type="text"
+                                            id="postCode"
+                                            data-group="address"
+                                            value={formData.address.postCode}
+                                            onChange={handleChange}
+                                            placeholder="Enter your city"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                        )}
                 <button type="submit" className={classes.signUpButton}>
                     Sign Up
                 </button>

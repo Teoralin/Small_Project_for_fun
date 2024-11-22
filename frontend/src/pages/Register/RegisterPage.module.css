@@ -5,9 +5,10 @@
     justify-content: center;
     height: 100vh;
     background-color: #fff;
+    margin-top: 150px;
 }
 
-.logo {
+.registerPage .logo {
     font-family: martel sans, sans-serif;
     line-height: 80px;
     margin-top: 200px;
@@ -15,7 +16,7 @@
     color: #333;
 }
 
-.registerForm {
+.registerPage .registerForm {
     display: flex;
     flex-direction: column;
     width: 400px;
@@ -25,24 +26,36 @@
 }
 
 
-.formGroup {
+.registerPage .formGroup {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
 }
 
-.icon {
+.registerPage .icon {
     height: 24px;
     width: 24px;
     margin: 13px 0px 13px 10px;
 }
 
-.form {
+.registerPage .form {
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
     height: 50px;
     border-radius: 8px;
     margin-bottom: 10px;
     display: flex;
+}
+
+
+.registerPage .formGroup input {
+    padding: 10px;
+    border: 1px solid #ffffff;
+    font-size: 1rem;
+    font-family: martel sans, sans-serif;
+    line-height: 20px;
+    margin-top: 4px;
+    width: 100%;
+
 }
 
 

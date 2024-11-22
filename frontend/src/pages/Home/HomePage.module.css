@@ -1,4 +1,4 @@
-.heading {
+.HomePage .heading {
     font-size: 80px;
     width: 800px;
     padding-top: 120px;
@@ -8,14 +8,14 @@
     line-height: 90px;
 }
 
-.information {
+.HomePage .information {
     display: flex;
     gap: 2rem;
     padding-top: 70px;
     padding-left: 130px;
 }
 
-.info {
+.HomePage .info {
     display: grid;
     justify-content: center;
     text-align: center;
@@ -28,7 +28,7 @@
     font-family: martel sans, sans-serif;
 }
 
-.benefits {
+.HomePage .benefits {
     margin-top: 250px;
     margin-left: 130px;
     display: flex;
@@ -38,42 +38,43 @@
     padding: 30px 30px;
 }
 
-.benefitItem {
+.HomePage .benefitItem {
     font-family: martel sans, sans-serif;
     display: flex;
     gap: 1rem;
     width: 250px;
 }
-.benefitItem img {
+
+.HomePage .benefitItem img {
     width: 48px;
     height: 48px;
 }
 
-.foodIcon {
+.HomePage .foodIcon {
     position: absolute;
     top: 100px;
     right: 150px;
 }
 
-.farmers {
+.HomePage .farmers {
     padding-top: 150px;
     padding-left: 130px;
     padding-right: 130px;
 }
 
-.compo {
+.HomePage .compo {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
 }
 
-.compo p {
+.HomePage .compo p {
     font-size: 40px;
     font-family: poppins, sans-serif;
     font-weight: 300;
 }
 
-.compo .ShowAllButton {
+.HomePage .compo .ShowAllButton {
     background-color: #F2F4FA;
     border: none;
     height: 48px;
@@ -84,13 +85,13 @@
     font-size: 16px;
 }
 
-.Self_Harvest{
+.HomePage .Self_Harvest{
     display: grid;
     justify-content: center;
     background-color: #F2F4FA;
 }
 
-.title {
+.HomePage .title {
     display: flex;
     justify-content: center;
     font-family: martel sans, sans-serif;
@@ -102,13 +103,13 @@
     color: #3F4255;
 }
 
-.Self_Harvest img {
+.HomePage .Self_Harvest img {
     margin-top: 10px;
     width: 48px;
     height: 48px;
 }
 
-.HarvestText{
+.HomePage .HarvestText{
     width: 500px;
     font-family: martel sans, sans-serif;
     font-weight: 300;
@@ -116,7 +117,7 @@
     color: #3F4255;
 }
 
-.Self_Harvest .ShowAllButton {
+.HomePage .Self_Harvest .ShowAllButton {
     background-color: #ffffff;
     border: none;
     height: 48px;
@@ -128,21 +129,21 @@
     margin: 40px auto;
 }
 
-.Harvest_compo {
+.HomePage .Harvest_compo {
     display: contents;
 }
 
-.categories {
+.HomePage .categories {
     padding-top: 50px;
     padding-left: 130px;
     padding-right: 130px;
 }
 
-.instagram {
+.HomePage .instagram {
     padding: 50px 130px;
 }
 
-.instagram_text {
+.HomePage .instagram_text {
     display: flex;
     gap: 7px;
     font-family: martel sans, sans-serif;
@@ -150,7 +151,7 @@
     font-weight: 300;
 }
 
-.instagram_img {
+.HomePage .instagram_img {
     display: flex;
     justify-content: space-between;
 }

@@ -3,12 +3,12 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-.Options {
+.EditUsersListPage .Options {
     margin: 120px 60px;
     grid-column: span 1;
 }
 
-.OptionButton {
+.EditUsersListPage .OptionButton {
     width: 405px;
     height: 56px;
     padding: 10px;
@@ -28,7 +28,7 @@
     justify-content: start;
 }
 
-.OptionButtonSelected {
+.EditUsersListPage .OptionButtonSelected {
     width: 405px;
     height: 56px;
     padding: 10px;
@@ -48,12 +48,12 @@
     justify-content: start;
 }
 
-.ManageUsers {
+.EditUsersListPage .ManageUsers {
     grid-column: span 3;
     margin-right: 100px;
 }
 
-.Title {
+.EditUsersListPage .Title {
     display: grid;
     justify-content: center;
     margin: 120px 60px 20px 60px;
@@ -62,13 +62,13 @@
     font-size: 40px;
 }
 
-.search {
+.EditUsersListPage .search {
     display: flex;
     margin-left: 30px;
     margin-bottom: 60px;
 }
 
-.searchContainer {
+.EditUsersListPage .searchContainer {
     justify-content: center;
     border-radius: 6px;
     box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
@@ -81,7 +81,7 @@
     margin-right: 15px;
 }
 
-.searchIcon {
+.EditUsersListPage .searchIcon {
     aspect-ratio: 1;
     object-fit: contain;
     object-position: center;
@@ -90,7 +90,7 @@
 
 }
 
-.searchInput {
+.EditUsersListPage .searchInput {
     padding-top: 11px;
     flex: 1;
     border: none;
@@ -104,7 +104,7 @@
     }
 }
 
-.SearchButton {
+.EditUsersListPage .SearchButton {
     width: fit-content;
     height: 70px;
     padding: 20px;
@@ -116,18 +116,18 @@
     color: #B79C10;
 }
 
-ul {
+.EditUsersListPage ul {
     list-style: none;
 }
 
-.separator {
+.EditUsersListPage .separator {
     background: var(--Gray-light, #d4d7e5); /* Цвет линии */
     height: 1px; /* Толщина линии */
     width: 100%; /* Линия будет растягиваться на всю ширину */
     margin: 10px 0; /* Отступы сверху и снизу линии */
 }
 
-.editButton {
+.EditUsersListPage .editButton {
     border: none;
     padding: 5px 10px;
     margin-left: 10px;
@@ -137,18 +137,18 @@ ul {
     transition: background-color 0.3s;
 }
 
-.userCompo {
+.EditUsersListPage .userCompo {
     display: flex;
     justify-content: space-between;
     font-size: 25px;
     padding: 10px;
 }
 
-.userCompo img {
+.EditUsersListPage .userCompo img {
     cursor: pointer;
 }
 
-.UserInfo {
+.EditUsersListPage .UserInfo {
     font-family: martel sans, sans-serif;
     font-weight: 300;
     line-height: 28px;

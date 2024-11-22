@@ -9,6 +9,7 @@ import Phone from "../../assets/Phone.png";
 import Key from "../../assets/Key.png";
 import Point from "../../assets/Map_Point.png";
 import House from "../../assets/House.png";
+import Edit from "../../assets/Edit.png";
 
 
 export default function ProfilePage() {
@@ -21,19 +22,23 @@ export default function ProfilePage() {
     };
 
     const [userData, setUserData] = useState(null);
-    const [error, setError] = useState('');
     const [addressData, setAddressData] = useState(null);
+    const [error, setError] = useState('');
+    const [updatedData, setUpdatedData] = useState({});
+    const [updatedAddress, setUpdatedAddress] = useState({});
     const [isEditing, setIsEditing] = useState({
         name: false,
         surname: false,
         email: false,
         contact_info: false,
+        street: false,
+        house_number: false,
+        city: false,
+        post_code: false,
     });
-    const [updatedData, setUpdatedData] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
     const [isChangingPassword, setIsChangingPassword] = useState(false);
-    const [isEditingAddress, setIsEditingAddress] = useState(false);
-    const [updatedAddress, setUpdatedAddress] = useState({});
+
     const [passwordData, setPasswordData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -78,66 +83,37 @@ export default function ProfilePage() {
         fetchUserData();
     }, []);
 
-    const handleAddressEdit = () => {
-        setIsEditingAddress(true);
-        setUpdatedAddress(addressData);
-    };
-
-    const handleAddressInputChange = (field, value) => {
-        setUpdatedAddress((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
-
-    const handleAddressSubmit = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const decodedToken = jwtDecode(token);
-            const userId = decodedToken.userId;
-
-            await axios.put(
-                `http://localhost:3000/addresses/${userId}`,
-                updatedAddress,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            setSuccessMessage('Address updated successfully!');
-            setError('');
-            setIsEditingAddress(false);
-
-            // Refresh address data
-            const addressResponse = await axios.get(`http://localhost:3000/addresses/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            setAddressData(addressResponse.data);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error updating address');
-        }
-    };
 
     const handleEdit = (field) => {
         setIsEditing((prev) => ({
             ...prev,
             [field]: true,
         }));
-        setUpdatedData((prev) => ({
-            ...prev,
-            [field]: userData[field],
-        }));
+        if (field in userData) {
+            setUpdatedData((prev) => ({
+                ...prev,
+                [field]: userData[field],
+            }));
+        } else {
+            setUpdatedAddress((prev) => ({
+                ...prev,
+                [field]: addressData[field],
+            }));
+        }
     };
 
     const handleInputChange = (field, value) => {
-        setUpdatedData((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
+        if (field in updatedData) {
+            setUpdatedData((prev) => ({
+                ...prev,
+                [field]: value,
+            }));
+        } else {
+            setUpdatedAddress((prev) => ({
+                ...prev,
+                [field]: value,
+            }));
+        }
     };
 
     const handlePasswordInputChange = (field, value) => {
@@ -153,34 +129,63 @@ export default function ProfilePage() {
             const decodedToken = jwtDecode(token);
             const userId = decodedToken.userId;
 
-            await axios.put(
-                `http://localhost:3000/users/${userId}`,
-                updatedData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            // Update user data
+            if (Object.values(isEditing).some(val => val === true)) {
+                await axios.put(
+                    `http://localhost:3000/users/${userId}`,
+                    updatedData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+            }
 
-            setSuccessMessage('User updated successfully!');
+            // Update address data if edited
+            if (Object.values(isEditing).some(val => val === true)) {
+                await axios.put(
+                    `http://localhost:3000/addresses/${userId}`,
+                    updatedAddress,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+            }
+
+            setSuccessMessage('Changes saved successfully!');
             setError('');
             setIsEditing({
                 name: false,
                 surname: false,
                 email: false,
                 contact_info: false,
+                street: false,
+                house_number: false,
+                city: false,
+                post_code: false,
             });
 
-            // Refresh user data
-            const response = await axios.get(`http://localhost:3000/users/${userId}`, {
+            // Refresh user and address data
+            const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setUserData(response.data);
+            setUserData(userResponse.data);
+
+            if (userResponse.data.is_farmer) {
+                const addressResponse = await axios.get(`http://localhost:3000/addresses/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setAddressData(addressResponse.data);
+            }
         } catch (err) {
-            setError(err.response?.data?.message || 'Error updating user data');
+            setError(err.response?.data?.message || 'Error updating data');
         }
     };
 
@@ -291,9 +296,14 @@ export default function ProfilePage() {
                                     <span>{userData.name}</span>
                                 )}
                             </div>
-                            <button onClick={() => handleEdit('name')} disabled={isEditing.name}>
-                                Edit
-                            </button>
+                            <img
+                                src={Edit}
+                                alt="Edit Icon"
+                                className={classes.icon}
+                                onClick={() => handleEdit('name')}
+                                style={{cursor: 'pointer'}}
+                                disabled={isEditing.name}
+                            />
                         </div>
                     </div>
 
@@ -317,9 +327,14 @@ export default function ProfilePage() {
                                     <span>{userData.surname}</span>
                                 )}
                             </div>
-                                <button onClick={() => handleEdit('surname')} disabled={isEditing.surname}>
-                                    Edit
-                                </button>
+                            <img
+                                src={Edit}
+                                alt="Edit Icon"
+                                className={classes.icon}
+                                onClick={() => handleEdit('surname')}
+                                style={{cursor: 'pointer'}}
+                                disabled={isEditing.surname}
+                            />
                         </div>
                     </div>
 
@@ -343,156 +358,245 @@ export default function ProfilePage() {
                                     <span>{userData.email}</span>
                                 )}
                             </div>
-                            <button onClick={() => handleEdit('email')} disabled={isEditing.email}>
-                                Edit
-                            </button>
-                            </div>
+                            <img
+                                src={Edit}
+                                alt="Edit Icon"
+                                className={classes.icon}
+                                onClick={() => handleEdit('email')}
+                                style={{cursor: 'pointer'}}
+                                disabled={isEditing.email}
+                            />
                         </div>
+                    </div>
 
-
-                        <div className={classes.formGroup}>
-                        <label htmlFor="phone">Phone Number</label>
-                            <div className={classes.form}>
-                                <div className={classes.formLeft}>
-                                    <img
-                                        src={Phone}
-                                        alt="Phone Icon"
-                                        className={classes.icon}
-                                    />
-                                    {isEditing.contact_info ? (
-                                        <input
-                                            type="tel"
-                                            value={updatedData.contact_info || ''}
-                                            onChange={(e) => handleInputChange('contact_info', e.target.value)}
-                                        />
-                                    ) : (
-                                        <span>{userData.contact_info}</span>
-                                    )}
-                                </div>
-                                <button onClick={() => handleEdit('contact_info')} disabled={isEditing.contact_info}>
-                                    Edit
-                                </button>
-                            </div>
-                        </div>
 
                     <div className={classes.formGroup}>
+                        <label htmlFor="phone">Phone Number</label>
                         <div className={classes.form}>
                             <div className={classes.formLeft}>
-
+                                <img
+                                    src={Phone}
+                                    alt="Phone Icon"
+                                    className={classes.icon}
+                                />
+                                {isEditing.contact_info ? (
+                                    <input
+                                        type="tel"
+                                        value={updatedData.contact_info || ''}
+                                        onChange={(e) => handleInputChange('contact_info', e.target.value)}
+                                    />
+                                ) : (
+                                    <span>{userData.contact_info}</span>
+                                )}
                             </div>
+                            <img
+                                src={Edit}
+                                alt="Edit Icon"
+                                className={classes.icon}
+                                onClick={() => handleEdit('contact_info')}
+                                style={{cursor: 'pointer'}}
+                                disabled={isEditing.contact_info}
+                            />
                         </div>
                     </div>
 
-                </div>
+                    {userData.is_farmer && (
+                        <>
+                            <div className={classes.formGroup}>
+                                <label htmlFor="city">City</label>
+                                <div className={classes.form}>
+                                    <div className={classes.formLeft}>
+                                        <img
+                                            src={House}
+                                            alt="House Icon"
+                                            className={classes.icon}
+                                        />
+                                        {isEditing.city ? (
+                                            <input
+                                                type="text"
+                                                value={updatedAddress.city || ''}
+                                                onChange={(e) => handleInputChange('city', e.target.value)}
+                                            />
+                                        ) : (
+                                            <span>{addressData?.city}</span>
+                                        )}
+                                    </div>
+                                    <img
+                                        src={Edit}
+                                        alt="Edit Icon"
+                                        className={classes.icon}
+                                        onClick={() => handleEdit('city')}
+                                        style={{cursor: 'pointer'}}
+                                        disabled={isEditing.city}
+                                    />
+                                </div>
+                            </div>
 
-                {(isEditing.name || isEditing.surname || isEditing.email || isEditing.contact_info) && (
-                    <button onClick={handleSubmit}>
-                        Submit Changes
+                            <div className={classes.formGroup}>
+                                <label htmlFor="street">Street</label>
+                                <div className={classes.form}>
+                                    <div className={classes.formLeft}>
+                                        <img
+                                            src={House}
+                                            alt="House Icon"
+                                            className={classes.icon}
+                                        />
+                                        {isEditing.street ? (
+                                            <input
+                                                type="text"
+                                                value={updatedAddress.street || ''}
+                                                onChange={(e) => handleInputChange('street', e.target.value)}
+                                            />
+                                        ) : (
+                                            <span>{addressData?.street}</span>
+                                        )}
+                                    </div>
+                                    <img
+                                        src={Edit}
+                                        alt="Edit Icon"
+                                        className={classes.icon}
+                                        onClick={() => handleEdit('street')}
+                                        style={{cursor: 'pointer'}}
+                                        disabled={isEditing.street}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className={classes.formGroup}>
+                                <label htmlFor="house_number">House Number</label>
+                                <div className={classes.form}>
+                                    <div className={classes.formLeft}>
+                                        <img
+                                            src={Point}
+                                            alt="Point Icon"
+                                            className={classes.icon}
+                                        />
+                                        {isEditing.house_number ? (
+                                            <input
+                                                type="number"
+                                                value={updatedAddress.house_number || ''}
+                                                onChange={(e) => handleInputChange('house_number', e.target.value)}
+                                            />
+                                        ) : (
+                                            <span>{addressData?.house_number}</span>
+                                        )}
+                                    </div>
+                                    <img
+                                        src={Edit}
+                                        alt="Edit Icon"
+                                        className={classes.icon}
+                                        onClick={() => handleEdit('house_number')}
+                                        style={{cursor: 'pointer'}}
+                                        disabled={isEditing.house_number}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className={classes.formGroup}>
+                                <label htmlFor="post_code">Post Code</label>
+                                <div className={classes.form}>
+                                    <div className={classes.formLeft}>
+                                        <img
+                                            src={Point}
+                                            alt="Point Icon"
+                                            className={classes.icon}
+                                        />
+                                        {isEditing.post_code ? (
+                                            <input
+                                                type="number"
+                                                value={updatedAddress.post_code || ''}
+                                                onChange={(e) => handleInputChange('post_code', e.target.value)}
+                                            />
+                                        ) : (
+                                            <span>{addressData?.post_code}</span>
+                                        )}
+                                    </div>
+                                    <img
+                                        src={Edit}
+                                        alt="Edit Icon"
+                                        className={classes.icon}
+                                        onClick={() => handleEdit('post_code')}
+                                        style={{cursor: 'pointer'}}
+                                        disabled={isEditing.post_code}
+                                    />
+                                </div>
+                            </div>
+
+                        </>
+                    )}
+
+                    {Object.values(isEditing).some(val => val === true) && (
+                        <button onClick={handleSubmit} className={classes.Submit}>Submit Changes</button>
+                    )}
+
+
+                    <button onClick={() => setIsChangingPassword(true)} className={classes.Change}>
+                        Change Password
                     </button>
-                )}
 
-            </div>
+                    {isChangingPassword && (
+                        <div className={classes.formCompo}>
+                            <div className={classes.formGroup}>
+                                <label>Current Password:</label>
+                                <div className={classes.form}>
+                                    <div className={classes.formLeft}>
+                                        <img
+                                            src={Key}
+                                            alt="Key Icon"
+                                            className={classes.icon}
+                                        />
+                                        <input
+                                            type="password"
+                                            value={passwordData.currentPassword}
+                                            onChange={(e) => handlePasswordInputChange('currentPassword', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div className={classes.formGroup}>
+                                <label>New Password:</label>
+                                <div className={classes.form}>
+                                    <div className={classes.formLeft}>
+                                        <img
+                                            src={Key}
+                                            alt="Key Icon"
+                                            className={classes.icon}
+                                        />
+                                        <input
+                                            type="password"
+                                            value={passwordData.newPassword}
+                                            onChange={(e) => handlePasswordInputChange('newPassword', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
 
-
-
-            {userData.is_farmer && (
-                <div>
-                    <h2>Your Address</h2>
-                    {isEditingAddress ? (
-                        <div>
-                            <div>
-                                <label>Street:</label>
-                                <input
-                                    type="text"
-                                    value={updatedAddress.street || ''}
-                                    onChange={(e) => handleAddressInputChange('street', e.target.value)}
-                                />
+                            <div className={classes.formGroup}>
+                                <label>Confirm New Password:</label>
+                                <div className={classes.form}>
+                                    <div className={classes.formLeft}>
+                                        <img
+                                            src={Key}
+                                            alt="Key Icon"
+                                            className={classes.icon}
+                                        />
+                                        <input
+                                            type="password"
+                                            value={passwordData.confirmPassword}
+                                            onChange={(e) => handlePasswordInputChange('confirmPassword', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label>House Number:</label>
-                                <input
-                                    type="number"
-                                    value={updatedAddress.house_number || ''}
-                                    onChange={(e) => handleAddressInputChange('house_number', e.target.value)}
-                                />
-                            </div>
-                            <div>
-                                <label>City:</label>
-                                <input
-                                    type="text"
-                                    value={updatedAddress.city || ''}
-                                    onChange={(e) => handleAddressInputChange('city', e.target.value)}
-                                />
-                            </div>
-                            <div>
-                                <label>Post Code:</label>
-                                <input
-                                    type="number"
-                                    value={updatedAddress.post_code || ''}
-                                    onChange={(e) => handleAddressInputChange('post_code', e.target.value)}
-                                />
-                            </div>
-                            <button onClick={handleAddressSubmit}>Submit Address Changes</button>
-                        </div>
-                    ) : (
-                        <div>
-                            <div>
-                                <strong>Street:</strong> {addressData?.street}
-                            </div>
-                            <div>
-                                <strong>House Number:</strong> {addressData?.house_number}
-                            </div>
-                            <div>
-                                <strong>City:</strong> {addressData?.city}
-                            </div>
-                            <div>
-                                <strong>Post Code:</strong> {addressData?.post_code}
-                            </div>
-                            <button onClick={handleAddressEdit}>Edit Address</button>
+                            <button onClick={handlePasswordChangeSubmit} className={classes.Submit}>Submit Password Change</button>
                         </div>
                     )}
+
+                    {successMessage && <p>{successMessage}</p>}
+                    {error && <p>{error}</p>}
                 </div>
-            )}
-
-            <button onClick={() => setIsChangingPassword(true)}>
-                Change Password
-            </button>
-
-            {isChangingPassword && (
-                <div>
-                    <div>
-                        <label>Current Password:</label>
-                        <input
-                            type="password"
-                            value={passwordData.currentPassword}
-                            onChange={(e) => handlePasswordInputChange('currentPassword', e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>New Password:</label>
-                        <input
-                            type="password"
-                            value={passwordData.newPassword}
-                            onChange={(e) => handlePasswordInputChange('newPassword', e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Confirm New Password:</label>
-                        <input
-                            type="password"
-                            value={passwordData.confirmPassword}
-                            onChange={(e) => handlePasswordInputChange('confirmPassword', e.target.value)}
-                        />
-                    </div>
-                    <button onClick={handlePasswordChangeSubmit}>
-                        Submit Password Change
-                    </button>
-                </div>
-            )}
-
-            {successMessage && <p>{successMessage}</p>}
-            {error && <p>{error}</p>}
+            </div>
         </div>
     );
 }

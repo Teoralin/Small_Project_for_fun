@@ -7,7 +7,7 @@
     background-color: #ffffff;
 }
 
-.logo {
+.loginPage .logo {
     font-family: martel sans, sans-serif;
     margin-top: 100px;
     margin-bottom: 60px;
@@ -15,26 +15,26 @@
     color: #333;
 }
 
-input::placeholder {
+.loginPage input::placeholder {
     color: #9093A6;
 }
 
 
-.loginForm {
+.loginPage .loginForm {
     display: flex;
     flex-direction: column;
-    width: 500px;
+    width: 460px;
     background: #fff;
     padding: 20px;
 }
 
-.formGroup {
+.loginPage .formGroup {
     display: flex;
     flex-direction: column;
     margin-bottom: 30px;
 }
 
-label {
+.loginPage label {
     margin-bottom: 5px;
     font-size: 20px;
     color: #000;
@@ -43,13 +43,13 @@ label {
     line-height: 20px;
 }
 
-.icon {
+.loginPage .icon {
     height: 24px;
     width: 24px;
     margin: 13px 0px 13px 10px;
 }
 
-.form {
+.loginPage .form {
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
     height: 50px;
     border-radius: 8px;
@@ -64,13 +64,14 @@ label {
     font-family: martel sans, sans-serif;
     line-height: 20px;
     margin-top: 4px;
+    width: 100%;
 }
 
-input:focus {
+.loginPage input:focus {
     outline: none;
 }
 
-.loginButton {
+.loginPage .loginButton {
     width: 135px;
     height: 56px;
     padding: 10px;
@@ -84,15 +85,12 @@ input:focus {
 }
 
 
-.registerLink {
+.loginPage .registerLink {
     margin-top: 100px;
     text-align: center;
 }
 
-.registerLink a {
+.loginPage .registerLink a {
     color: #007bff;
     text-decoration: none;
 }
-
-
-

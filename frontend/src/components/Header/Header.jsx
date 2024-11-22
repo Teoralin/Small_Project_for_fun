@@ -49,17 +49,6 @@ export default function Header() {
         navigate("/login"); // Redirect to the login page
     };
 
-    // Logic to navigate to the parent page
-    const navigateToParent = () => {
-        const pathSegments = location.pathname.split("/").filter(Boolean); // Split path and remove empty segments
-        if (pathSegments.length > 1) {
-            const parentPath = `/${pathSegments.slice(0, -1).join("/")}`; // Remove the last segment to get the parent path
-            navigate(parentPath); // Navigate to the parent path
-        } else {
-            navigate("/"); // If no parent path, navigate to the homepage
-        }
-    };
-
     const cart = {
         totalCount: 10, // Placeholder for cart items
     };
@@ -72,7 +61,7 @@ export default function Header() {
                         src={leftIcon}
                         alt="Left Icon"
                         className={classes.icon}
-                        onClick={navigateToParent} // Navigate to the parent page
+                        onClick={() => window.history.back()}
                         style={{ cursor: "pointer" }}
                     />
                     <Link to="/" className={classes.logo}>

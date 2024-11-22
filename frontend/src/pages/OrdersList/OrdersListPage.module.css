@@ -3,11 +3,11 @@
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.Options {
+.OrdersListPage .Options {
     margin: 120px 60px;
 }
 
-.OptionButton {
+.OrdersListPage .OptionButton {
     width: 405px;
     height: 56px;
     padding: 10px;
@@ -27,7 +27,7 @@
     justify-content: start;
 }
 
-.OptionButtonSelected {
+.OrdersListPage .OptionButtonSelected {
     width: 405px;
     height: 56px;
     padding: 10px;
@@ -47,7 +47,7 @@
     justify-content: start;
 }
 
-.Orders {
+.OrdersListPage .Orders {
     display: grid;
     justify-content: center;
     margin: 120px 60px;

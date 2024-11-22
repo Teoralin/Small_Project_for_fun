@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
+import classes from "./EditUserPage.module.css";
+import User_light from "../../assets/User_light.png";
+import MailIcon from "../../assets/Mail.png";
+import Phone from "../../assets/Phone.png";
+import Upgrade from "../../assets/Upgrade.png";
+import Downgrade from "../../assets/Downgrade.png";
+import Delete from "../../assets/Delete.png";
 
 export default function EditUserPage() {
     const { id } = useParams(); // Get the user ID from the URL params
@@ -35,6 +42,11 @@ export default function EditUserPage() {
 
         checkAuthorization();
     }, );
+
+
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
 
     // Fetch user data by ID
     useEffect(() => {
@@ -101,24 +113,154 @@ export default function EditUserPage() {
     }
 
     return (
-        <div>
-            <h1>Edit User</h1>
-            <div>
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Surname:</strong> {user.surname}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Phone:</strong> {user.contact_info}</p>
-                <p><strong>Role:</strong> {user.role}</p>
-                <p><strong>Farmer:</strong> {user.is_farmer ? 'Yes' : 'No'}</p>
+        <div className={classes.EditUserPage}>
+            <div className={classes.Options}>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/profile')}
+                >
+                    Contact information
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/ordersList')}
+                >
+                    Orders
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/offersList')}
+                >
+                    Offers
+                </button>
+                <button type="Option"
+                        className={classes.OptionButtonSelected}
+                        onClick={() => handleNavigate('/editUsersList')}
+                >
+                    Manage Users
+                </button>
             </div>
+            <div className={classes.UserInfo}>
+                <div className={classes.Title}>
+                    <p>Edit User</p>
+                </div>
+                <div className={classes.Compo}>
 
-            <div>
-                <button onClick={handleUpgrade}>Upgrade to Moderator</button>
-                <button onClick={handleDowngrade}>Downgrade to Registered User</button>
-                <button onClick={handleDelete}>Delete User</button>
+                    <div>
+                        <img
+                            src="https://via.placeholder.com/433x278"
+                            alt="User Avatar"
+                        />
+                    </div>
+                    <div>
+                        <div>
+                            <div>
+                                <label htmlFor="name">Name</label>
+                                <div className={classes.form}>
+                                    <img
+                                        src={User_light}
+                                        alt="User_light Icon"
+                                        className={classes.icon}
+                                    />
+                                    <p>{user.name}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="Surname">Surname</label>
+                                <div className={classes.form}>
+                                    <img
+                                        src={User_light}
+                                        alt="User_light Icon"
+                                        className={classes.icon}
+                                    />
+                                    <p>{user.surname}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="Email">Email</label>
+                                <div className={classes.form}>
+                                    <img
+                                        src={MailIcon}
+                                        alt="Mail Icon"
+                                        className={classes.icon}
+                                    />
+                                    <p>{user.email}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="Phone">Phone</label>
+                                <div className={classes.form}>
+                                    <img
+                                        src={Phone}
+                                        alt="Phone Icon"
+                                        className={classes.icon}
+                                    />
+                                    <p>{user.contact_info}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="Role">Role</label>
+                                <div className={classes.form}>
+                                    <img
+                                        src={User_light}
+                                        alt="User_light Icon"
+                                        className={classes.icon}
+                                    />
+                                    <p>{user.role}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="Farmer">Farmer</label>
+                                <div className={classes.form}>
+                                    <img
+                                        src={User_light}
+                                        alt="User_light Icon"
+                                        className={classes.icon}
+                                    />
+                                    <p>{user.is_farmer ? 'Yes' : 'No'}</p>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div className={classes.ButtonsCompo}>
+                            <button onClick={handleUpgrade} className={classes.buttonUser}>
+                                <img
+                                    src={Upgrade}
+                                    alt="Upgrade Icon"
+                                    className={classes.icon}
+                                />
+                                Upgrade to Moderator
+                            </button>
+
+                            <button onClick={handleDowngrade} className={classes.buttonUser}>
+                                <img
+                                    src={Downgrade}
+                                    alt="Upgrade Icon"
+                                    className={classes.icon}
+                                />
+                                Downgrade to Registered User
+                            </button>
+
+                            <button onClick={handleDelete} className={classes.buttonUser}>
+                                <img
+                                    src={Delete}
+                                    alt="Upgrade Icon"
+                                    className={classes.icon}
+                                />
+                                Delete User
+                            </button>
+                        </div>
+                        {successMessage && <p>{successMessage}</p>}
+                    </div>
+                </div>
             </div>
-
-            {successMessage && <p>{successMessage}</p>}
         </div>
     );
 }
