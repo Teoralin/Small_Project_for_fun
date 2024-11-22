@@ -42,56 +42,67 @@ export default function CategoriesPage() {
     useEffect(() => {
         const fetchCategoryData = async () => {
             try {
+                const response = await axios.get(
+                    id
+                        ? `http://localhost:3000/categories/${id}` // Fetch a single category and its children
+                        : 'http://localhost:3000/categories' // Fetch all categories
+                );
+                
                 if (id) {
-                    // setParentCategory(response.data);
-                    // setCategories(response.data.Subcategories || []); // Fetch subcategories
                     const fetchedCategory = response.data;
-
-                // Parent category should be approved
-                if (fetchedCategory.was_approved) {
-                    setParentCategory(fetchedCategory);
-                } else {
-                    setParentCategory(null);
-                }
-
-                // Subcategories: separate approved and unapproved
-                const approvedSubcategories = fetchedCategory.Subcategories?.filter(
-                    (sub) => sub.was_approved
-                ) || [];
-                const unapprovedSubcategories = fetchedCategory.Subcategories?.filter(
-                    (sub) => !sub.was_approved
-                ) || [];
-
-                setCategories(approvedSubcategories);
-                setSuggestedCategory(unapprovedSubcategories);
-                    const categoryResponse = await axios.get(`http://localhost:3000/categories/${id}`);
-                    setParentCategory(categoryResponse.data);
-                    setCategories(categoryResponse.data.Subcategories || []);
-
+                    console.log(response.data);
+                
+                    if (fetchedCategory.was_approved && !fetchedCategory.parent_category_id) {
+                        setParentCategory(fetchedCategory);
+                    } else {
+                        setParentCategory(null);
+                    }
+                
+                    // Subcategories: Separate approved and unapproved subcategories
+                    console.log(fetchedCategory.Subcategories)
+                    const approvedSubcategories = fetchedCategory.Subcategories?.filter(
+                        (sub) => sub.was_approved
+                    ) || [];
+                    const unapprovedSubcategories = fetchedCategory.Subcategories?.filter(
+                        (sub) => !sub.was_approved
+                    ) || [];
+                
+                    // Set the categories and suggestedCategory
+                    setCategories(approvedSubcategories);  // Subcategories with was_approved: true
+                    setSuggestedCategory(unapprovedSubcategories);  // Subcategories with was_approved: false
+                
+                    // Fetch products for the category
                     const productResponse = await axios.get('http://localhost:3000/products');
                     const categoryProducts = productResponse.data.filter(
                         (product) => product.category_id === parseInt(id)
                     );
                     setProducts(categoryProducts);
+                
                 } else {
-
-                    // const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
-                    // setCategories(parentCategories);
+                    // When no `id` it is main
+                    
                     const approvedParentCategories = response.data.filter(
                         (cat) => cat.was_approved && !cat.parent_category_id
                     );
+                
+                    // Filter out unapproved categories
                     const unapprovedCategories = response.data.filter(
-                        (cat) => !cat.was_approved
+                        (cat) => !cat.was_approved && !cat.parent_category_id
                     );
-    
-                    setCategories(approvedParentCategories);
+
+                    setParentCategory(approvedParentCategories);
+                
+                    // Set the suggestedCategory (unapproved categories)
                     setSuggestedCategory(unapprovedCategories);
+                
+                    // Fetch and set top-level parent categories (if needed)
                     const categoryResponse = await axios.get('http://localhost:3000/categories');
                     const parentCategories = categoryResponse.data.filter(
-                        (cat) => !cat.parent_category_id
+                        (cat) => !cat.parent_category_id && cat.was_approved
                     );
                     setCategories(parentCategories); // Top-level parent categories
                 }
+                
             } catch (err) {
                 setError('Error fetching data');
                 console.error(err);
@@ -136,18 +147,34 @@ export default function CategoriesPage() {
             setShowForm(false);
             setNewCategory({ name: '', description: '' });
 
-            // Refresh categories
-            const response = await axios.get(
-                id
-                    ? `http://localhost:3000/categories/${id}`
-                    : 'http://localhost:3000/categories'
-            );
-            if (id) {
-                setCategories(response.data.Subcategories || []);
-            } else {
-                const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
-                setCategories(parentCategories);
-            }
+            window.location.reload();
+        //    if (response.data.was_approved) {
+        //     // If the category was approved, update the categories list
+        //     if (id) {
+        //         // If we're on a subcategory page, fetch and update subcategories
+        //         setCategories((prevCategories) => [
+        //             ...prevCategories,
+        //             response.data, // Add the newly approved category
+        //         ]);
+        //     } else {
+        //         // If we're on the main page, fetch and update the parent categories
+        //         const parentCategories = await axios.get('http://localhost:3000/categories');
+        //         setCategories(
+        //             parentCategories.data.filter((cat) => !cat.parent_category_id)
+        //         );
+        //     }
+        // }
+            // const response = await axios.get(
+            //     id
+            //         ? `http://localhost:3000/categories/${id}`
+            //         : 'http://localhost:3000/categories'
+            // );
+            // if (id) {
+            //     setCategories(response.data.Subcategories || []);
+            // } else {
+            //     const parentCategories = response.data.filter((cat) => !cat.parent_category_id);
+            //     setCategories(parentCategories);
+            // }
         } catch (err) {
             setError('Error adding category');
             console.error(err);
@@ -332,7 +359,7 @@ export default function CategoriesPage() {
                     {/* Remove Current Category Button (if no subcategories and no products) */}
                     {isLeafCategory &&
                         products.length === 0 &&
-                        (userRole === 'Moderator' || userRole === 'Administrator' || userRole === 'Registered User') && (
+                        (userRole === 'Moderator' || userRole === 'Administrator') && (
                             <button
                                 onClick={handleDeleteCategory}
                                 className={classes.removeButton}
