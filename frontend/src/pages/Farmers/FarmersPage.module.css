@@ -24,7 +24,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 30px;
-    padding: 0px;
+    padding: 0;
 }
 
 .FarmersPage .userCompo {

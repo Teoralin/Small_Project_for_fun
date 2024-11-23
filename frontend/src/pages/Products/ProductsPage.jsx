@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import classes from './ProductsPage.module.css';
 
 export default function ProductsPage() {
     const { id } = useParams(); // Product ID from the URL params
@@ -175,69 +176,24 @@ export default function ProductsPage() {
     };
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className={classes.ProductsPage}>{error}</div>;
     }
 
     if (!product) {
-        return <div>Loading...</div>;
+        return <div className={classes.ProductsPage}>Loading...</div>;
     }
 
     return (
-        <div className="ProductsPage" style={{ marginTop: '5em' }}>
-            <h1>{product.name}</h1>
+        <div className={classes.ProductsPage}>
+            <p className={classes.PageTitle}>{product.name}</p>
             <p>{product.description}</p>
 
-            <h2>Offers</h2>
-            {offers.length > 0 ? (
-                <ul>
-                    {offers.map((offer) => (
-                        <li key={offer.offer_id} style={{ marginBottom: '15px' }}>
-                            <p><strong>Price:</strong> {offer.price} CZK</p>
-                            <p><strong>Quantity:</strong> {offer.quantity}</p>
-                            <p>
-                                <strong>Pickable:</strong> {offer.is_pickable ? 'Yes' : 'No'}
-                            </p>
-                            <p>
-                                <strong>Average Rating:</strong>{' '}
-                                {offerRatings[offer.offer_id] || 'No ratings yet'}
-                            </p>
-                            <button onClick={() => handlePurchaseClick(offer)}>
-                                Purchase
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No offers available for this product.</p>
-            )}
+            <p className={classes.Title}>Offers</p>
 
-            {/* Purchase Form */}
-            {purchaseOffer && (
-                <div>
-                    <h3>Purchase Offer</h3>
-                    <p><strong>Price:</strong> {purchaseOffer.price} CZK</p>
-                    <p><strong>Available Quantity:</strong> {purchaseOffer.quantity}</p>
-                    <label>
-                        Quantity:
-                        <input
-                            type="number"
-                            value={purchaseQuantity}
-                            onChange={(e) => setPurchaseQuantity(parseInt(e.target.value, 10))}
-                        />
-                    </label>
-                    <button onClick={handleSubmitPurchase}>Submit Purchase</button>
-                </div>
-            )}
-
-            {/* Add Offer Button for Farmers */}
             {isFarmer && (
-                <div>
-                    <button onClick={() => setShowForm(!showForm)}>
-                        {showForm ? 'Cancel' : 'Add Offer'}
-                    </button>
-
-                    {showForm && (
-                        <div>
+                <div className={classes.AddOffer}>
+                    {showForm ? (
+                        <div className={classes.OfferForm}>
                             <div>
                                 <label>
                                     Price:
@@ -271,13 +227,82 @@ export default function ProductsPage() {
                                     />
                                 </label>
                             </div>
-                            <button onClick={handleAddOffer}>Submit</button>
+                            <button onClick={handleAddOffer} className={classes.SubmitButton}>Submit</button>
+                            <button onClick={() => setShowForm(false)} className={classes.CancelButton}>Cancel</button>
                         </div>
+                    ) : (
+                        <button onClick={() => setShowForm(true)} className={classes.AddOfferButton}>
+                            Add Offer
+                        </button>
                     )}
                 </div>
             )}
 
-            {successMessage && <p>{successMessage}</p>}
+            <div className={classes.separator}></div>
+
+
+            {offers.length > 0 ? (
+                <ul className={classes.OfferList}>
+                    {offers.map((offer) => (
+                        <li key={offer.offer_id} className={classes.OfferItem}>
+                            <div className={classes.OfferCompo}>
+                                <p className={classes.Text}>
+                                    Price: {offer.price} CZK
+                                </p>
+                                <p className={classes.Text}>
+                                    Quantity: {offer.quantity}
+                                </p>
+                                <p className={classes.Text}>
+                                    Pickable: {offer.is_pickable ? 'Yes' : 'No'}
+                                </p>
+                                <p className={classes.Text}>
+                                    Average Rating: {offerRatings[offer.offer_id] || 'No ratings yet'}
+                                </p>
+
+                                {purchaseOffer?.offer_id === offer.offer_id ? (
+                                    <div className={classes.PurchaseForm}>
+                                        <p className={classes.Text}>
+                                            Quantity:
+                                            <input
+                                                type="number"
+                                                value={purchaseQuantity}
+                                                onChange={(e) => setPurchaseQuantity(parseInt(e.target.value, 10))}
+                                            />
+                                        </p>
+
+                                        <p className={classes.Text}>
+                                            Total: {purchaseQuantity > 0 ? purchaseQuantity * offer.price : 0} CZK
+                                        </p>
+
+                                        <button onClick={handleSubmitPurchase} className={classes.PurchaseButton}>
+                                            Add to cart
+                                        </button>
+                                        <button
+                                            onClick={() => setPurchaseOffer(null)}
+                                            className={classes.CancelButton}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => handlePurchaseClick(offer)}
+                                        className={classes.PurchaseButton}
+                                    >
+                                        Buy
+                                    </button>
+                                )}
+                            </div>
+                            <div className={classes.separator}></div>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No offers available for this product.</p>
+            )}
+
+            {successMessage && <p className={classes.SuccessMessage}>{successMessage}</p>}
         </div>
     );
+
 }
