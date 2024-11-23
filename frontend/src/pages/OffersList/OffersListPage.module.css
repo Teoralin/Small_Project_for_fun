@@ -56,14 +56,14 @@
     font-size: 40px;
 }
 
-.QuantityUpdate {
+.Update {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-top: 10px;
 }
 
-.QuantityUpdate input {
+.Update input {
     width: 60px;
     padding: 5px;
     text-align: center;
@@ -71,7 +71,7 @@
     border-radius: 5px;
 }
 
-.QuantityUpdate button {
+.Update button {
     padding: 5px 15px;
     font-size: 1rem;
     cursor: pointer;
@@ -82,6 +82,6 @@
     transition: background-color 0.3s ease;
 }
 
-.QuantityUpdate button:hover {
+.Update button:hover {
     background-color: #0056b3;
 }
