@@ -57,8 +57,19 @@ export default function OffersListPage() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                
+                const offersWithHarvests = await Promise.all(response.data.map(async (offer) => {
+                    // Only fetch self-harvest events if the offer is pickable
+                    if (offer.is_pickable) {
+                        const selfHarvestEvents = await fetchSelfHarvestEvents(offer.offer_id);
+                        return { ...offer, selfHarvestEvents };  
+                    } else {
+                        // If not pickable, no self-harvest events are associated
+                        return { ...offer, selfHarvestEvents: [] };
+                    }
+                }));
 
-                setUserOffers(response.data); 
+                setUserOffers(offersWithHarvests);  // Set the offers with their self-harvest events
                 setLoading(false);
             } catch (err) {
                 setError(err.response?.data?.message || 'Error fetching offers');
@@ -68,6 +79,25 @@ export default function OffersListPage() {
 
         fetchOffers();
     }, []);
+
+
+    const fetchSelfHarvestEvents = async (offerId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`http://localhost:3000/harvests/offer/${offerId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log(response.data);
+            return response.data;  
+        } catch (err) {
+            console.error('Error fetching self-harvest events:', err);
+            setError('Failed to fetch self-harvest events');
+            return [];
+        }
+    };
+  
 
     const updateQuantity = async (offerId, newQuantity) => {
         if (newQuantity < 0) {
@@ -284,18 +314,24 @@ export default function OffersListPage() {
                                         Update
                                     </button>
                                 </div>
-                                {/* List of self-harvest events */}
-                                <div className={classes.SelfHarvestEvents}>
+                                  <div className={classes.SelfHarvestEvents}>
                                     <h4>Self-Harvest Events</h4>
                                     {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
                                         <div className={classes.SelfHarvestList}>
                                             {offer.selfHarvestEvents.map((event) => (
                                                 <div key={event.event_id} className={classes.SelfHarvestCard}>
-                                                    <p>Harvest Date: {event.date}</p>
-                                                    <p>Quantity: {event.quantity}</p>
+                                                    <p>Harvest start date: {event.start_date}</p>
+                                                    <p>Harvest end date: {event.end_date}</p>
+                                                    {event.Address && (
+                                                        <div className={classes.EventAddress}>
+                                                            <h5>Event Address</h5>
+                                                            <p>city: {event.Address.city}, postcode: {event.Address.post_code}</p>
+                                                            <p>street: {event.Address.street}, house: {event.Address.house_number}</p>
+                                                        </div>
+                                                    )}
                                                     <div className={classes.SelfHarvestActions}>
                                                         <button
-                                                            onClick={() => handleAddHarvest(event)} //TODO edit 
+                                                            onClick={() => handleAddHarvest(event)} //TODO edit
                                                         >
                                                             Edit
                                                         </button>
@@ -309,9 +345,9 @@ export default function OffersListPage() {
                                             ))}
                                         </div>
                                     ) : (
-                                        <p>No self-harvest events yet.</p>
+                                        <p>No self-harvest events yet.</p> // Show a message if no events exist
                                     )}
-                                </div> 
+                                </div>
                                 <div className={classes.AddSelfHarvest}>
                                     <button
                                         onClick={() => handleAddHarvest(offer)}
