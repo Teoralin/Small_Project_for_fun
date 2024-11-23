@@ -41,6 +41,28 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/user/:user_id', async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        const offer = await Offer.findAll({
+            where: { user_id },
+            include: [
+                { model: Product, attributes: ['name', 'description'] },
+            ],
+        });
+
+        if (offer) {
+            res.status(200).json(offer);
+        } else {
+            res.status(404).json({ message: 'Offer not found' });
+        }
+    } catch (error) {
+        console.error('Error retrieving offer:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Retrieve a specific offer by product_id and user_id
 router.get('/:product_id/:user_id', async (req, res) => {
     try {

@@ -52,7 +52,7 @@ export default function OffersListPage() {
                 const userId = decodedToken.userId; 
 
                 // Fetch offers from the backend
-                const response = await axios.get(`http://localhost:3000/offers/${userId}`, {
+                const response = await axios.get(`http://localhost:3000/offers/user/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -98,6 +98,38 @@ export default function OffersListPage() {
         } catch (err) {
             console.error('Error updating quantity:', err);
             setError('Failed to update quantity. Please try again.');
+        }
+    };
+
+    const updatePrice = async (offerId, newPrice) => {
+        if (newPrice < 0) {
+            setError('Price cannot be negative.');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(
+                `http://localhost:3000/offers/${offerId}`,
+                { price: newPrice },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // Update the local state after a successful API call
+            setUserOffers((prevOffers) =>
+                prevOffers.map((offer) =>
+                    offer.offer_id === offerId
+                        ? { ...offer, price: newPrice }
+                        : offer
+                )
+            );
+        } catch (err) {
+            console.error('Error updating Price:', err);
+            setError('Failed to update Price. Please try again.');
         }
     };
 
@@ -166,7 +198,7 @@ export default function OffersListPage() {
                                 <p>Status: {offer.status}</p>
                                 {offer.is_pickable && <p>Pickable: Yes</p>}
                                 
-                                <div className={classes.QuantityUpdate}>
+                                <div className={classes.Update}>
                                     <label htmlFor={`quantity-${offer.offer_id}`}>Quantity:</label>
                                     <input
                                         type="number"
@@ -188,6 +220,34 @@ export default function OffersListPage() {
                                             updateQuantity(
                                                 offer.offer_id,
                                                 parseInt(offer.quantity, 10)
+                                            )
+                                        }
+                                    >
+                                        Update
+                                    </button>
+                                </div>
+                                <div className={classes.Update}>
+                                    <label htmlFor={`price-${offer.offer_id}`}>Price:</label>
+                                    <input
+                                        type="number"
+                                        id={`price-${offer.offer_id}`}
+                                        value={offer.price}
+                                        min="0"
+                                        onChange={(e) =>
+                                            setUserOffers((prevOffers) =>
+                                                prevOffers.map((o) =>
+                                                    o.offer_id === offer.offer_id
+                                                        ? { ...o, price: e.target.value }
+                                                        : o
+                                                )
+                                            )
+                                        }
+                                    />
+                                    <button
+                                        onClick={() =>
+                                            updatePrice(
+                                                offer.offer_id,
+                                                parseInt(offer.price, 10)
                                             )
                                         }
                                     >
