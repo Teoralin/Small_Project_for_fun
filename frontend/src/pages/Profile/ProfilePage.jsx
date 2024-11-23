@@ -253,21 +253,27 @@ export default function ProfilePage() {
                 >
                     Orders
                 </button>
-                {farmer === "farmer" && (
                 <button type="Option"
                         className={classes.OptionButton}
-                        onClick={() => handleNavigate('/offersList')}
+                        onClick={() => handleNavigate('/review')}
                 >
-                    Offers
+                    Reviews
                 </button>
+                {farmer === "farmer" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/offersList')}
+                    >
+                        Offers
+                    </button>
                 )}
                 {userRole === "Administrator" && (
-                <button type="Option"
-                        className={classes.OptionButton}
-                        onClick={() => handleNavigate('/editUsersList')}
-                >
-                    Manage Users
-                </button>
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/editUsersList')}
+                    >
+                        Manage Users
+                    </button>
                 )}
                 {userRole === "Moderator" && (
                     <button type="Option"
@@ -283,7 +289,7 @@ export default function ProfilePage() {
                 <p>Contact information</p>
                 <div className={classes.registerForm}>
                     <div className={classes.formGroup}>
-                        <label htmlFor="name">Name</label>
+                    <label htmlFor="name">Name</label>
                         <div className={classes.form}>
                             <div className={classes.formLeft}>
                                 <img

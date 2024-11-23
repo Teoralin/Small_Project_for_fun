@@ -14,6 +14,7 @@ import EditUserPage from "./pages/EditUser/EditUserPage.jsx";
 import CategoriesPage from "./pages/Categories/CategoriesPage.jsx";
 import ProductsPage from "./pages/Products/ProductsPage.jsx";
 import CartPage from "./pages/Cart/CartPage.jsx";
+import ReviewPage from "./pages/Review/ReviewPage.jsx";
 
 export default function AppRoutes() {
     return (
@@ -33,6 +34,8 @@ export default function AppRoutes() {
             <Route path="/categories/:id" element={<CategoriesPage />} />
             <Route path="/products/:id" element={<ProductsPage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/review" element={<ReviewPage />} />
+
         </Routes>
     )
 }

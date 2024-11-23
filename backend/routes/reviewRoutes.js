@@ -27,6 +27,15 @@ router.post('/', async (req, res) => {
             return res.status(404).json({ message: 'Offer not found.' });
         }
 
+        // Check if a review already exists for this user and offer
+        const existingReview = await Review.findOne({
+            where: { user_id, offer_id },
+        });
+
+        if (existingReview) {
+            return res.status(400).json({ message: 'You have already reviewed this offer.' });
+        }
+
         // Create the review
         const review = await Review.create({
             rating,
@@ -41,19 +50,23 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get all reviews
-router.get('/', async (req, res) => {
+// Get a review by user_id and offer_id
+router.get('/:user_id/:offer_id', async (req, res) => {
     try {
-        const reviews = await Review.findAll({
-            include: [
-                { model: User, as: 'User', attributes: ['name', 'email'] }, // Include user details
-                { model: Offer, attributes: ['price'] }, // Optionally include offer details
-            ],
+        const { user_id, offer_id } = req.params;
+
+        // Fetch the review for the given user_id and offer_id
+        const review = await Review.findOne({
+            where: { user_id, offer_id },
         });
 
-        res.status(200).json(reviews);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found.' });
+        }
+
+        res.status(200).json(review);
     } catch (error) {
-        console.error('Error fetching reviews:', error);
+        console.error('Error fetching review:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -99,6 +112,33 @@ router.put('/:review_id', async (req, res) => {
     } catch (error) {
         console.error('Error updating review:', error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Get average rating for a specific offer
+router.get('/getAverage/:offer_id', async (req, res) => {
+    try {
+        const { offer_id } = req.params;
+
+        // Fetch all reviews for the given offer_id
+        const reviews = await Review.findAll({
+            where: { offer_id },
+            attributes: ['rating'], // Only fetch the rating field
+        });
+
+        // If there are no reviews, return 0
+        if (reviews.length === 0) {
+            return res.status(200).json({ averageRating: 0 });
+        }
+
+        // Calculate the average rating
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = totalRating / reviews.length;
+
+        res.status(200).json({ averageRating: averageRating.toFixed(2) }); // Return the average rating (2 decimal places)
+    } catch (error) {
+        console.error('Error fetching average rating:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 

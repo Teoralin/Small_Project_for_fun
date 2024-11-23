@@ -99,6 +99,65 @@ router.get('/by-user', async (req, res) => {
     }
 });
 
+// Route to get all offers for a user
+router.get('/getAllOffersForUser/:user_id', async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        // Fetch all orders for the given user_id
+        const orders = await Order.findAll({
+            where: { user_id },
+            attributes: ['order_id'], // Only need the order_id
+        });
+
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ message: 'No orders found for this user.' });
+        }
+
+        // Extract all order_ids
+        const orderIds = orders.map((order) => order.order_id);
+
+        // Find all offer_ids from the OrderOffer table for the user's orders
+        const orderOffers = await OrderOffer.findAll({
+            where: { order_id: orderIds },
+            attributes: ['offer_id'], // Only need the offer_id
+        });
+
+        if (!orderOffers || orderOffers.length === 0) {
+            return res.status(404).json({ message: 'No offers found for this user\'s orders.' });
+        }
+
+        // Extract unique offer_ids
+        const uniqueOfferIds = [
+            ...new Set(orderOffers.map((orderOffer) => orderOffer.offer_id)),
+        ];
+
+        // Fetch all offers by their offer_ids
+        const offers = await Offer.findAll({
+            where: { offer_id: uniqueOfferIds },
+            include: [
+                {
+                    model: Product,
+                    attributes: ['name'], // Include the product name
+                },
+            ],
+            attributes: ['offer_id', 'price'], // Include the offer_id and price
+        });
+
+        // Transform the result to include product name and offer details
+        const offersWithDetails = offers.map((offer) => ({
+            offer_id: offer.offer_id,
+            product_name: offer.Product.name,
+            price: offer.price,
+        }));
+
+        res.status(200).json(offersWithDetails);
+    } catch (error) {
+        console.error('Error retrieving offers for user:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 // Get offers by order_id
 router.get('/:order_id', async (req, res) => {

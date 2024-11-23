@@ -45,5 +45,6 @@ const Review = sequelize.define('Review', {
 });
 
 Review.belongsTo(User, { foreignKey: 'user_id', as: 'User' });
+Review.belongsTo(Offer, { foreignKey: 'offer_id', as: 'Offer' });
 
 module.exports = Review;
