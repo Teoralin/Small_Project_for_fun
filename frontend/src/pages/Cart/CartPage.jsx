@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api';
 
 export default function CartPage() {
     const [cartItems, setCartItems] = useState([]); // Cart items
@@ -19,7 +19,7 @@ export default function CartPage() {
 
             try {
                 // Fetch cart items
-                const cartResponse = await axios.get('http://localhost:3000/cart', {
+                const cartResponse = await api.get('/cart', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -35,8 +35,8 @@ export default function CartPage() {
 
                         try {
                             // Fetch offer details by offer_id
-                            const offerResponse = await axios.get(
-                                `http://localhost:3000/offers/${item.offer_id}`, // Fetch by offer_id
+                            const offerResponse = await api.get(
+                                `/offers/${item.offer_id}`, // Fetch by offer_id
                                 {
                                     headers: {
                                         Authorization: `Bearer ${token}`,
@@ -80,7 +80,7 @@ export default function CartPage() {
         const token = localStorage.getItem('token');
         try {
             // Call the backend route to remove the item from the cart
-            await axios.delete(`http://localhost:3000/cart/${offer_id}`, {
+            await api.delete(`/cart/${offer_id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -107,8 +107,8 @@ export default function CartPage() {
         const token = localStorage.getItem('token');
         try {
             // Call the backend checkout route
-            const response = await axios.post(
-                'http://localhost:3000/orders/checkout',
+            const response = await api.post(
+                '/orders/checkout',
                 {},
                 {
                     headers: {

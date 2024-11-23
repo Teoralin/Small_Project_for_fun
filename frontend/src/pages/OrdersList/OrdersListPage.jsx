@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api';
 import { jwtDecode } from 'jwt-decode';
 
 export default function OrdersListPage() {
@@ -45,8 +45,8 @@ export default function OrdersListPage() {
                 const userId = decodedToken.userId;
 
                 // Fetch orders for the specific user
-                const response = await axios.get(`http://localhost:3000/orders/by-user`, {
-                    params: { userId }, // Pass userId as a query parameter
+                const response = await api.get(`/orders/by-user`, {
+                    params: { userId },  
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -68,7 +68,7 @@ export default function OrdersListPage() {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await axios.get(`http://localhost:3000/orders/${orderId}`, {
+            const response = await api.get(`/orders/${orderId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

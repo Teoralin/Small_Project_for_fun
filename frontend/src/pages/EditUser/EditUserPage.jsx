@@ -1,7 +1,7 @@
 //edit user only administrator
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api';
 import {jwtDecode} from 'jwt-decode';
 import classes from "./EditUserPage.module.css";
 import User_light from "../../assets/User_light.png";
@@ -44,7 +44,7 @@ export default function EditUserPage() {
                     setIsAuthorized(true); // User is authorized
                 }
             } catch (err) {
-                setError('Invalid token. Please log in again.');
+                setError('Invalid token. Please log in again: ', err);
             }
         };
 
@@ -59,10 +59,10 @@ export default function EditUserPage() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/users/${id}`);
+                const response = await api.get(`/users/${id}`);
                 setUser(response.data);
             } catch (err) {
-                setError('Error fetching user data');
+                setError('Error fetching user data: ', err);
             }
         };
 
@@ -74,40 +74,40 @@ export default function EditUserPage() {
     // Handle Upgrade Role
     const handleUpgrade = async () => {
         try {
-            await axios.put(`http://localhost:3000/users/${id}`, {
+            await api.put(`/users/${id}`, {
                 role: 'Moderator',
             });
             setSuccessMessage('User upgraded to Moderator.');
             setError('');
             setUser({ ...user, role: 'Moderator' });
         } catch (err) {
-            setError('Error upgrading user role');
+            setError('Error upgrading user role: ', err);
         }
     };
 
     // Handle Downgrade Role
     const handleDowngrade = async () => {
         try {
-            await axios.put(`http://localhost:3000/users/${id}`, {
+            await api.put(`/users/${id}`, {
                 role: 'Registered User',
             });
             setSuccessMessage('User downgraded to Registered User.');
             setError('');
             setUser({ ...user, role: 'Registered User' });
         } catch (err) {
-            setError('Error downgrading user role');
+            setError('Error downgrading user role: ', err);
         }
     };
 
     // Handle Delete User
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://localhost:3000/users/${id}`);
+            await api.delete(`/users/${id}`);
             setSuccessMessage('User deleted successfully.');
             setError('');
             navigate('/editUsersList'); // Redirect back to the users list page
         } catch (err) {
-            setError('Error deleting user');
+            setError('Error deleting user: ', err);
         }
     };
 

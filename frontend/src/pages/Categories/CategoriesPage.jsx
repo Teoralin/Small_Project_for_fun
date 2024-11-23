@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api';
 import {jwtDecode} from 'jwt-decode';
 import classes from './CategoriesPage.module.css';
 import Add from "../../assets/Add.png";
@@ -43,10 +43,10 @@ export default function CategoriesPage() {
     useEffect(() => {
         const fetchCategoryData = async () => {
             try {
-                const response = await axios.get(
+                const response = await api.get(
                     id
-                        ? `http://localhost:3000/categories/${id}` // Fetch a single category and its children
-                        : 'http://localhost:3000/categories' // Fetch all categories
+                        ? `/categories/${id}` // Fetch a single category and its children
+                        : '/categories' // Fetch all categories
                 );
                 const fetchedCategory = response.data;
                 
@@ -72,7 +72,7 @@ export default function CategoriesPage() {
                     setSuggestedCategory(unapprovedSubcategories);  // Subcategories with was_approved: false
                 
                     // Fetch products for the category
-                    const productResponse = await axios.get('http://localhost:3000/products');
+                    const productResponse = await api.get('/products');
                     const categoryProducts = productResponse.data.filter(
                         (product) => product.category_id === parseInt(id)
                     );
@@ -98,7 +98,7 @@ export default function CategoriesPage() {
                     setSuggestedCategory(unapprovedCategories);
                 
                     // Fetch and set top-level parent categories (if needed)
-                    const categoryResponse = await axios.get('http://localhost:3000/categories');
+                    const categoryResponse = await api.get('/categories');
                     const parentCategories = categoryResponse.data.filter(
                         (cat) => !cat.parent_category_id && cat.was_approved
                     );
@@ -143,7 +143,7 @@ export default function CategoriesPage() {
                 was_approved: decodedToken.role?.toLowerCase() === 'moderator' ? true : false, 
             };
 
-            await axios.post('http://localhost:3000/categories', payload, {
+            await api.post('/categories', payload, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -175,7 +175,7 @@ export default function CategoriesPage() {
                 category_id: id, // Associate the product with the current category
             };
 
-            await axios.post('http://localhost:3000/products', payload, {
+            await api.post('/products', payload, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -197,7 +197,7 @@ export default function CategoriesPage() {
         if (!id) return;
 
         try {
-            await axios.delete(`http://localhost:3000/categories/${id}`, {
+            await api.delete(`/categories/${id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -215,7 +215,7 @@ export default function CategoriesPage() {
         if (!id) return; 
 
         try {
-            await axios.delete(`http://localhost:3000/categories/${id}`, {
+            await api.delete(`/categories/${id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -232,8 +232,8 @@ export default function CategoriesPage() {
     const handleApproveCategory = async (categoryId) => {
         try {
 
-            await axios.put(
-                `http://localhost:3000/categories/${categoryId}`,
+            await api.put(
+                `/categories/${categoryId}`,
                 { was_approved: true },
                 {
                     headers: {

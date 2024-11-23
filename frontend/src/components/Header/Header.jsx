@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom"; // Import useLocation
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
+import api from "../../api";
 import classes from "./Header.module.css";
 import userIcon from "../../assets/User.png";
 import cartIcon from "../../assets/Сart.png";
@@ -26,7 +26,7 @@ export default function Header() {
             const decodedToken = jwtDecode(token);
             const userId = decodedToken.userId;
 
-            const response = await axios.get(`http://localhost:3000/users/${userId}`, {
+            const response = await api.get(`/users/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -49,7 +49,7 @@ export default function Header() {
         }
 
         try {
-            const response = await axios.get("http://localhost:3000/cart", {
+            const response = await api.get("/cart", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -1,8 +1,8 @@
 //page of administrator to edit users 
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import classes from "./EditUserListPage.module.css";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
+import api from '../../api';
 import Edit_User from "../../assets/Edit_User.png";
 import {jwtDecode} from 'jwt-decode';
 
@@ -44,7 +44,7 @@ export default function EditUserListPage() {
                     setIsAuthorized(true); // User is authorized
                 }
             } catch (err) {
-                setError('Invalid token. Please log in again.');
+                setError('Invalid token. Please log in again: ', err);
             }
         };
 
@@ -55,7 +55,7 @@ export default function EditUserListPage() {
         // Fetch users from the API using axios
         async function fetchUsers() {
             try {
-                const response = await axios.get('http://localhost:3000/users'); // Adjust the API URL
+                const response = await api.get('/users'); // Adjust the API URL
                 setUsers(response.data);   
                 setFilteredUsers(response.data); 
             } catch (error) {

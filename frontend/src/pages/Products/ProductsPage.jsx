@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api';
 import { jwtDecode } from 'jwt-decode';
 import classes from './ProductsPage.module.css';
 
@@ -43,11 +43,11 @@ export default function ProductsPage() {
         const fetchProductAndOffers = async () => {
             try {
                 // Fetch product details
-                const productResponse = await axios.get(`http://localhost:3000/products/${id}`);
+                const productResponse = await api.get(`/products/${id}`);
                 setProduct(productResponse.data);
 
                 // Fetch offers for this product
-                const offersResponse = await axios.get('http://localhost:3000/offers');
+                const offersResponse = await api.get('/offers');
                 const productOffers = offersResponse.data.filter(
                     (offer) => offer.product_id === parseInt(id)
                 );
@@ -56,8 +56,8 @@ export default function ProductsPage() {
                 // Fetch average ratings for offers
                 const ratings = await Promise.all(
                     productOffers.map(async (offer) => {
-                        const ratingResponse = await axios.get(
-                            `http://localhost:3000/reviews/getAverage/${offer.offer_id}`
+                        const ratingResponse = await api.get(
+                            `/reviews/getAverage/${offer.offer_id}`
                         );
                         return { offer_id: offer.offer_id, averageRating: ratingResponse.data.averageRating };
                     })
@@ -97,7 +97,7 @@ export default function ProductsPage() {
                 user_id: jwtDecode(token).userId, // Set user_id from JWT token
             };
 
-            await axios.post('http://localhost:3000/offers', payload, {
+            await api.post('/offers', payload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -109,7 +109,7 @@ export default function ProductsPage() {
             setNewOffer({ price: '', quantity: '', is_pickable: false });
 
             // Refresh offers
-            const offersResponse = await axios.get('http://localhost:3000/offers');
+            const offersResponse = await api.get('/offers');
             const productOffers = offersResponse.data.filter(
                 (offer) => offer.product_id === parseInt(id)
             );
@@ -153,8 +153,8 @@ export default function ProductsPage() {
 
         const token = localStorage.getItem('token');
         try {
-            await axios.post(
-                'http://localhost:3000/cart/add',
+            await api.post(
+                '/cart/add',
                 {
                     offer_id: purchaseOffer.offer_id,
                     quantity: purchaseQuantity,

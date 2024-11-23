@@ -1,4 +1,4 @@
-import React, {Profiler} from 'react';
+//import React, {Profiler} from 'react';
 import { Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/Login/LoginPage';
 import HomePage from "./pages/Home/HomePage.jsx";

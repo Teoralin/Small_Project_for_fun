@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import classes from "./ProfilePage.module.css";
 import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
-import axios from 'axios';
+import api from '../../api';
 import User_light from "../../assets/User_light.png";
 import MailIcon from "../../assets/Mail.png";
 import Phone from "../../assets/Phone.png";
@@ -62,7 +62,7 @@ export default function ProfilePage() {
                 setUserRole(decodedToken.role);
                 const userId = decodedToken.userId;
 
-                const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
+                const userResponse = await api.get(`/users/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -72,7 +72,7 @@ export default function ProfilePage() {
 
                 // If the user is a farmer, fetch their address
                 if (userResponse.data.is_farmer) {
-                    const addressResponse = await axios.get(`http://localhost:3000/addresses/${userId}`, {
+                    const addressResponse = await api.get(`/addresses/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -135,8 +135,8 @@ export default function ProfilePage() {
 
             // Update user data
             if (Object.values(isEditing).some(val => val === true)) {
-                await axios.put(
-                    `http://localhost:3000/users/${userId}`,
+                await api.put(
+                    `/users/${userId}`,
                     updatedData,
                     {
                         headers: {
@@ -148,8 +148,8 @@ export default function ProfilePage() {
 
             // Update address data if edited
             if (Object.values(isEditing).some(val => val === true)) {
-                await axios.put(
-                    `http://localhost:3000/addresses/${userId}`,
+                await api.put(
+                    `/addresses/${userId}`,
                     updatedAddress,
                     {
                         headers: {
@@ -173,7 +173,7 @@ export default function ProfilePage() {
             });
 
             // Refresh user and address data
-            const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
+            const userResponse = await api.get(`/users/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -181,7 +181,7 @@ export default function ProfilePage() {
             setUserData(userResponse.data);
 
             if (userResponse.data.is_farmer) {
-                const addressResponse = await axios.get(`http://localhost:3000/addresses/${userId}`, {
+                const addressResponse = await api.get(`/addresses/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -204,8 +204,8 @@ export default function ProfilePage() {
             const decodedToken = jwtDecode(token);
             const userId = decodedToken.userId;
 
-            await axios.put(
-                `http://localhost:3000/users/${userId}`,
+            await api.put(
+                `/users/${userId}`,
                 {
                     password: passwordData.newPassword,
                     currentPassword: passwordData.currentPassword,

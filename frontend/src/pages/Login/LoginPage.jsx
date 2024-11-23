@@ -30,7 +30,7 @@ export default function LoginPage() {
         e.preventDefault();
 
         try {
-            const response = await axios.post('https://backend-4g4p.onrender.com/auth/login', {
+            const response = await api.post('/auth/login', {
                 email: formData.email,
                 password: formData.password,
             });

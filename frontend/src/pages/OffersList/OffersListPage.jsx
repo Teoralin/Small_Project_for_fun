@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import classes from './OffersListPage.module.css';
 import {useNavigate} from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
+import api from '../../api';
 
 export default function OffersListPage() {
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ export default function OffersListPage() {
   
             const token = localStorage.getItem('token');
             const userId = offer.user_id;  
-            const response = await axios.get(`http://localhost:3000/addresses/${userId}`, {
+            const response = await api.get(`/addresses/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -94,7 +94,7 @@ export default function OffersListPage() {
                 const userId = decodedToken.userId; 
 
                 // Fetch offers from the backend
-                const response = await axios.get(`http://localhost:3000/offers/user/${userId}`, {
+                const response = await api.get(`/offers/user/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -126,7 +126,7 @@ export default function OffersListPage() {
     const fetchSelfHarvestEvents = async (offerId) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:3000/harvests/offer/${offerId}`, {
+            const response = await api.get(`/harvests/offer/${offerId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -151,7 +151,7 @@ export default function OffersListPage() {
     
         try {
             const token = localStorage.getItem('token');
-            await axios.post(
+            await api.post(
                 'http://localhost:3000/harvests', // Backend endpoint to create harvest
                 {
                     start_date: newHarvest.start_date,
@@ -215,8 +215,8 @@ export default function OffersListPage() {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.put(
-                `http://localhost:3000/offers/${offerId}`,
+            await api.put(
+                `/offers/${offerId}`,
                 { quantity: newQuantity },
                 {
                     headers: {
@@ -247,8 +247,8 @@ export default function OffersListPage() {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.put(
-                `http://localhost:3000/offers/${offerId}`,
+            await api.put(
+                `/offers/${offerId}`,
                 { price: newPrice },
                 {
                     headers: {
@@ -274,7 +274,7 @@ export default function OffersListPage() {
     const handleDeleteHarvest = async (harvestEventId) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:3000/harvests/${harvestEventId}`, {
+            await api.delete(`/harvests/${harvestEventId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -312,8 +312,8 @@ export default function OffersListPage() {
     
         try {
             const token = localStorage.getItem('token');
-            await axios.put(
-                `http://localhost:3000/harvests/${editHarvest.event_id}`, // Backend endpoint for updating
+            await api.put(
+                `/harvests/${editHarvest.event_id}`, // Backend endpoint for updating
                 {
                     start_date: editHarvest.start_date,
                     end_date: editHarvest.end_date,

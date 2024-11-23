@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
 import classes from './UsersPage.module.css';
+import api from '../../api.jsx'
 
 export default function UsersPage() {
     const [users, setUsers] = useState([]);
@@ -13,7 +13,7 @@ export default function UsersPage() {
     useEffect(() => {
         async function fetchUsers() {
             try {
-                const response = await axios.get('http://localhost:3000/users');
+                const response = await api.get('/users');
                 setUsers(response.data);
                 setFilteredUsers(response.data);
             } catch (error) {

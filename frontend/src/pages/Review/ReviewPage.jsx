@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { jwtDecode } from 'jwt-decode';
 
 export default function ReviewPage() {
@@ -27,8 +27,8 @@ export default function ReviewPage() {
                 const userId = decodedToken.userId;
 
                 // Fetch offers for the user
-                const offersResponse = await axios.get(
-                    `http://localhost:3000/orders/getAllOffersForUser/${userId}`,
+                const offersResponse = await api.get(
+                    `/orders/getAllOffersForUser/${userId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -42,8 +42,8 @@ export default function ReviewPage() {
                 const reviewsResponse = await Promise.all(
                     fetchedOffers.map(async (offer) => {
                         try {
-                            const review = await axios.get(
-                                `http://localhost:3000/reviews/${userId}/${offer.offer_id}`,
+                            const review = await api.get(
+                                `/reviews/${userId}/${offer.offer_id}`,
                                 {
                                     headers: {
                                         Authorization: `Bearer ${token}`,
@@ -109,8 +109,8 @@ export default function ReviewPage() {
 
             // Submit the review (POST or PUT based on existence)
             if (reviews[modalData.offer_id]) {
-                await axios.put(
-                    `http://localhost:3000/reviews/${reviews[modalData.offer_id].review_id}`, // Pass the review_id in the URL
+                await api.put(
+                    `/reviews/${reviews[modalData.offer_id].review_id}`, // Pass the review_id in the URL
                     {
                         rating,
                         user_id: userId,
@@ -124,8 +124,8 @@ export default function ReviewPage() {
                 );
 
             } else {
-                await axios.post(
-                    `http://localhost:3000/reviews`,
+                await api.post(
+                    `/reviews`,
                     {
                         rating,
                         user_id: userId,

@@ -8,7 +8,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="backend" />
-    <orderEntry type="module" module-name="iis_backend" />
   </component>
 </module>
