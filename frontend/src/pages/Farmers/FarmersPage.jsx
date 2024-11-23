@@ -18,11 +18,11 @@ export default function FarmersPage() {
                 // Filter users who have 'is_farmer' set to true
                 const farmerUsers = response.data.filter(user => user.is_farmer === true);
                 
-                setUsers(farmerUsers); // Set filtered users
-                setFilteredUsers(farmerUsers); // Initialize filteredUsers
+                setUsers(farmerUsers);
+                setFilteredUsers(farmerUsers); 
             } catch (error) {
                 console.error('Error fetching users:', error);
-                setError('An error occurred while fetching users'); // Set error state
+                setError('An error occurred while fetching users');
             } finally {
                 setLoading(false); // Set loading to false once the request is complete
             }

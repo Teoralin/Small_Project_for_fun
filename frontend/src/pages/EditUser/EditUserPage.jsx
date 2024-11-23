@@ -1,3 +1,4 @@
+//edit user only administrator
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -17,6 +18,8 @@ export default function EditUserPage() {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [isAuthorized, setIsAuthorized] = useState(false);
+    const [userRole, setUserRole] = useState(null);
+    const [farmer, setFarmer] = useState('');
 
     // Check for token and user role
     useEffect(() => {
@@ -30,6 +33,11 @@ export default function EditUserPage() {
 
             try {
                 const decodedToken = jwtDecode(token);
+                if(decodedToken.is_farmer){
+                    setFarmer('farmer');
+                }
+                setUserRole(decodedToken.role);
+
                 if (decodedToken.role !== 'Administrator') {
                     setError('Access denied. Insufficient permissions.');
                 } else {
@@ -126,18 +134,22 @@ export default function EditUserPage() {
                 >
                     Orders
                 </button>
+                {farmer === "farmer" && (
                 <button type="Option"
                         className={classes.OptionButton}
                         onClick={() => handleNavigate('/offersList')}
                 >
                     Offers
                 </button>
+                 )}
+                {userRole === "Administrator" && (
                 <button type="Option"
-                        className={classes.OptionButtonSelected}
+                        className={classes.OptionButton}
                         onClick={() => handleNavigate('/editUsersList')}
                 >
                     Manage Users
                 </button>
+                )}
             </div>
             <div className={classes.UserInfo}>
                 <div className={classes.Title}>

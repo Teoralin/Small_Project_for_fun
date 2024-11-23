@@ -1,3 +1,4 @@
+//page of administrator to edit users 
 import React, {useEffect, useState} from 'react';
 import classes from "./EditUserListPage.module.css";
 import {useNavigate} from "react-router-dom";
@@ -19,6 +20,8 @@ export default function EditUserListPage() {
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [filteredUsers, setFilteredUsers] = useState([]); 
     const [searchTerm, setSearchTerm] = useState('');
+    const [farmer, setFarmer] = useState('');
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         const checkAuthorization = () => {
@@ -31,6 +34,10 @@ export default function EditUserListPage() {
 
             try {
                 const decodedToken = jwtDecode(token);
+                if(decodedToken.is_farmer){
+                    setFarmer('farmer');
+                }
+                setUserRole(decodedToken.role);
                 if (decodedToken.role !== 'Administrator') {
                     setError('Access denied. Insufficient permissions.');
                 } else {
@@ -99,18 +106,22 @@ export default function EditUserListPage() {
                 >
                     Orders
                 </button>
+                {farmer === "farmer" && (
                 <button type="Option"
                         className={classes.OptionButton}
                         onClick={() => handleNavigate('/offersList')}
                 >
                     Offers
                 </button>
+                 )}
+                {userRole === "Administrator" && (
                 <button type="Option"
-                        className={classes.OptionButtonSelected}
+                        className={classes.OptionButton}
                         onClick={() => handleNavigate('/editUsersList')}
                 >
                     Manage Users
                 </button>
+                )}
             </div>
 
 
