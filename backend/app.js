@@ -3,8 +3,6 @@ const cors = require('cors'); // Import cors
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const userRoutes = require('./routes/userRoutes');
-const administratorRoutes = require('./routes/administratorRoutes');
-const moderatorRoutes = require('./routes/moderatorRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -29,8 +27,6 @@ app.use(cors()); // Add this line
 app.use(express.json());
 
 app.use('/users', userRoutes);
-app.use('/administrators', administratorRoutes);
-app.use('/moderators', moderatorRoutes);
 app.use('/addresses', addressRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
@@ -55,7 +51,7 @@ async function initializeApp() {
         console.log('Database connection has been established successfully.');
 
         // Synchronize models with the database
-        await sequelize.sync({alter: true});
+        await sequelize.sync({force: true});
         console.log('Models synchronized with the database.');
 
         // Start the server

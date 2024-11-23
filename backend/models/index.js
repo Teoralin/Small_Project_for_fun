@@ -1,8 +1,6 @@
 // models/index.js
 const sequelize = require('../dbconfig/sequelize');
 const User = require('./User');
-const Administrator = require('./Administrator');
-const Moderator = require('./Moderator');
 const Category = require('./Category');
 const Product = require('./Product');
 const Address = require('./Address');
@@ -16,8 +14,6 @@ const Review = require('./Review');
 module.exports = {
     sequelize,
     User,
-    Administrator,
-    Moderator,
     Category,
     Product,
     Address,
