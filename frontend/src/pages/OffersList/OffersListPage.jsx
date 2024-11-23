@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 import classes from './OffersListPage.module.css';
 import {useNavigate} from "react-router-dom";
@@ -12,6 +11,49 @@ export default function OffersListPage() {
     const [farmer, setFarmer] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [success, setSuccess] = useState('');
+    const [newHarvest, setNewHarvest] = useState({
+        offer_id: 0,
+        address_id: 0,
+        start_date: '',
+        end_date: '',
+    });
+    const [editHarvest, setEditHarvest] = useState(null); 
+
+
+    const handleAddHarvest = async (offer) => {
+        try {
+  
+            const token = localStorage.getItem('token');
+            const userId = offer.user_id;  
+            const response = await axios.get(`http://localhost:3000/addresses/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            const addressId = response.data?.address_id;
+            if (!addressId) {
+                setError('Address not found for this user.');
+                return;
+            }
+    
+            setModalOpen(true);
+    
+            setNewHarvest({
+                offer_id: offer.offer_id, 
+                address_id: addressId, 
+                start_date: '',
+                end_date: '',
+            });
+    
+            setError('');
+        } catch (err) {
+            console.error('Error fetching address:', err);
+            setError('Failed to retrieve address. Please try again.');
+        }
+    };
 
     useEffect(() => {
         const getRole = async () => {
@@ -98,7 +140,73 @@ export default function OffersListPage() {
         }
     };
   
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        // Validate required fields
+        if (!newHarvest.start_date || !newHarvest.end_date) {
+            setError('Please fill all required fields.');
+            return;
+        }
+    
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post(
+                'http://localhost:3000/harvests', // Backend endpoint to create harvest
+                {
+                    start_date: newHarvest.start_date,
+                    end_date: newHarvest.end_date,
+                    quantity: newHarvest.quantity,
+                    address_id: newHarvest.address_id, // Only pass address_id
+                    offer_id: newHarvest.offer_id,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+    
+            // Success feedback
+            setSuccess('Self-harvest event created successfully!');
+            setError('');
+    
+            // Update the local state for UI updates (if necessary)
+        const updatedSelfHarvestEvents = await fetchSelfHarvestEvents(newHarvest.offer_id);
 
+        // Update state with new self-harvest events
+        setUserOffers((prevOffers) =>
+            prevOffers.map((offer) =>
+                offer.offer_id === newHarvest.offer_id
+                    ? {
+                          ...offer,
+                          selfHarvestEvents: updatedSelfHarvestEvents, // Use updated list
+                      }
+                    : offer
+            )
+        );
+    
+            handleCloseModal(); // Close the modal
+        } catch (err) {
+            console.error('Error creating self-harvest event:', err);
+            setError('Failed to create self-harvest event. Please try again.');
+        }
+    };
+    
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setEditHarvest(null);
+        setNewHarvest({
+            offer_id: '',
+            address_id: '',
+            start_date: '',
+            end_date: '',
+            quantity: '',
+        });
+        setError('');
+        setSuccess('');
+    };
+    
     const updateQuantity = async (offerId, newQuantity) => {
         if (newQuantity < 0) {
             setError('Quantity cannot be negative.');
@@ -185,16 +293,65 @@ export default function OffersListPage() {
 
             setError('');
         } catch (err) {
-            setError('Failed to delete self-harvest event');
+            setError('Failed to delete self-harvest event: ', err);
         }
     };
 
-    const handleNavigate = (path) => {
-        navigate(path);
+    const editSelfHarvest = (event) => {
+        setEditHarvest(event);  
+        setModalOpen(true);    
     };
 
-    const handleAddHarvest = (offer) => {
-        navigate('/editHarvest', { state: { offerId: offer.offer_id, userId: offer.user_id } });
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+    
+        if (!editHarvest.start_date || !editHarvest.end_date) {
+            setError('Please fill all required fields.');
+            return;
+        }
+    
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(
+                `http://localhost:3000/harvests/${editHarvest.event_id}`, // Backend endpoint for updating
+                {
+                    start_date: editHarvest.start_date,
+                    end_date: editHarvest.end_date,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+    
+            // Fetch updated events for the offer
+            const updatedSelfHarvestEvents = await fetchSelfHarvestEvents(editHarvest.offer_id);
+    
+            // Update the state with the refreshed list
+            setUserOffers((prevOffers) =>
+                prevOffers.map((offer) =>
+                    offer.offer_id === editHarvest.offer_id
+                        ? {
+                              ...offer,
+                              selfHarvestEvents: updatedSelfHarvestEvents,
+                          }
+                        : offer
+                )
+            );
+    
+            setSuccess('Self-harvest event updated successfully!');
+            setError('');
+            handleCloseModal(); // Close the modal
+        } catch (err) {
+            console.error('Error updating self-harvest event:', err);
+            setError('Failed to update self-harvest event. Please try again.');
+        }
+    };
+    
+
+    const handleNavigate = (path) => {
+        navigate(path);
     };
 
     return (
@@ -211,6 +368,12 @@ export default function OffersListPage() {
                         onClick={() => handleNavigate('/ordersList')}
                 >
                     Orders
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/review')}
+                >
+                    Reviews
                 </button>
 
                 {farmer === "farmer" && (
@@ -331,7 +494,7 @@ export default function OffersListPage() {
                                                     )}
                                                     <div className={classes.SelfHarvestActions}>
                                                         <button
-                                                            onClick={() => handleAddHarvest(event)} //TODO edit
+                                                            onClick={() => editSelfHarvest(event)} 
                                                         >
                                                             Edit
                                                         </button>
@@ -367,6 +530,88 @@ export default function OffersListPage() {
                     </div>
                 )}
             </div>
+
+            {modalOpen && (
+                <div className={classes.ModalOverlay}>
+                    <div className={classes.Modal}>
+                        <h3>Create New Self-Harvest Event</h3>
+                        {error && <p className={classes.Error}>{error}</p>}
+                        {success && <p className={classes.Success}>{success}</p>}
+
+                        <form onSubmit={handleSubmit}>
+                            <label htmlFor="start_date">Start Date:</label>
+                            <input
+                                type="datetime-local"
+                                id="start_date"
+                                value={newHarvest.start_date || ''}
+                                onChange={(e) => setNewHarvest({ ...newHarvest, start_date: e.target.value })}
+                                required
+                            />
+
+                            <label htmlFor="end_date">End Date:</label>
+                            <input
+                                type="datetime-local"
+                                id="end_date"
+                                value={newHarvest.end_date || ''}
+                                onChange={(e) => setNewHarvest({ ...newHarvest, end_date: e.target.value })}
+                                required
+                            />
+
+                            <div className={classes.ModalActions}>
+                                <button type="submit" className={classes.SubmitButton}>
+                                    Create Event
+                                </button>
+                                <button type="button" onClick={handleCloseModal} className={classes.CancelButton}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {modalOpen && editHarvest && (
+                <div className={classes.ModalOverlay}>
+                    <div className={classes.Modal}>
+                        <h3>Edit Self-Harvest Event</h3>
+                        {error && <p className={classes.Error}>{error}</p>}
+                        {success && <p className={classes.Success}>{success}</p>}
+
+                        <form onSubmit={handleEditSubmit}>
+                            <label htmlFor="start_date">Start Date:</label>
+                            <input
+                                type="datetime-local"
+                                id="start_date"
+                                value={editHarvest.start_date || ''}
+                                onChange={(e) =>
+                                    setEditHarvest({ ...editHarvest, start_date: e.target.value })
+                                }
+                                required
+                            />
+
+                            <label htmlFor="end_date">End Date:</label>
+                            <input
+                                type="datetime-local"
+                                id="end_date"
+                                value={editHarvest.end_date || ''}
+                                onChange={(e) =>
+                                    setEditHarvest({ ...editHarvest, end_date: e.target.value })
+                                }
+                                required
+                            />
+
+                            <div className={classes.ModalActions}>
+                                <button type="submit" className={classes.SubmitButton}>
+                                    Save Changes
+                                </button>
+                                <button type="button" onClick={handleCloseModal} className={classes.CancelButton}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
              
         </div>
     )

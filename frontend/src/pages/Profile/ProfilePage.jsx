@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import classes from "./ProfilePage.module.css";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
 import User_light from "../../assets/User_light.png";
