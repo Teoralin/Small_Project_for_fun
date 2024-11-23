@@ -88,14 +88,14 @@ export default function CategoriesPage() {
                     // );
                 
                     // // Filter out unapproved categories
-                    // const unapprovedCategories = response.data.filter(
-                    //     (cat) => !cat.was_approved && !cat.parent_category_id
-                    // );
+                    const unapprovedCategories = response.data.filter(
+                        (cat) => !cat.was_approved && !cat.parent_category_id
+                    );
 
                    // setParentCategory(approvedParentCategories);
                 
                     // Set the suggestedCategory (unapproved categories)
-                    //setSuggestedCategory(unapprovedCategories);
+                    setSuggestedCategory(unapprovedCategories);
                 
                     // Fetch and set top-level parent categories (if needed)
                     const categoryResponse = await axios.get('http://localhost:3000/categories');
