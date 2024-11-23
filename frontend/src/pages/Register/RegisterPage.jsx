@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import classes from './registerPage.module.css';
+import classes from './RegisterPage.module.css';
 import MailIcon from "../../assets/Mail.png";
 import Key from "../../assets/Key.png";
 import User_light from "../../assets/User_light.png";
