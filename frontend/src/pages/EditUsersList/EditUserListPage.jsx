@@ -148,10 +148,6 @@ export default function EditUserListPage() {
                         />
                     </form>
 
-                    <button type="search" className={classes.SearchButton}>
-                        Search
-                    </button>
-
                 </div>
 
                 <div>

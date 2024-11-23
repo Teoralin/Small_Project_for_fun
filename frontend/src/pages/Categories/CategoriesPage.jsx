@@ -282,7 +282,7 @@ export default function CategoriesPage() {
                         <p onClick={() => handleNavigate(parentCategory?.category_id)} className={classes.CategoryName}>
                             {parentCategory?.name}
                         </p>
-                        <p className={classes.CategoryDescription}>{parentCategory?.description}</p>
+                        <p>{parentCategory?.description}</p>
 
                         {/* Отображаем подкатегории */}
                         {categories.length > 0 && (
@@ -313,7 +313,7 @@ export default function CategoriesPage() {
 
                                     <button onClick={() => setShowForm(true)} className={classes.categoryButton}>
                                         <div
-                                            className={classes.TitleAdd}> {/* Используем TitleCategory как у продуктов */}
+                                            className={classes.TitleAdd}>
                                             <img
                                                 src={Add}
                                                 alt="Add Icon"
@@ -428,7 +428,7 @@ export default function CategoriesPage() {
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className={classes.NosubcategoriesFound}>No subcategories found</p>
+                                    <p className={classes.NoSubcategoriesFound}>No subcategories found</p>
                                 )}
                             </div>
 

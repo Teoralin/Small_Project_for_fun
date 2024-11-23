@@ -51,7 +51,7 @@ async function initializeApp() {
         console.log('Database connection has been established successfully.');
 
         // Synchronize models with the database
-        await sequelize.sync({alter: true});
+        await sequelize.sync();
         console.log('Models synchronized with the database.');
 
         // Start the server
