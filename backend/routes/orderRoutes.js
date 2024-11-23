@@ -77,6 +77,88 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get orders by user_id
+router.get('/by-user', async (req, res) => {
+    try {
+        const { userId } = req.query;
+
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required.' });
+        }
+
+        // Retrieve all orders for the given user_id
+        const orders = await Order.findAll({
+            where: { user_id: userId },
+            order: [['date', 'DESC']], // Orders by most recent
+        });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error('Error fetching orders by user_id:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Route to get all offers for a user
+router.get('/getAllOffersForUser/:user_id', async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        // Fetch all orders for the given user_id
+        const orders = await Order.findAll({
+            where: { user_id },
+            attributes: ['order_id'], // Only need the order_id
+        });
+
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ message: 'No orders found for this user.' });
+        }
+
+        // Extract all order_ids
+        const orderIds = orders.map((order) => order.order_id);
+
+        // Find all offer_ids from the OrderOffer table for the user's orders
+        const orderOffers = await OrderOffer.findAll({
+            where: { order_id: orderIds },
+            attributes: ['offer_id'], // Only need the offer_id
+        });
+
+        if (!orderOffers || orderOffers.length === 0) {
+            return res.status(404).json({ message: 'No offers found for this user\'s orders.' });
+        }
+
+        // Extract unique offer_ids
+        const uniqueOfferIds = [
+            ...new Set(orderOffers.map((orderOffer) => orderOffer.offer_id)),
+        ];
+
+        // Fetch all offers by their offer_ids
+        const offers = await Offer.findAll({
+            where: { offer_id: uniqueOfferIds },
+            include: [
+                {
+                    model: Product,
+                    attributes: ['name'], // Include the product name
+                },
+            ],
+            attributes: ['offer_id', 'price'], // Include the offer_id and price
+        });
+
+        // Transform the result to include product name and offer details
+        const offersWithDetails = offers.map((offer) => ({
+            offer_id: offer.offer_id,
+            product_name: offer.Product.name,
+            price: offer.price,
+        }));
+
+        res.status(200).json(offersWithDetails);
+    } catch (error) {
+        console.error('Error retrieving offers for user:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 // Get offers by order_id
 router.get('/:order_id', async (req, res) => {
     try {
@@ -108,6 +190,7 @@ router.get('/:order_id', async (req, res) => {
                     return {
                         offer_name: offer.Product.name, // Product name from the included Product model
                         price: parseFloat(offer.price) * orderOffer.quantity, // Calculate the total price
+                        quantity: orderOffer.quantity
                     };
                 }
 
@@ -125,31 +208,7 @@ router.get('/:order_id', async (req, res) => {
     }
 });
 
-// Get orders by user_id
-router.get('/user', async (req, res) => {
-    try {
-        const token = req.headers.authorization?.split(' ')[1];
 
-        if (!token) {
-            return res.status(401).json({ message: 'Unauthorized. Please log in.' });
-        }
-
-        // Decode token to get user_id
-        const decodedToken = jwtDecode(token);
-        const userId = decodedToken.userId;
-
-        // Retrieve all orders for the given user_id
-        const orders = await Order.findAll({
-            where: { user_id: userId },
-            order: [['date', 'DESC']], // Orders by most recent
-        });
-
-        res.status(200).json(orders);
-    } catch (error) {
-        console.error('Error fetching orders by user_id:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
 
 // Get a single order by ID with associated offers
 router.get('/:id', async (req, res) => {

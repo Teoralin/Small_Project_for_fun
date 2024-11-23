@@ -7,6 +7,7 @@ export default function ProductsPage() {
     const { id } = useParams(); // Product ID from the URL params
     const [product, setProduct] = useState(null); // Product details
     const [offers, setOffers] = useState([]); // Offers for this product
+    const [offerRatings, setOfferRatings] = useState({}); // Ratings for each offer
     const [isFarmer, setIsFarmer] = useState(false); // Check if the user is a farmer
     const [showForm, setShowForm] = useState(false); // Toggle add offer form
     const [purchaseOffer, setPurchaseOffer] = useState(null); // Offer being purchased
@@ -50,6 +51,23 @@ export default function ProductsPage() {
                     (offer) => offer.product_id === parseInt(id)
                 );
                 setOffers(productOffers);
+
+                // Fetch average ratings for offers
+                const ratings = await Promise.all(
+                    productOffers.map(async (offer) => {
+                        const ratingResponse = await axios.get(
+                            `http://localhost:3000/reviews/getAverage/${offer.offer_id}`
+                        );
+                        return { offer_id: offer.offer_id, averageRating: ratingResponse.data.averageRating };
+                    })
+                );
+
+                const ratingsMap = {};
+                ratings.forEach((rating) => {
+                    ratingsMap[rating.offer_id] = rating.averageRating;
+                });
+
+                setOfferRatings(ratingsMap);
             } catch (err) {
                 console.error('Error fetching data:', err);
                 setError('Error fetching product or offers data.');
@@ -178,6 +196,10 @@ export default function ProductsPage() {
                             <p><strong>Quantity:</strong> {offer.quantity}</p>
                             <p>
                                 <strong>Pickable:</strong> {offer.is_pickable ? 'Yes' : 'No'}
+                            </p>
+                            <p>
+                                <strong>Average Rating:</strong>{' '}
+                                {offerRatings[offer.offer_id] || 'No ratings yet'}
                             </p>
                             <button onClick={() => handlePurchaseClick(offer)}>
                                 Purchase
