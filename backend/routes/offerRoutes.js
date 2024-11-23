@@ -41,6 +41,28 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:user_id', async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        const offer = await Offer.findAll({
+            where: { user_id },
+            include: [
+                { model: Product, attributes: ['name', 'description'] },
+            ],
+        });
+
+        if (offer) {
+            res.status(200).json(offer);
+        } else {
+            res.status(404).json({ message: 'Offer not found' });
+        }
+    } catch (error) {
+        console.error('Error retrieving offer:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Retrieve a specific offer by product_id and user_id
 router.get('/:product_id/:user_id', async (req, res) => {
     try {
@@ -96,7 +118,33 @@ router.get('/:offer_id', async (req, res) => {
     }
 });
 
+router.put('/:offer_id', async (req, res) => {
+    try {
+        const { offer_id } = req.params;
 
+        // Find the offer by its ID
+        const offer = await Offer.findByPk(offer_id);
+
+        if (offer) {
+            // Update the offer properties
+            const updatedOffer = await offer.update({
+                price: req.body.price !== undefined ? req.body.price : offer.price,
+                quantity: req.body.quantity !== undefined ? req.body.quantity : offer.quantity,
+                status: req.body.status || offer.status,
+                is_pickable: req.body.is_pickable !== undefined ? req.body.is_pickable : offer.is_pickable,
+            });
+
+            // Respond with the updated offer
+            res.status(200).json({ message: 'Offer updated successfully', updatedOffer });
+        } else {
+            // Offer not found
+            res.status(404).json({ message: 'Offer not found' });
+        }
+    } catch (error) {
+        console.error('Error updating offer:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 // Update an offer by product_id and user_id
 router.put('/:product_id/:user_id', async (req, res) => {
     try {

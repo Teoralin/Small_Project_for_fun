@@ -16,6 +16,7 @@ export default function ProfilePage() {
 
     const navigate = useNavigate();
     const [userRole, setUserRole] = useState(null);
+    const [farmer, setFarmer] = useState('');
 
     const handleNavigate = (path) => {
         navigate(path);
@@ -55,6 +56,9 @@ export default function ProfilePage() {
                 }
 
                 const decodedToken = jwtDecode(token);
+                if(decodedToken.is_farmer){
+                    setFarmer('farmer');
+                }
                 setUserRole(decodedToken.role);
                 const userId = decodedToken.userId;
 
@@ -249,12 +253,14 @@ export default function ProfilePage() {
                 >
                     Orders
                 </button>
+                {farmer === "farmer" && (
                 <button type="Option"
                         className={classes.OptionButton}
                         onClick={() => handleNavigate('/offersList')}
                 >
                     Offers
                 </button>
+                )}
                 {userRole === "Administrator" && (
                 <button type="Option"
                         className={classes.OptionButton}

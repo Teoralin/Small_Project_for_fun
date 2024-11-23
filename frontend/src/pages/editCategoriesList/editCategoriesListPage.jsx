@@ -19,6 +19,7 @@ export default function EditUserListPage() {
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [filteredCategories, setFilteredCategories] = useState([]); 
     const [searchTerm, setSearchTerm] = useState('');
+    const [farmer, setFarmer] = useState('');
 
     useEffect(() => {
         const checkAuthorization = () => {
@@ -31,6 +32,9 @@ export default function EditUserListPage() {
 
             try {
                 const decodedToken = jwtDecode(token);
+                if(decodedToken.is_farmer){
+                    setFarmer('farmer');
+                }
                 if (decodedToken.role !== 'Moderator') {
                     setError('Access denied. Insufficient permissions.');
                 } else {
@@ -98,12 +102,14 @@ export default function EditUserListPage() {
                 >
                     Orders
                 </button>
+                {farmer === "farmer" && (
                 <button type="Option"
                         className={classes.OptionButton}
                         onClick={() => handleNavigate('/offersList')}
                 >
                     Offers
                 </button>
+                 )}
                 <button type="Option"
                         className={classes.OptionButtonSelected}
                 >
