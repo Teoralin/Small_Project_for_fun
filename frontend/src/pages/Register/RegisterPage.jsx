@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import api from '../../api';
 import classes from './RegisterPage.module.css';
 import MailIcon from "../../assets/Mail.png";
 import Key from "../../assets/Key.png";
@@ -81,7 +81,7 @@ export default function RegisterPage() {
             }
     
             // Send the request to the server
-            await axios.post('http://localhost:3000/auth/register', payload);
+            await api.post('/auth/register', payload);
 
             // Handle success
             setSuccess('User registered successfully!');

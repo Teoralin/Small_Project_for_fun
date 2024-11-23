@@ -5,15 +5,15 @@ import time from "../../assets/time-eat.png";
 import delivery from "../../assets/delivery.png";
 import paris from "../../assets/paris.png";
 import food from "../../assets/Plate.png";
-import insta_1 from "../../assets/insta_1.png";
-import insta_2 from "../../assets/insta_2.png";
+import insta_1 from "../../assets/Insta_1.png";
+import insta_2 from "../../assets/Insta_2.png";
 import insta_3 from "../../assets/Insta_3.png";
 import insta_4 from "../../assets/Insta_4.png";
 import insta_5 from "../../assets/Insta_5.png";
 import {Link, useNavigate} from "react-router-dom";
 import hand from "../../assets/Harvest_icon.png";
 import {jwtDecode} from 'jwt-decode';
-import axios from 'axios';
+import api from "../../api";
 
 export default function HomePage() {
     const [userRole, setUserRole] = useState(null);
@@ -61,7 +61,7 @@ export default function HomePage() {
         // Fetch users from the API using axios
         async function fetchUsers() {
             try {
-                const response = await axios.get('http://localhost:3000/users'); // Adjust the API URL
+                const response = await api.get('http://localhost:3000/users'); // Adjust the API URL
 
                 // Filter users who have 'is_farmer' set to true
                 const farmerUsers = response.data.filter(user => user.is_farmer === true);

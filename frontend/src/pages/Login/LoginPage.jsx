@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api';
 import classes from './LoginPage.module.css';
 import Key from "../../assets/Key.png";
 import MailIcon from "../../assets/Mail.png";
@@ -29,7 +29,7 @@ export default function LoginPage() {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:3000/auth/login', {
+            const response = await api.post('/auth/login', {
                 email: formData.email,
                 password: formData.password,
             });
