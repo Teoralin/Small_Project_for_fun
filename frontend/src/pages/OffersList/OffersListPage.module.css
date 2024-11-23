@@ -55,3 +55,33 @@
     font-weight: 300;
     font-size: 40px;
 }
+
+.QuantityUpdate {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.QuantityUpdate input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.QuantityUpdate button {
+    padding: 5px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.QuantityUpdate button:hover {
+    background-color: #0056b3;
+}
