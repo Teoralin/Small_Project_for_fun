@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import classes from './loginPage.module.css';
+import classes from './LoginPage.module.css';
 import Key from "../../assets/Key.png";
 import MailIcon from "../../assets/Mail.png";
 import { jwtDecode } from 'jwt-decode';
