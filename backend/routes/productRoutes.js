@@ -8,6 +8,11 @@ router.post('/', async (req, res) => {
     try {
         const { name, description, category_id } = req.body;
 
+        // Check if the name is null or empty
+        if (!name || name.trim() === '') {
+            return res.status(400).json({ message: 'Product name is required.' });
+        }
+
         // Create new product
         const product = await Product.create({
             name,
@@ -21,6 +26,7 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 
 // Get all products with category information
 router.get('/', async (req, res) => {

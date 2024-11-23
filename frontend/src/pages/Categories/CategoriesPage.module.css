@@ -30,30 +30,13 @@
 .CategoriesPage .SubcategoryCompo {
     display: flex;
     gap: 27px;
-    margin-left: 1rem;
-}
-
-.CategoriesPage img {
-    margin: auto;
-}
-
-.CategoriesPage .categoryButton {
-    margin: 10px;
-    background: #ffffff;
-    height: 136px;
-    width: 136px;
-    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
-    display: grid;
-    justify-items: center;
-    border: none;
+    margin: 30px 30px 30px 0;
 }
 
 .CategoriesPage .AddCompo {
     display: flex;
     margin-left: 37px;
 }
-
-
 
 .CategoriesPage .AddInput {
     margin: 30px;
@@ -70,66 +53,275 @@
 }
 
 .CategoriesPage .ProductsList {
-    display: flex;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    margin-left: 30px;
+    gap: 30px;
+
 }
 
 .CategoriesPage .Products {
     display: grid;
-    height: 334px;
+    height: 136px;
+    width: 136px;
+    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.CategoriesPage .SubcategoriesList {
+    display: grid;
+    height: 136px;
+    width: 136px;
+    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.CategoriesPage .ProductsCompo {
+    margin: 30px;
+    display: grid;
+    height: 296px;
     width: 296px;
     box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
     cursor: pointer;
+    justify-content: center;
+
 }
 
-.CategoriesPage .Products img {
-    margin: 0;
+.CategoriesPage .AddCompo {
+    margin: 30px;
+    display: grid;
+    height: 136px;
+    width: 136px;
+    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    justify-content: center;
+
+}
+
+.AddInput {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 296px;
 }
 
 .CategoriesPage .ProductText {
     cursor: pointer;
     display: grid;
     justify-content: center;
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
-    font-size: 30px;
-    height: 150px;
+    width: inherit;
+    height: 100%;
+    align-content: center;
+    text-align: center;
+    padding: 20px
 }
 
 .CategoriesPage .categoryButton {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    width: inherit;
+    height: 100%;
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.CategoriesPage .AddCompo img {
+    height: 32px;
+    width: 32px;
+    margin: auto;
+}
+
+.CategoriesPage .TitleAdd {
+    display: grid;
+    justify-content: center;
+}
+
+
+.CategoriesPage .TitleCategory {
+    display: grid;
+    justify-content: center;
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 30px;
+}
+
+.CategoriesPage .TitleCategory img {
+    margin: auto;
+}
+
+
+.CategoriesPage .AddFormInsideButton {
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.CategoriesPage .AddFormInsideButton input {
+    padding: 8px;
+    margin: 0 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.CategoriesPage .FormButtons {
+    display: flex;
+    gap: 20px;
     justify-content: center;
-    align-items: center;
-    text-align: center;
-    background-color: white;  /* Цвет фона кнопки */
+}
+
+.CategoriesPage .FormButtons button {
+    padding: 8px 16px;
+    background-color: #FFE145;
+    color: #B79C10;
     border: none;
-    padding: 20px;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
     cursor: pointer;
 }
 
-.CategoriesPage .categoryButton:hover {
-    background-color: #f0f0f0;  /* Светлый фон при наведении */
+.CategoriesPage .removeButton {
+    margin: 30px 30px 0 30px;
+    padding: 8px 16px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
+.CategoriesPage .removeButton:hover {
+    background-color: #e53935;
+}
+
+.CategoriesPage .NoProductsFound {
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    margin: 30px;
+}
+
+.CategoriesPage .NosubcategoriesFound {
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    margin-left: 30px;
+}
+
+
+.CategoriesPage .FormButtons button:hover {
+    background-color: #FFD700;
+}
+
+.CategoriesPage .FormButtons button:last-child {
+    background-color: #ccc;
+    color: black;
+}
+
+.CategoriesPage .FormButtons button:last-child:hover {
+    background-color: #aaa;
+}
 
 
 .CategoriesPage .AddInput button {
     padding: 10px 20px;
     border: none;
-    background-color: #007BFF;
-    color: white;
+    background-color: #FFE145;
+    color: #B79C10;
     font-size: 16px;
     cursor: pointer;
 }
 
 .CategoriesPage .AddInput button:hover {
-    background-color: #0056b3;
+    background-color: #FFD700;
 }
 
-.CategoriesPage .ProductsCompo {
+.CategoriesPage .SuggestedCategories {
+    border-radius: 8px;
+    padding: 30px;
+    margin-top: 20px;
+}
+
+.CategoriesPage .SuggestedCategories h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.CategoriesPage .CategoryList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.CategoriesPage .CategoryItem {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+.CategoriesPage .CategoryDetails p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #555;
+}
+
+.CategoriesPage .CategoryItem p strong {
+    color: #333;
+}
+
+.CategoriesPage .ButtonsContainer {
+    display: flex;
+    gap: 10px;
+}
+
+.CategoriesPage .ApproveButton, .DisapproveButton {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.CategoriesPage .ApproveButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+
+.CategoriesPage .ApproveButton:hover {
+    background-color: #45a049;
+}
+
+.CategoriesPage .DisapproveButton {
+    background-color: #f44336;
+    color: white;
+    border: none;
+}
+
+.CategoriesPage .DisapproveButton:hover {
+    background-color: #e53935;
+}
+
+.CategoriesPage .SectionTitle {
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
 

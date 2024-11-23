@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import classes from './CategoriesPage.module.css';
+import Add from "../../assets/Add.png";
 
 export default function CategoriesPage() {
     const { id } = useParams(); // Get the category ID from the URL params (if provided)
@@ -122,6 +123,11 @@ export default function CategoriesPage() {
     };
 
     const handleAddCategory = async () => {
+        if (!newCategory.name || newCategory.name.trim() === '') {
+            setNewCategory({ name: '', description: '' });
+            setSuccessMessage('Category must have a name!');
+            return;
+        }
         try {
             const token = localStorage.getItem('token');
                 if (!token) {
@@ -156,6 +162,13 @@ export default function CategoriesPage() {
     };
 
     const handleAddProduct = async () => {
+        // Validation for product name
+        if (!newProduct.name || newProduct.name.trim() === '') {
+            setNewProduct({ name: '', description: '' });
+            setSuccessMessage('Product must have a name!');
+            return;
+        }
+
         try {
             const payload = {
                 ...newProduct,
@@ -168,24 +181,20 @@ export default function CategoriesPage() {
                 },
             });
 
-            setSuccessMessage('Product added successfully!');
-            setError('');
+            // Clear inputs and reset states after success
             setNewProduct({ name: '', description: '' });
-
-            // Refresh products
-            const productResponse = await axios.get('http://localhost:3000/products');
-            const categoryProducts = productResponse.data.filter(
-                (product) => product.category_id === parseInt(id)
-            );
-            setProducts(categoryProducts);
+            setError(''); // Clear any existing errors
+            setSuccessMessage('Product added successfully!');
         } catch (err) {
-            setError('Error adding product');
-            console.error(err);
+            console.error('Error adding product:', err);
+            setError('Error adding product. Please try again.');
         }
     };
 
+
+
     const handleDeleteCategory = async () => {
-        if (!id) return; // No category to delete if id is not provided
+        if (!id) return;
 
         try {
             await axios.delete(`http://localhost:3000/categories/${id}`, {
@@ -258,7 +267,7 @@ export default function CategoriesPage() {
         }
     };
 
-    const isLeafCategory = categories.length === 0; // Category has no subcategories
+    const isLeafCategory = categories.length === 0;
     console.log(categories);
     if (error) {
         return <div>{error}</div>;
@@ -266,63 +275,57 @@ export default function CategoriesPage() {
 
     return (
         <div className={classes.CategoriesPage}>
-            <div className={classes.PageTitle}>
-            </div>
             {id ? (
                 <>
-                    <p onClick={() => handleNavigate(parentCategory?.category_id)} className={classes.CategoryName}>
-                        {parentCategory?.name}
-                    </p>
-                    <p>{parentCategory?.description}</p>
-                    {categories.length > 0 &&
-                        categories.map((category) => (
-                            <div key={category.category_id}>
-                                <button
-                                    onClick={() => handleNavigate(category.category_id)}
-                                    className={classes.categoryButton}
-                                >
-                                    {category.name}
-                                </button>
-                                <div className={classes.separator}></div>
-                            </div>
-                        ))}
+                    <div>
+                        {/* Отображаем имя родительской категории */}
+                        <p onClick={() => handleNavigate(parentCategory?.category_id)} className={classes.CategoryName}>
+                            {parentCategory?.name}
+                        </p>
+                        <p className={classes.CategoryDescription}>{parentCategory?.description}</p>
 
-                    {products.length > 0 && (
-                        <>
+                        {/* Отображаем подкатегории */}
+                        {categories.length > 0 && (
                             <div className={classes.ProductsList}>
-                                {products.map((product) => (
-                                    // eslint-disable-next-line react/jsx-key
-                                    <div className={classes.Products}>
-                                        <img
-                                            src="https://via.placeholder.com/296x184"
-                                            alt="User Avatar"
-                                        />
-                                        <p
-                                            key={product.product_id}
-                                            onClick={() => handleNavigateToProduct(product.product_id)}
-                                            className={classes.ProductText}
+                                {categories.map((category) => (
+                                    <div key={category.category_id} className={classes.SubcategoriesList}>
+                                        <button
+                                            onClick={() => handleNavigate(category.category_id)}
+                                            className={classes.categoryButton}
                                         >
-                                            {product.name}
-                                        </p>
+                                            {category.name}
+                                        </button>
+
                                     </div>
                                 ))}
                             </div>
-                        </>
-                    )}
+                        )}
+                    </div>
+
 
                     {isLeafCategory && (userRole === 'Moderator'
                         || userRole === 'Administrator'
                         || userRole === 'Registered User') && (
-                        <div className={classes.ProductsCompo}>
-                            <div className={classes.Products}>
-                                <button
-                                    onClick={() => setShowForm(!showForm)}
-                                    className={classes.categoryButton}
-                                >
-                                    {showForm ? 'Cancel' : 'Add Product'}
-                                </button>
-                            </div>
+                        <div>
+                            {!showForm && (
 
+                                <div className={classes.AddCompo}>
+
+                                    <button onClick={() => setShowForm(true)} className={classes.categoryButton}>
+                                        <div
+                                            className={classes.TitleAdd}> {/* Используем TitleCategory как у продуктов */}
+                                            <img
+                                                src={Add}
+                                                alt="Add Icon"
+                                                className={classes.icon}
+                                            />
+                                            Add Product
+                                        </div>
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Форма для заполнения */}
                             {showForm && (
                                 <div className={classes.AddInput}>
                                     <input
@@ -339,14 +342,44 @@ export default function CategoriesPage() {
                                         value={newProduct.description}
                                         onChange={(e) => handleInputChange(e, 'product')}
                                     />
-                                    <button onClick={handleAddProduct}>Add Product</button>
+                                    <div className={classes.FormButtons}>
+                                        {/* Кнопка Cancel для закрытия формы */}
+                                        <button onClick={() => setShowForm(false)}>Cancel</button>
+                                        {/* Кнопка Submit для отправки формы */}
+                                        <button onClick={handleAddProduct}>Submit</button>
+                                    </div>
                                 </div>
                             )}
+
+                            <div className={classes.separator}></div>
                         </div>
                     )}
 
 
-                    {/* Remove Current Category Button (if no subcategories and no products) */}
+                    <div>
+
+                        {products.length > 0 ? (
+                            <>
+                                <div className={classes.ProductsList}>
+                                    {products.map((product) => (
+                                        <div key={product.product_id} className={classes.Products}>
+                                            <p
+                                                onClick={() => handleNavigateToProduct(product.product_id)}
+                                                className={classes.ProductText}
+                                            >
+                                                {product.name}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+
+                            <p className={classes.NoProductsFound}>No products found</p>
+                            )}
+                        <div className={classes.separator}></div>
+                    </div>
+
                     {isLeafCategory &&
                         products.length === 0 &&
                         (userRole === 'Moderator' || userRole === 'Administrator') && (
@@ -356,13 +389,17 @@ export default function CategoriesPage() {
                             >
                                 Remove Current Category
                             </button>
-                        )}
+                        )
+                    }
                 </>
             ) : (
-                categories.map((category) => (
+
+                categories.map((category, index) => (
                     <div key={category.category_id}>
+                        {index === 0 && <div className={classes.PageTitle}>Categories</div>}
+
                         <div className={classes.CategoryCompo}>
-                            <p
+                        <p
                                 onClick={() => handleNavigate(category.category_id)}
                                 style={{cursor: 'pointer'}}
                                 className={classes.CategoryName}
@@ -370,27 +407,31 @@ export default function CategoriesPage() {
                                 {category.name}
                             </p>
                             <div className={classes.SubcategoryCompo}>
-                            {category.Subcategories?.filter(
-                                    (sub) => sub.was_approved === true || userRole === "Moderator" // Show unapproved categories only to Moderators
-                                )
-                                .map((sub) => (
-                                    <div key={sub.category_id}>
-                                        <button
-                                            onClick={() => handleNavigate(sub.category_id)}
-                                            className={classes.categoryButton}
-                                        >
-                                            <img
-                                                src="https://via.placeholder.com/48x48"
-                                                alt="User Avatar"
-                                            />
-                                            {sub.name}
-                                            {!sub.was_approved && userRole === "Moderator" && (
-                                                <span style={{ color: "red" }}> (Pending Approval)</span>
-                                            )} 
-                                        </button>
+                                {category.Subcategories?.filter(
+                                    (sub) => sub.was_approved === true || userRole === "Moderator"  // Показываем неподтвержденные категории только для Модераторов
+                                ).length > 0 ? (
+                                    <div className={classes.ProductsList}>
+                                        {category.Subcategories.filter(
+                                            (sub) => sub.was_approved === true || userRole === "Moderator"
+                                        ).map((sub) => (
+                                            <div key={sub.category_id} className={classes.SubcategoriesList}>
+                                                <p
+                                                    onClick={() => handleNavigate(sub.category_id)}
+                                                    className={classes.ProductText}
+                                                >
+                                                    {sub.name}
+                                                    {!sub.was_approved && userRole === "Moderator" && (
+                                                        <span style={{color: "red"}}> (Pending Approval)</span>
+                                                    )}
+                                                </p>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                ) : (
+                                    <p className={classes.NosubcategoriesFound}>No subcategories found</p>
+                                )}
                             </div>
+
                         </div>
                         <div className={classes.separator}></div>
                     </div>
@@ -402,66 +443,78 @@ export default function CategoriesPage() {
                 || userRole === 'Administrator'
                 || userRole === 'Registered User') && (
                 <div>
-                    <div className={classes.AddCompo}>
-                        <button onClick={() => setShowForm(!showForm)} className={classes.categoryButton}>
-                            <img
-                                src="https://via.placeholder.com/48x48"
-                                alt="User Avatar"
-                            />
-                            {showForm ? 'Cancel' : 'Add Category'}
-                        </button>
+                    {!showForm && (
+                        <div className={classes.AddCompo}>
+                            <button onClick={() => setShowForm(!showForm)} className={classes.categoryButton}>
+                                <div className={classes.TitleAdd}> {/* Используем TitleCategory как у продуктов */}
+                                    <img
+                                        src={Add}
+                                        alt="Add Icon"
+                                        className={classes.icon}
+                                    />
+                                    {showForm ? null : 'Add Category'}
+                                </div>
+                            </button>
+                        </div>
+                    )}
 
-                        {showForm && (
-                            <div className={classes.AddInput}>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="Category Name"
-                                    value={newCategory.name}
-                                    onChange={(e) => handleInputChange(e, 'category')}
-                                />
-                                <input
-                                    type="text"
-                                    name="description"
-                                    placeholder="Category Description"
-                                    value={newCategory.description}
-                                    onChange={(e) => handleInputChange(e, 'category')}
-                                />
+                    {showForm && (
+                        <div className={classes.AddInput}>
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Category Name"
+                                value={newCategory.name}
+                                onChange={(e) => handleInputChange(e, 'category')}
+                            />
+                            <input
+                                type="text"
+                                name="description"
+                                placeholder="Category Description"
+                                value={newCategory.description}
+                                onChange={(e) => handleInputChange(e, 'category')}
+                            />
+                            <div className={classes.FormButtons}>
+                                <button onClick={() => setShowForm(false)}>Cancel</button>
                                 <button onClick={handleAddCategory}>Submit</button>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
+
                     <div className={classes.separator}></div>
                 </div>
             )}
 
             {userRole === 'Moderator' && suggestedCategory?.length > 0 && (
                 <div className={classes.SuggestedCategories}>
-                    <h3>Suggested Categories (Pending Approval)</h3>
-                    <ul>
+                    <p className={classes.SectionTitle}>Suggested Categories (Pending Approval)</p>
+                    <ul className={classes.CategoryList}>
                         {suggestedCategory.map((category) => (
                             <li key={category.category_id} className={classes.CategoryItem}>
-                                <div>
-                                    <p><strong>Name:</strong> {category.name}</p>
-                                    <p><strong>Description:</strong> {category.description}</p>
+                                <div className={classes.CategoryDetails}>
+                                    <p>Name: {category.name}</p>
+                                    <p>Description: {category.description}</p>
                                 </div>
-                                <button
-                                    className={classes.ApproveButton}
-                                    onClick={() => handleApproveCategory(category.category_id)}
-                                >
-                                    Approve
-                                </button>
-                                <button
-                                    className={classes.DisapproveButton}
-                                    onClick={() => handleDeleteCategoryFromSuggested(category.category_id)}
-                                >
-                                    Remove this Category
-                                </button>
+                                <div className={classes.ButtonsContainer}>
+                                    <button
+                                        className={classes.ApproveButton}
+                                        onClick={() => handleApproveCategory(category.category_id)}
+                                    >
+                                        Approve
+                                    </button>
+                                    <button
+                                        className={classes.DisapproveButton}
+                                        onClick={() => handleDeleteCategoryFromSuggested(category.category_id)}
+                                    >
+                                        Remove this Category
+                                    </button>
+                                </div>
                             </li>
                         ))}
                     </ul>
                 </div>
             )}
+
 
             {successMessage && <p>{successMessage}</p>}
         </div>

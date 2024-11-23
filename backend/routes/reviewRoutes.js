@@ -50,6 +50,33 @@ router.post('/', async (req, res) => {
     }
 });
 
+// Get average rating for a specific offer
+router.get('/getAverage/:offer_id', async (req, res) => {
+    try {
+        const { offer_id } = req.params;
+
+        // Fetch all reviews for the given offer_id
+        const reviews = await Review.findAll({
+            where: { offer_id },
+            attributes: ['rating'], // Only fetch the rating field
+        });
+
+        // If there are no reviews, return 0
+        if (reviews.length === 0) {
+            return res.status(200).json({ averageRating: 0 });
+        }
+
+        // Calculate the average rating
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = totalRating / reviews.length;
+
+        res.status(200).json({ averageRating: averageRating.toFixed(2) }); // Return the average rating (2 decimal places)
+    } catch (error) {
+        console.error('Error fetching average rating:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Get a review by user_id and offer_id
 router.get('/:user_id/:offer_id', async (req, res) => {
     try {
@@ -115,32 +142,7 @@ router.put('/:review_id', async (req, res) => {
     }
 });
 
-// Get average rating for a specific offer
-router.get('/getAverage/:offer_id', async (req, res) => {
-    try {
-        const { offer_id } = req.params;
 
-        // Fetch all reviews for the given offer_id
-        const reviews = await Review.findAll({
-            where: { offer_id },
-            attributes: ['rating'], // Only fetch the rating field
-        });
-
-        // If there are no reviews, return 0
-        if (reviews.length === 0) {
-            return res.status(200).json({ averageRating: 0 });
-        }
-
-        // Calculate the average rating
-        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-        const averageRating = totalRating / reviews.length;
-
-        res.status(200).json({ averageRating: averageRating.toFixed(2) }); // Return the average rating (2 decimal places)
-    } catch (error) {
-        console.error('Error fetching average rating:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
 
 // Delete a review by review_id
 router.delete('/:review_id', async (req, res) => {

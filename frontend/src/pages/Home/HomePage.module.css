@@ -196,7 +196,8 @@
 
 .HomePage .userCompo {
     list-style: none;
-    display: inline-block;
+    display: grid;
+    align-content: center;
     width: 296px;
     height: 296px;
     margin-right: 30px;
@@ -226,7 +227,6 @@
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Позиционируем кнопки */
 .HomePage .scrollButton:first-child {
     left: 0;
 }
