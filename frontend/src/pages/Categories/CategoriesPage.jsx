@@ -123,6 +123,11 @@ export default function CategoriesPage() {
     };
 
     const handleAddCategory = async () => {
+        if (!newCategory.name || newCategory.name.trim() === '') {
+            setNewCategory({ name: '', description: '' });
+            setSuccessMessage('Category must have a name!');
+            return;
+        }
         try {
             const token = localStorage.getItem('token');
                 if (!token) {
@@ -157,6 +162,13 @@ export default function CategoriesPage() {
     };
 
     const handleAddProduct = async () => {
+        // Validation for product name
+        if (!newProduct.name || newProduct.name.trim() === '') {
+            setNewProduct({ name: '', description: '' });
+            setSuccessMessage('Product must have a name!');
+            return;
+        }
+
         try {
             const payload = {
                 ...newProduct,
@@ -169,21 +181,17 @@ export default function CategoriesPage() {
                 },
             });
 
-            setSuccessMessage('Product added successfully!');
-            setError('');
+            // Clear inputs and reset states after success
             setNewProduct({ name: '', description: '' });
-
-            // Refresh products
-            const productResponse = await axios.get('http://localhost:3000/products');
-            const categoryProducts = productResponse.data.filter(
-                (product) => product.category_id === parseInt(id)
-            );
-            setProducts(categoryProducts);
+            setError(''); // Clear any existing errors
+            setSuccessMessage('Product added successfully!');
         } catch (err) {
-            setError('Error adding product');
-            console.error(err);
+            console.error('Error adding product:', err);
+            setError('Error adding product. Please try again.');
         }
     };
+
+
 
     const handleDeleteCategory = async () => {
         if (!id) return;
@@ -476,11 +484,6 @@ export default function CategoriesPage() {
                     <div className={classes.separator}></div>
                 </div>
             )}
-
-
-
-
-
 
             {userRole === 'Moderator' && suggestedCategory?.length > 0 && (
                 <div className={classes.SuggestedCategories}>
