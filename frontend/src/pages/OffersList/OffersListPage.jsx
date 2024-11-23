@@ -52,7 +52,7 @@ export default function OffersListPage() {
                 const userId = decodedToken.userId; 
 
                 // Fetch offers from the backend
-                const response = await axios.get(`http://localhost:3000/offers/${userId}`, {
+                const response = await axios.get(`http://localhost:3000/offers/user/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

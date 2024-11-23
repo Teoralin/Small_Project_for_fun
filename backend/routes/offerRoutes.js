@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:user_id', async (req, res) => {
+router.get('/user/:user_id', async (req, res) => {
     try {
         const { user_id } = req.params;
 
