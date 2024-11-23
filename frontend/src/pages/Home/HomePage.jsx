@@ -61,7 +61,7 @@ export default function HomePage() {
         // Fetch users from the API using axios
         async function fetchUsers() {
             try {
-                const response = await api.get('http://localhost:3000/users'); // Adjust the API URL
+                const response = await api.get('/users');  
 
                 // Filter users who have 'is_farmer' set to true
                 const farmerUsers = response.data.filter(user => user.is_farmer === true);

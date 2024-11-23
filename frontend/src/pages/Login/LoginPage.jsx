@@ -5,6 +5,7 @@ import classes from './LoginPage.module.css';
 import Key from "../../assets/Key.png";
 import MailIcon from "../../assets/Mail.png";
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
 
 export default function LoginPage() {
@@ -29,7 +30,7 @@ export default function LoginPage() {
         e.preventDefault();
 
         try {
-            const response = await api.post('/auth/login', {
+            const response = await axios.post('https://backend-4g4p.onrender.com/auth/login', {
                 email: formData.email,
                 password: formData.password,
             });
