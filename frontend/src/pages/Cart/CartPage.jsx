@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
 
 export default function CartPage() {
     const [cartItems, setCartItems] = useState([]); // Cart items
     const [totalPrice, setTotalPrice] = useState(0); // Total price of all items
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState(''); // Success message
 
     // Fetch cart items and offers
     useEffect(() => {
@@ -18,9 +18,6 @@ export default function CartPage() {
             }
 
             try {
-                // Decode the user ID from the token (for validation if needed)
-                const decodedToken = jwtDecode(token);
-
                 // Fetch cart items
                 const cartResponse = await axios.get('http://localhost:3000/cart', {
                     headers: {
@@ -105,12 +102,48 @@ export default function CartPage() {
         }
     };
 
+    // Handle checkout
+    const handleCheckout = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            // Call the backend checkout route
+            const response = await axios.post(
+                'http://localhost:3000/orders/checkout',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // Clear the cart and show success message
+            setCartItems([]);
+            setTotalPrice(0);
+            setSuccessMessage(response.data.message);
+            setError('');
+        } catch (err) {
+            console.error('Error during checkout:', err);
+            setError('Error during checkout. Please try again.');
+        }
+    };
+
     if (error) {
         return <div>{error}</div>;
     }
 
     if (cartItems.length === 0) {
-        return <div style={{ marginTop: '5em' }}>Your cart is empty.</div>;
+        return (
+            <div style={{ marginTop: '5em' }}>
+                {successMessage ? (
+                    <div>
+                        <h2>{successMessage}</h2>
+                    </div>
+                ) : (
+                    <div>Your cart is empty.</div>
+                )}
+            </div>
+        );
     }
 
     return (
@@ -128,7 +161,9 @@ export default function CartPage() {
                 ))}
             </ul>
             <h2>Total Price: {totalPrice} CZK</h2>
-            <button>Checkout</button>
+            <button onClick={handleCheckout}>Checkout</button>
+            {successMessage && <p>{successMessage}</p>}
         </div>
     );
 }
+

@@ -25,6 +25,11 @@ const OrderOffer = sequelize.define('OrderOffer', {
         onDelete: 'CASCADE',
     },
 
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    }
+
 }, {
     tableName: 'OrderOffers',
 });

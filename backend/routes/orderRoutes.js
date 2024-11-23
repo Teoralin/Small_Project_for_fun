@@ -1,6 +1,8 @@
 const express = require('express');
-const { Order, Offer, OrderOffer } = require('../models'); 
-const sequelize = require('../dbconfig/sequelize'); 
+const { Order, Offer, OrderOffer, Product } = require('../models');
+const sequelize = require('../dbconfig/sequelize');
+const { getCart, clearCart } = require('../middleware/cartService');
+const {jwtDecode} = require('jwt-decode');
 
 const router = express.Router();
 
@@ -71,6 +73,80 @@ router.get('/', async (req, res) => {
         res.status(200).json(orders);
     } catch (error) {
         console.error('Error retrieving orders:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get offers by order_id
+router.get('/:order_id', async (req, res) => {
+    try {
+        const { order_id } = req.params;
+
+        // Retrieve all rows from OrderOffers filtered by order_id
+        const orderOffers = await OrderOffer.findAll({
+            where: { order_id }, // Filter by order_id
+        });
+
+        if (!orderOffers.length) {
+            return res.status(404).json({ message: 'No offers found for this order.' });
+        }
+
+        // Fetch offer details for each offer_id in OrderOffers
+        const offersWithDetails = await Promise.all(
+            orderOffers.map(async (orderOffer) => {
+                const offer = await Offer.findByPk(orderOffer.offer_id, {
+                    include: [
+                        {
+                            model: Product,
+                            attributes: ['name'], // Fetch the product name
+                        },
+                    ],
+                    attributes: ['price'], // Fetch the price
+                });
+
+                if (offer) {
+                    return {
+                        offer_name: offer.Product.name, // Product name from the included Product model
+                        price: parseFloat(offer.price) * orderOffer.quantity, // Calculate the total price
+                    };
+                }
+
+                return null; // Skip offers that are not found
+            })
+        );
+
+        // Filter out any null results (e.g., if an offer is missing)
+        const validOffers = offersWithDetails.filter((offer) => offer !== null);
+
+        res.status(200).json(validOffers);
+    } catch (error) {
+        console.error('Error retrieving offers by order_id:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get orders by user_id
+router.get('/user', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({ message: 'Unauthorized. Please log in.' });
+        }
+
+        // Decode token to get user_id
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;
+
+        // Retrieve all orders for the given user_id
+        const orders = await Order.findAll({
+            where: { user_id: userId },
+            order: [['date', 'DESC']], // Orders by most recent
+        });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error('Error fetching orders by user_id:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -151,6 +227,8 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+
+
 // Delete an order and disassociate its offers
 router.delete('/:id', async (req, res) => {
     const transaction = await sequelize.transaction();
@@ -185,6 +263,91 @@ router.delete('/:id', async (req, res) => {
         await transaction.rollback();
         console.error('Error deleting order:', error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Checkout Route
+router.post('/checkout', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Extract token from Authorization header
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    try {
+        // Decode user ID from token
+        const { userId } = jwtDecode(token);
+
+        // Get the user's cart from the cart service
+        const cart = getCart(userId);
+        if (!cart || cart.length === 0) {
+            return res.status(400).json({ message: 'Cart is empty.' });
+        }
+
+        // Validate cart items and calculate total price
+        let totalPrice = 0;
+        const validatedItems = [];
+
+        for (const item of cart) {
+            const offer = await Offer.findByPk(item.offer_id);
+
+            if (!offer) {
+                return res.status(404).json({ message: `Offer with ID ${item.offer_id} not found.` });
+            }
+
+            if (offer.quantity < item.quantity) {
+                return res.status(400).json({
+                    message: `Requested quantity (${item.quantity}) exceeds available stock (${offer.quantity}) for offer ID ${item.offer_id}.`
+                });
+            }
+
+            totalPrice += offer.price * item.quantity;
+
+            // Add validated item for further processing
+            validatedItems.push({
+                offer_id: item.offer_id,
+                quantity: item.quantity,
+                price: offer.price,
+            });
+        }
+
+        // Create a new order
+        const newOrder = await Order.create({
+            user_id: userId,
+            date: new Date(),
+            amount: totalPrice,
+        });
+
+        // Insert into OrderOffer table and update Offer quantities
+        for (const item of validatedItems) {
+            await OrderOffer.create({
+                order_id: newOrder.order_id,
+                quantity: item.quantity,
+                offer_id: item.offer_id,
+            });
+
+            // Deduct purchased quantity from the offer
+            const offer = await Offer.findByPk(item.offer_id);
+            await offer.update({
+                quantity: offer.quantity - item.quantity,
+                status: offer.quantity - item.quantity === 0 ? 'Sold' : 'Available',
+            });
+        }
+
+        // Clear the user's cart
+        clearCart(userId);
+
+        // Return success response
+        res.status(201).json({
+            message: 'Order created successfully.',
+            order: {
+                id: newOrder.order_id,
+                total: totalPrice,
+                items: validatedItems,
+            },
+        });
+    } catch (error) {
+        console.error('Error during checkout:', error);
+        res.status(500).json({ error: 'Internal server error.' });
     }
 });
 
