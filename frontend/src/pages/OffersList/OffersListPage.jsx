@@ -133,8 +133,38 @@ export default function OffersListPage() {
         }
     };
 
+    const handleDeleteHarvest = async (harvestEventId) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:3000/harvests/${harvestEventId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setUserOffers((prevOffers) =>
+                prevOffers.map((offer) => {
+                    if (offer.selfHarvestEvents) {
+                        offer.selfHarvestEvents = offer.selfHarvestEvents.filter(
+                            (event) => event.event_id !== harvestEventId
+                        );
+                    }
+                    return offer;
+                })
+            );
+
+            setError('');
+        } catch (err) {
+            setError('Failed to delete self-harvest event');
+        }
+    };
+
     const handleNavigate = (path) => {
         navigate(path);
+    };
+
+    const handleAddHarvest = (offer) => {
+        navigate('/editHarvest', { state: { offerId: offer.offer_id, userId: offer.user_id } });
     };
 
     return (
@@ -254,11 +284,54 @@ export default function OffersListPage() {
                                         Update
                                     </button>
                                 </div>
+                                {/* List of self-harvest events */}
+                                <div className={classes.SelfHarvestEvents}>
+                                    <h4>Self-Harvest Events</h4>
+                                    {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
+                                        <div className={classes.SelfHarvestList}>
+                                            {offer.selfHarvestEvents.map((event) => (
+                                                <div key={event.event_id} className={classes.SelfHarvestCard}>
+                                                    <p>Harvest Date: {event.date}</p>
+                                                    <p>Quantity: {event.quantity}</p>
+                                                    <div className={classes.SelfHarvestActions}>
+                                                        <button
+                                                            onClick={() => handleAddHarvest(event)} //TODO edit 
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteHarvest(event.event_id)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p>No self-harvest events yet.</p>
+                                    )}
+                                </div> 
+                                <div className={classes.AddSelfHarvest}>
+                                    <button
+                                        onClick={() => handleAddHarvest(offer)}
+                                    >
+                                        Add self harvest
+                                    </button>
+                                </div>
                             </div>
                         ))}
+                        <div className={classes.AddSelfHarvest}>
+                            <button
+                                onClick={() => handleNavigate('/categories')}
+                            >
+                                Add new offer
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
+             
         </div>
     )
 }

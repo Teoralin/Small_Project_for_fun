@@ -4,7 +4,7 @@ const { Address, User } = require('../models');
 
 const router = express.Router();
 
-// Create a new farmer
+
 router.post('/', async (req, res) => {
     try {
         const dUser = await User.findByPk(req.body.user_id);
@@ -23,7 +23,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get all farmers
 router.get('/', async (req, res) => {
     try {
         const farmers = await Address.findAll({
@@ -38,11 +37,11 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get a single farmer by user ID
+//find address of user
 router.get('/:id', async (req, res) => {
     try {
         const farmer = await Address.findOne({
-            where: { user_id: req.params.id }, // Query by user_id
+            where: { user_id: req.params.id }, 
             include: [
                 {
                     model: User,
@@ -62,7 +61,6 @@ router.get('/:id', async (req, res) => {
 });
 
 
-// Update a farmer by user ID
 router.put('/:id', async (req, res) => {
     try {
         const farmer = await Address.findOne({

@@ -1,0 +1,58 @@
+.SelfHarvestEventForm {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: white;
+    background-color: #28a745;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background-color: #218838;
+}
+
+.error {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.success {
+    color: #28a745;
+    text-align: center;
+    margin-bottom: 15px;
+}

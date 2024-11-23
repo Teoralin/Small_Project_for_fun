@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
-const Farmer = require('./Address');
+const Offer = require('./Offer');
+const Address = require('./Address');
 
 const SelfHarvestEvent = sequelize.define('SelfHarvestEvent', {
     event_id: {
@@ -8,19 +9,25 @@ const SelfHarvestEvent = sequelize.define('SelfHarvestEvent', {
         primaryKey: true,
         autoIncrement: true,
     },
-    user_id: {
+    offer_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Farmer,
-            key: 'user_id',
+            model: Offer,
+            key: 'offer_id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    location: {
-        type: DataTypes.STRING,
+    address_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: Address,
+            key: 'address_id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
     },
     start_date: {
         type: DataTypes.DATE,
@@ -34,6 +41,7 @@ const SelfHarvestEvent = sequelize.define('SelfHarvestEvent', {
     tableName: 'SelfHarvestEvents',
 });
 
-SelfHarvestEvent.belongsTo(Farmer, { foreignKey: 'user_id' });
+SelfHarvestEvent.belongsTo(Offer, { foreignKey: 'offer_id' });
+SelfHarvestEvent.hasOne(Address, {foreignKey: 'address_id'});
 
 module.exports = SelfHarvestEvent;

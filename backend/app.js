@@ -12,6 +12,7 @@ const offerRoutes = require('./routes/offerRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const harvestRoutes = require('./routes/harvestRoutes');
 
 const { sequelize } = require('./models');
 
@@ -34,6 +35,7 @@ app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/offers', offerRoutes);
 app.use('/orders', orderRoutes);
+app.use('/harvests', harvestRoutes);
 // Add the auth routes
 app.use('/auth', authRoutes);
 // Add the cart routes
