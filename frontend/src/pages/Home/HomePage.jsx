@@ -165,13 +165,6 @@ export default function HomePage() {
                         >
                             {filteredUsers.map((user) => (
                                 <li key={user.user_id} className={classes.userCompo}>
-                                    <div>
-                                        <img
-                                            src="https://via.placeholder.com/296x184"
-                                            alt="User Avatar"
-                                        />
-                                    </div>
-
                                     <div className={classes.UserInfo}>
                                         {user.name} <br />
                                         {user.surname}
