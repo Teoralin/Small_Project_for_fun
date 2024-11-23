@@ -77,6 +77,29 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get orders by user_id
+router.get('/by-user', async (req, res) => {
+    try {
+        const { userId } = req.query;
+
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required.' });
+        }
+
+        // Retrieve all orders for the given user_id
+        const orders = await Order.findAll({
+            where: { user_id: userId },
+            order: [['date', 'DESC']], // Orders by most recent
+        });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error('Error fetching orders by user_id:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 // Get offers by order_id
 router.get('/:order_id', async (req, res) => {
     try {
@@ -108,6 +131,7 @@ router.get('/:order_id', async (req, res) => {
                     return {
                         offer_name: offer.Product.name, // Product name from the included Product model
                         price: parseFloat(offer.price) * orderOffer.quantity, // Calculate the total price
+                        quantity: orderOffer.quantity
                     };
                 }
 
@@ -125,31 +149,7 @@ router.get('/:order_id', async (req, res) => {
     }
 });
 
-// Get orders by user_id
-router.get('/user', async (req, res) => {
-    try {
-        const token = req.headers.authorization?.split(' ')[1];
 
-        if (!token) {
-            return res.status(401).json({ message: 'Unauthorized. Please log in.' });
-        }
-
-        // Decode token to get user_id
-        const decodedToken = jwtDecode(token);
-        const userId = decodedToken.userId;
-
-        // Retrieve all orders for the given user_id
-        const orders = await Order.findAll({
-            where: { user_id: userId },
-            order: [['date', 'DESC']], // Orders by most recent
-        });
-
-        res.status(200).json(orders);
-    } catch (error) {
-        console.error('Error fetching orders by user_id:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
 
 // Get a single order by ID with associated offers
 router.get('/:id', async (req, res) => {
