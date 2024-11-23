@@ -103,7 +103,7 @@ router.post('/register', async (req, res) => {
             },
         });
     } catch (error) {
-        console.error('Error registering user:', error);
+        console.error('Error registering user:', error.stack || error.message);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 });
