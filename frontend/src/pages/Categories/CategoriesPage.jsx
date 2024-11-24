@@ -15,12 +15,14 @@ export default function CategoriesPage() {
     const [successMessage, setSuccessMessage] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [newCategory, setNewCategory] = useState({ name: '', description: '' });
-    const [newProduct, setNewProduct] = useState({ name: '', description: '' }); // For product creation
+    const [newProduct, setNewProduct] = useState({ name: '', description: '' });
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [showProductModal, setShowProductModal] = useState(false);  
     const [userRole, setUserRole] = useState(null);
+    const [farmer, setFarmer] = useState(null);
     const navigate = useNavigate();
 
-    // Check the user's role
-    useEffect(() => {
+    useEffect(() => {//TODO IS AUTHORISED
         const checkUserRole = () => {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -30,6 +32,9 @@ export default function CategoriesPage() {
 
             try {
                 const decodedToken = jwtDecode(token);
+                if(decodedToken.is_farmer){
+                    setFarmer('farmer');
+                }
                 setUserRole(decodedToken.role); 
             } catch (err) {
                 console.error('Error decoding token:', err);
@@ -39,123 +44,108 @@ export default function CategoriesPage() {
         checkUserRole();
     }, []);
 
-    // Fetch categories and products from the backend
-    useEffect(() => {
-        const fetchCategoryData = async () => {
-            try {
-                const response = await api.get(
-                    id
-                        ? `/categories/${id}` // Fetch a single category and its children
-                        : '/categories' // Fetch all categories
-                );
-                const fetchedCategory = response.data;
-                
-                if (id) {
-                
-                    if (fetchedCategory.was_approved && !fetchedCategory.parent_category_id) {
-                        setParentCategory(fetchedCategory);
-                    } else {
-                        setParentCategory(null);
-                    }
-                
-                    // Subcategories: Separate approved and unapproved subcategories
-                   
-                    const approvedSubcategories = fetchedCategory.Subcategories?.filter(
-                        (sub) => sub.was_approved
-                    ) || [];
-                    const unapprovedSubcategories = fetchedCategory.Subcategories?.filter(
-                        (sub) => !sub.was_approved
-                    ) || [];
-                
-                    // Set the categories and suggestedCategory
-                    setCategories(approvedSubcategories);  // Subcategories with was_approved: true
-                    setSuggestedCategory(unapprovedSubcategories);  // Subcategories with was_approved: false
-                
-                    // Fetch products for the category
-                    const productResponse = await api.get('/products');
-                    const categoryProducts = productResponse.data.filter(
-                        (product) => product.category_id === parseInt(id)
-                    );
-                    setProducts(categoryProducts);
-                
+
+    const fetchCategoryData = async () => {
+        try {
+            const response = await api.get(
+                id
+                    ? `/categories/${id}` // Fetch a single category and its children
+                    : '/categories' // Fetch all categories
+            );
+            const fetchedCategory = response.data;
+            
+            if (id) {
+            
+                if (fetchedCategory.was_approved && !fetchedCategory.parent_category_id) {
+                    setParentCategory(fetchedCategory);
                 } else {
-                    // When no `id` it is main
-                    // const approvedParentCategories = fetchedCategory.filter(
-                    //     (cat) => cat.was_approved && !cat.parent_category_id
-                    // ) || [];
-                    // const approvedParentCategories = response.data.filter(
-                    //     (cat) => cat.was_approved && !cat.parent_category_id
-                    // );
-                
-                    // // Filter out unapproved categories
-                    const unapprovedCategories = response.data.filter(
-                        (cat) => !cat.was_approved && !cat.parent_category_id
-                    );
-
-                   // setParentCategory(approvedParentCategories);
-                
-                    // Set the suggestedCategory (unapproved categories)
-                    setSuggestedCategory(unapprovedCategories);
-                
-                    // Fetch and set top-level parent categories (if needed)
-                    const categoryResponse = await api.get('/categories');
-                    const parentCategories = categoryResponse.data.filter(
-                        (cat) => !cat.parent_category_id && cat.was_approved
-                    );
-                    setCategories(parentCategories); 
-                    console.log(parentCategories);
+                    setParentCategory(null);
                 }
-                
-            } catch (err) {
-                setError('Error fetching data');
-                console.error(err);
-            }
-        };
+               
+                const approvedSubcategories = fetchedCategory.Subcategories?.filter(
+                    (sub) => sub.was_approved
+                ) || [];
+                const unapprovedSubcategories = fetchedCategory.Subcategories?.filter(
+                    (sub) => !sub.was_approved
+                ) || [];
+            
+                setCategories(approvedSubcategories);  
+                setSuggestedCategory(unapprovedSubcategories);  
+            
+                // Fetch products for the category
+                const productResponse = await api.get('/products');
+                const categoryProducts = productResponse.data.filter(
+                    (product) => product.category_id === parseInt(id)
+                );
+                setProducts(categoryProducts);
+            
+            } else {
 
+                const unapprovedCategories = response.data.filter(
+                    (cat) => !cat.was_approved && !cat.parent_category_id
+                );
+
+                setSuggestedCategory(unapprovedCategories);
+            
+                // Fetch and set top-level parent categories (if needed)
+                const categoryResponse = await api.get('/categories');
+                const parentCategories = categoryResponse.data.filter(
+                    (cat) => !cat.parent_category_id && cat.was_approved
+                );
+                setCategories(parentCategories); 
+            }
+            
+        } catch (err) {
+            setError('Error fetching data');
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
         fetchCategoryData();
     }, [id]);
 
+
     const handleNavigate = (categoryId) => {
-        navigate(`/categories/${categoryId}`); // Navigate to the child category page
+        navigate(`/categories/${categoryId}`);
     };
 
     const handleNavigateToProduct = (productId) => {
-        navigate(`/products/${productId}`); // Navigate to the product details page
+        navigate(`/products/${productId}`); 
     };
 
+
     const handleAddCategory = async () => {
-        if (!newCategory.name || newCategory.name.trim() === '') {
-            setNewCategory({ name: '', description: '' });
+        if (!newCategory.name.trim()) {
             setSuccessMessage('Category must have a name!');
             return;
         }
+
         try {
             const token = localStorage.getItem('token');
-                if (!token) {
-                    setError('User is not logged in');
-                    return;
-                }
+            if (!token) {
+                setError('User is not logged in');
+                return;
+            }
 
-                const decodedToken = jwtDecode(token);
-                console.log('Decoded token:', decodedToken);
+            const decodedToken = jwtDecode(token);
             const payload = {
                 ...newCategory,
                 parent_category_id: id || null,
-                was_approved: decodedToken.role?.toLowerCase() === 'moderator' ? true : false, 
+                was_approved: decodedToken.role?.toLowerCase() === 'moderator',
             };
 
-            await api.post('/categories', payload, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await api.post('/categories', payload);
+            await fetchCategoryData();
+            if(response.was_approved){
+                setSuccessMessage('Category added successfully!')
+            }else{
+                setSuccessMessage('Category suggested! Wait for approval');
+            }
 
-            setSuccessMessage('Category added successfully!');
             setError('');
-            setShowForm(false);
+            setShowCategoryModal(false);
             setNewCategory({ name: '', description: '' });
-
-            window.location.reload();
         } catch (err) {
             setError('Error adding category');
             console.error(err);
@@ -163,9 +153,7 @@ export default function CategoriesPage() {
     };
 
     const handleAddProduct = async () => {
-        // Validation for product name
-        if (!newProduct.name || newProduct.name.trim() === '') {
-            setNewProduct({ name: '', description: '' });
+        if (!newProduct.name.trim()) {
             setSuccessMessage('Product must have a name!');
             return;
         }
@@ -173,19 +161,18 @@ export default function CategoriesPage() {
         try {
             const payload = {
                 ...newProduct,
-                category_id: id, // Associate the product with the current category
+                category_id: id,
             };
 
-            await api.post('/products', payload, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await api.post('/products', payload);
 
-            // Clear inputs and reset states after success
-            setNewProduct({ name: '', description: '' });
-            setError(''); // Clear any existing errors
+            setProducts((prevProducts) => [...prevProducts, response.data]);
+
+            await fetchCategoryData();
             setSuccessMessage('Product added successfully!');
+            setError('');
+            setShowProductModal(false);
+            setNewProduct({ name: '', description: '' });
         } catch (err) {
             console.error('Error adding product:', err);
             setError('Error adding product. Please try again.');
@@ -251,25 +238,8 @@ export default function CategoriesPage() {
         }
     };
 
-    const handleInputChange = (e, form) => {
-        const { name, value } = e.target;
-
-        // Dynamically update the correct state
-        if (form === 'category') {
-            setNewCategory((prev) => ({
-                ...prev,
-                [name]: value,
-            }));
-        } else if (form === 'product') {
-            setNewProduct((prev) => ({
-                ...prev,
-                [name]: value,
-            }));
-        }
-    };
 
     const isLeafCategory = categories.length === 0;
-    console.log(categories);
     if (error) {
         return <div>{error}</div>;
     }
@@ -306,13 +276,13 @@ export default function CategoriesPage() {
 
                     {isLeafCategory && (userRole === 'Moderator'
                         || userRole === 'Administrator'
-                        || userRole === 'Registered User') && (
+                        || farmer === 'farmer') && (
                         <div>
                             {!showForm && (
 
                                 <div className={classes.AddCompo}>
 
-                                    <button onClick={() => setShowForm(true)} className={classes.categoryButton}>
+                                    <button onClick={() => setShowProductModal(true)} className={classes.categoryButton}>
                                         <div
                                             className={classes.TitleAdd}>
                                             <img
@@ -327,27 +297,26 @@ export default function CategoriesPage() {
                             )}
 
                             {/* Форма для заполнения */}
-                            {showForm && (
-                                <div className={classes.AddInput}>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        placeholder="Product Name"
-                                        value={newProduct.name}
-                                        onChange={(e) => handleInputChange(e, 'product')}
-                                    />
-                                    <input
-                                        type="text"
-                                        name="description"
-                                        placeholder="Product Description"
-                                        value={newProduct.description}
-                                        onChange={(e) => handleInputChange(e, 'product')}
-                                    />
-                                    <div className={classes.FormButtons}>
-                                        {/* Кнопка Cancel для закрытия формы */}
-                                        <button onClick={() => setShowForm(false)}>Cancel</button>
-                                        {/* Кнопка Submit для отправки формы */}
-                                        <button onClick={handleAddProduct}>Submit</button>
+                            {showProductModal && (
+                                <div className={classes.Modal}>
+                                    <div className={classes.ModalContent}>
+                                        <h2>Add New Product</h2>
+                                        <input
+                                            type="text"
+                                            placeholder="Product Name"
+                                            value={newProduct.name}
+                                            onChange={(e) => setNewProduct((prev) => ({ ...prev, name: e.target.value }))}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Product Description"
+                                            value={newProduct.description}
+                                            onChange={(e) => setNewProduct((prev) => ({ ...prev, description: e.target.value }))}
+                                        />
+                                        <div className={classes.ModalButtons}>
+                                            <button onClick={() => setShowProductModal(false)}>Cancel</button>
+                                            <button onClick={handleAddProduct}>Submit</button>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -409,11 +378,11 @@ export default function CategoriesPage() {
                             </p>
                             <div className={classes.SubcategoryCompo}>
                                 {category.Subcategories?.filter(
-                                    (sub) => sub.was_approved === true || userRole === "Moderator"  // Показываем неподтвержденные категории только для Модераторов
+                                    (sub) => sub.was_approved === true || userRole === "Moderator"  || userRole === "Administrator"
                                 ).length > 0 ? (
                                     <div className={classes.ProductsList}>
                                         {category.Subcategories.filter(
-                                            (sub) => sub.was_approved === true || userRole === "Moderator"
+                                            (sub) => sub.was_approved === true || userRole === "Moderator" || userRole === "Administrator"
                                         ).map((sub) => (
                                             <div key={sub.category_id} className={classes.SubcategoriesList}>
                                                 <p
@@ -421,7 +390,7 @@ export default function CategoriesPage() {
                                                     className={classes.ProductText}
                                                 >
                                                     {sub.name}
-                                                    {!sub.was_approved && userRole === "Moderator" && (
+                                                    {!sub.was_approved && (userRole === "Moderator" || userRole === "Administrator") && (
                                                         <span style={{color: "red"}}> (Pending Approval)</span>
                                                     )}
                                                 </p>
@@ -441,25 +410,26 @@ export default function CategoriesPage() {
 
 
             {products.length === 0 && (userRole === 'Moderator'
-                || userRole === 'Administrator'
-                || userRole === 'Registered User') && (
+                || userRole === 'Administrator') && (
                 <div>
                     {!showForm && (
-                        <div className={classes.AddCompo}>
-                            <button onClick={() => setShowForm(!showForm)} className={classes.categoryButton}>
+                    <div className={classes.AddCompo}>
+                            <button onClick={() => setShowCategoryModal(true)} className={classes.categoryButton}>
                                 <div className={classes.TitleAdd}> {/* Используем TitleCategory как у продуктов */}
                                     <img
                                         src={Add}
                                         alt="Add Icon"
                                         className={classes.icon}
                                     />
-                                    {showForm ? null : 'Add Category'}
+                                    {/* {showForm ? null : 'Add Category'} */}
+                                    Add category
+                                 
                                 </div>
                             </button>
                         </div>
                     )}
 
-                    {showForm && (
+                    {/* {showForm && (
                         <div className={classes.AddInput}>
                             <input
                                 type="text"
@@ -480,13 +450,36 @@ export default function CategoriesPage() {
                                 <button onClick={handleAddCategory}>Submit</button>
                             </div>
                         </div>
+                    )} */}
+                    {showCategoryModal && (
+                        <div className={classes.Modal}>
+                            <div className={classes.ModalContent}>
+                                <h2>Add New Category</h2>
+                                <input
+                                    type="text"
+                                    placeholder="Category Name"
+                                    value={newCategory.name}
+                                    onChange={(e) => setNewCategory((prev) => ({ ...prev, name: e.target.value }))}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Category Description"
+                                    value={newCategory.description}
+                                    onChange={(e) => setNewCategory((prev) => ({ ...prev, description: e.target.value }))}
+                                />
+                                <div className={classes.ModalButtons}>
+                                    <button onClick={() => setShowCategoryModal(false)}>Cancel</button>
+                                    <button onClick={handleAddCategory}>Submit</button>
+                                </div>
+                            </div>
+                        </div>
                     )}
 
                     <div className={classes.separator}></div>
                 </div>
             )}
 
-            {userRole === 'Moderator' && suggestedCategory?.length > 0 && (
+            {(userRole === 'Moderator' || userRole === "Administrator") && suggestedCategory?.length > 0 && (
                 <div className={classes.SuggestedCategories}>
                     <p className={classes.SectionTitle}>Suggested Categories (Pending Approval)</p>
                     <ul className={classes.CategoryList}>

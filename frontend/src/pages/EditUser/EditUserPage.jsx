@@ -1,5 +1,5 @@
 //edit user only administrator
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api';
 import {jwtDecode} from 'jwt-decode';
