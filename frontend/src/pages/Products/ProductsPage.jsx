@@ -21,7 +21,7 @@ export default function ProductsPage() {
     });
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    
+
     useEffect(() => {
         const checkUserRole = () => {
             const token = localStorage.getItem('token');

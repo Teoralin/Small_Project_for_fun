@@ -3,7 +3,6 @@ const { Review, User, Offer } = require('../models');
 const router = express.Router();
 const { jwtDecode } = require('jwt-decode');
 
-// Create a review
 router.post('/', async (req, res) => {
     try {
         const { rating, offer_id } = req.body;
@@ -16,18 +15,15 @@ router.post('/', async (req, res) => {
         const decodedToken = jwtDecode(token);
         const user_id = decodedToken.userId;
 
-        // Ensure rating is valid
         if (rating < 1 || rating > 5) {
             return res.status(400).json({ message: 'Rating must be between 1 and 5.' });
         }
 
-        // Check if the offer exists
         const offer = await Offer.findByPk(offer_id);
         if (!offer) {
             return res.status(404).json({ message: 'Offer not found.' });
         }
 
-        // Check if a review already exists for this user and offer
         const existingReview = await Review.findOne({
             where: { user_id, offer_id },
         });
@@ -36,7 +32,6 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ message: 'You have already reviewed this offer.' });
         }
 
-        // Create the review
         const review = await Review.create({
             rating,
             user_id,
@@ -50,39 +45,33 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get average rating for a specific offer
 router.get('/getAverage/:offer_id', async (req, res) => {
     try {
         const { offer_id } = req.params;
 
-        // Fetch all reviews for the given offer_id
         const reviews = await Review.findAll({
             where: { offer_id },
-            attributes: ['rating'], // Only fetch the rating field
+            attributes: ['rating'],
         });
 
-        // If there are no reviews, return 0
         if (reviews.length === 0) {
             return res.status(200).json({ averageRating: 0 });
         }
 
-        // Calculate the average rating
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
         const averageRating = totalRating / reviews.length;
 
-        res.status(200).json({ averageRating: averageRating.toFixed(2) }); // Return the average rating (2 decimal places)
+        res.status(200).json({ averageRating: averageRating.toFixed(2) });
     } catch (error) {
         console.error('Error fetching average rating:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Get a review by user_id and offer_id
 router.get('/:user_id/:offer_id', async (req, res) => {
     try {
         const { user_id, offer_id } = req.params;
 
-        // Fetch the review for the given user_id and offer_id
         const review = await Review.findOne({
             where: { user_id, offer_id },
         });
@@ -98,7 +87,6 @@ router.get('/:user_id/:offer_id', async (req, res) => {
     }
 });
 
-// Get reviews by offer_id
 router.get('/offer/:offer_id', async (req, res) => {
     try {
         const { offer_id } = req.params;
@@ -106,7 +94,7 @@ router.get('/offer/:offer_id', async (req, res) => {
         const reviews = await Review.findAll({
             where: { offer_id },
             include: [
-                { model: User, as: 'User', attributes: ['name', 'email'] }, // Include user details
+                { model: User, as: 'User', attributes: ['name', 'email'] },
             ],
         });
 
@@ -117,13 +105,11 @@ router.get('/offer/:offer_id', async (req, res) => {
     }
 });
 
-// Update a review by review_id
 router.put('/:review_id', async (req, res) => {
     try {
         const { review_id } = req.params;
         const { rating } = req.body;
 
-        // Ensure rating is valid
         if (rating < 1 || rating > 5) {
             return res.status(400).json({ message: 'Rating must be between 1 and 5.' });
         }
@@ -144,7 +130,6 @@ router.put('/:review_id', async (req, res) => {
 
 
 
-// Delete a review by review_id
 router.delete('/:review_id', async (req, res) => {
     try {
         const { review_id } = req.params;

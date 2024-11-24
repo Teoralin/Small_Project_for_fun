@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
 const bcrypt = require('bcrypt');
-//const Address = require('./Address');
 
 const User = sequelize.define('User', {
     user_id: {
@@ -31,7 +30,7 @@ const User = sequelize.define('User', {
     role: {
         type: DataTypes.ENUM('Registered User', 'Moderator', 'Administrator'),
         allowNull: false,
-        defaultValue: 'Registered User', // Default to "Registered User"
+        defaultValue: 'Registered User',
     },
     is_farmer: {
         type: DataTypes.BOOLEAN,
@@ -40,8 +39,6 @@ const User = sequelize.define('User', {
 }, {
     tableName: 'Users',
 });
-//User.hasOne(Address, { foreignKey: 'address_id', as: 'Address', onDelete: 'CASCADE' });
-// Method to compare hashed password
 User.prototype.comparePassword = async function (password) {
     return bcrypt.compare(password, this.password);
 };

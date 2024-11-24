@@ -5,7 +5,6 @@ const {jwtDecode} = require('jwt-decode');
 
 const router = express.Router();
 
-// Add to Cart
 router.post('/add', async (req, res) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
@@ -16,7 +15,6 @@ router.post('/add', async (req, res) => {
         const { userId } = jwtDecode(token);
         const { offer_id, quantity } = req.body;
 
-        // Validate offer and quantity
         const offer = await Offer.findByPk(offer_id);
         if (!offer) {
             return res.status(404).json({ message: 'Offer not found' });
@@ -25,7 +23,6 @@ router.post('/add', async (req, res) => {
             return res.status(400).json({ message: 'Requested quantity exceeds available stock' });
         }
 
-        // Add to cart
         addToCart(userId, offer_id, quantity);
 
         res.status(200).json({ message: 'Item added to cart successfully' });
@@ -35,7 +32,6 @@ router.post('/add', async (req, res) => {
     }
 });
 
-// Get Cart
 router.get('/', (req, res) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
@@ -53,7 +49,6 @@ router.get('/', (req, res) => {
     }
 });
 
-// Clear Cart
 router.delete('/clear', (req, res) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
@@ -71,7 +66,6 @@ router.delete('/clear', (req, res) => {
     }
 });
 
-// Remove a specific item from the cart
 router.delete('/:offer_id', (req, res) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
@@ -82,7 +76,7 @@ router.delete('/:offer_id', (req, res) => {
         const { userId } = jwtDecode(token);
         const { offer_id } = req.params;
 
-        removeFromCart(userId, parseInt(offer_id)); // Remove the offer from the user's cart
+        removeFromCart(userId, parseInt(offer_id));
         res.status(200).json({ message: 'Item removed from cart successfully' });
     } catch (error) {
         console.error('Error removing item from cart:', error);

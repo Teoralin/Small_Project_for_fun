@@ -16,7 +16,6 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ message: 'No offers provided for the order' });
         }
 
-        // Create the new order
         const order = await Order.create(
             {
                 user_id,
@@ -48,7 +47,6 @@ router.post('/', async (req, res) => {
             }
         );
 
-        // Commit the transaction
         await transaction.commit();
 
         res.status(201).json({ message: 'Order created successfully', order });
@@ -59,14 +57,13 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get all orders with associated offers
 router.get('/', async (req, res) => {
     try {
         const orders = await Order.findAll({
             include: {
                 model: Offer,
                 as: 'Offers',
-                through: { attributes: [] }, // Exclude the join table details
+                through: { attributes: [] },
             },
         });
 
@@ -77,7 +74,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get orders by user_id
 router.get('/by-user', async (req, res) => {
     try {
         const { userId } = req.query;
@@ -86,10 +82,9 @@ router.get('/by-user', async (req, res) => {
             return res.status(400).json({ message: 'User ID is required.' });
         }
 
-        // Retrieve all orders for the given user_id
         const orders = await Order.findAll({
             where: { user_id: userId },
-            order: [['date', 'DESC']], // Orders by most recent
+            order: [['date', 'DESC']],
         });
 
         res.status(200).json(orders);
@@ -99,52 +94,45 @@ router.get('/by-user', async (req, res) => {
     }
 });
 
-// Route to get all offers for a user
 router.get('/getAllOffersForUser/:user_id', async (req, res) => {
     try {
         const { user_id } = req.params;
 
-        // Fetch all orders for the given user_id
         const orders = await Order.findAll({
             where: { user_id },
-            attributes: ['order_id'], // Only need the order_id
+            attributes: ['order_id'],
         });
 
         if (!orders || orders.length === 0) {
             return res.status(404).json({ message: 'No orders found for this user.' });
         }
 
-        // Extract all order_ids
         const orderIds = orders.map((order) => order.order_id);
 
-        // Find all offer_ids from the OrderOffer table for the user's orders
         const orderOffers = await OrderOffer.findAll({
             where: { order_id: orderIds },
-            attributes: ['offer_id'], // Only need the offer_id
+            attributes: ['offer_id'],
         });
 
         if (!orderOffers || orderOffers.length === 0) {
             return res.status(404).json({ message: 'No offers found for this user\'s orders.' });
         }
 
-        // Extract unique offer_ids
         const uniqueOfferIds = [
             ...new Set(orderOffers.map((orderOffer) => orderOffer.offer_id)),
         ];
 
-        // Fetch all offers by their offer_ids
         const offers = await Offer.findAll({
             where: { offer_id: uniqueOfferIds },
             include: [
                 {
                     model: Product,
-                    attributes: ['name'], // Include the product name
+                    attributes: ['name'],
                 },
             ],
-            attributes: ['offer_id', 'price'], // Include the offer_id and price
+            attributes: ['offer_id', 'price'],
         });
 
-        // Transform the result to include product name and offer details
         const offersWithDetails = offers.map((offer) => ({
             offer_id: offer.offer_id,
             product_name: offer.Product.name,
@@ -159,46 +147,42 @@ router.get('/getAllOffersForUser/:user_id', async (req, res) => {
 });
 
 
-// Get offers by order_id
 router.get('/:order_id', async (req, res) => {
     try {
         const { order_id } = req.params;
 
-        // Retrieve all rows from OrderOffers filtered by order_id
         const orderOffers = await OrderOffer.findAll({
-            where: { order_id }, // Filter by order_id
+            where: { order_id },
         });
 
         if (!orderOffers.length) {
             return res.status(404).json({ message: 'No offers found for this order.' });
         }
 
-        // Fetch offer details for each offer_id in OrderOffers
         const offersWithDetails = await Promise.all(
             orderOffers.map(async (orderOffer) => {
                 const offer = await Offer.findByPk(orderOffer.offer_id, {
                     include: [
                         {
                             model: Product,
-                            attributes: ['name'], // Fetch the product name
+                            attributes: ['name'],
                         },
                     ],
-                    attributes: ['price'], // Fetch the price
+                    attributes: ['price'],
                 });
 
                 if (offer) {
                     return {
-                        offer_name: offer.Product.name, // Product name from the included Product model
-                        price: parseFloat(offer.price) * orderOffer.quantity, // Calculate the total price
+                        offer_name: offer.Product.name,
+                        price: parseFloat(offer.price) * orderOffer.quantity,
                         quantity: orderOffer.quantity
                     };
                 }
 
-                return null; // Skip offers that are not found
+                return null;
             })
         );
 
-        // Filter out any null results (e.g., if an offer is missing)
         const validOffers = offersWithDetails.filter((offer) => offer !== null);
 
         res.status(200).json(validOffers);
@@ -210,14 +194,13 @@ router.get('/:order_id', async (req, res) => {
 
 
 
-// Get a single order by ID with associated offers
 router.get('/:id', async (req, res) => {
     try {
         const order = await Order.findByPk(req.params.id, {
             include: {
                 model: Offer,
                 as: 'Offers',
-                through: { attributes: [] }, // Exclude the join table details
+                through: { attributes: [] },
             },
         });
 
@@ -232,7 +215,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update an order and its associated offers
 router.put('/:id', async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
@@ -243,11 +225,9 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Order not found' });
         }
 
-        // Update order details
         await order.update({ amount }, { transaction });
 
         if (offers && Array.isArray(offers) && offers.length > 0) {
-            // Check if all offers exist and are available
             const validOffers = await Offer.findAll({
                 where: { offer_id: offers, status: 'Available' },
                 transaction,
@@ -257,17 +237,14 @@ router.put('/:id', async (req, res) => {
                 throw new Error('Some offers are invalid or not available');
             }
 
-            // Remove old associations
             await OrderOffer.destroy({ where: { order_id: order.order_id }, transaction });
 
-            // Create new associations
             const orderOffersData = validOffers.map((offer) => ({
                 order_id: order.order_id,
                 offer_id: offer.offer_id,
             }));
             await OrderOffer.bulkCreate(orderOffersData, { transaction });
 
-            // Update the status of the offers to "Sold"
             await Offer.update(
                 { status: 'Sold' },
                 {
@@ -288,7 +265,6 @@ router.put('/:id', async (req, res) => {
 
 
 
-// Delete an order and disassociate its offers
 router.delete('/:id', async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
@@ -298,10 +274,8 @@ router.delete('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Order not found' });
         }
 
-        // Find associated offers
         const associatedOffers = await order.getOffers({ transaction });
 
-        // Update the status of associated offers to "Available"
         await Offer.update(
             { status: 'Available' },
             {
@@ -310,10 +284,8 @@ router.delete('/:id', async (req, res) => {
             }
         );
 
-        // Remove order-offer associations
         await OrderOffer.destroy({ where: { order_id: order.order_id }, transaction });
 
-        // Delete the order
         await order.destroy({ transaction });
 
         await transaction.commit();
@@ -325,24 +297,20 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-// Checkout Route
 router.post('/checkout', async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1]; // Extract token from Authorization header
+    const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
     try {
-        // Decode user ID from token
         const { userId } = jwtDecode(token);
 
-        // Get the user's cart from the cart service
         const cart = getCart(userId);
         if (!cart || cart.length === 0) {
             return res.status(400).json({ message: 'Cart is empty.' });
         }
 
-        // Validate cart items and calculate total price
         let totalPrice = 0;
         const validatedItems = [];
 
@@ -361,7 +329,6 @@ router.post('/checkout', async (req, res) => {
 
             totalPrice += offer.price * item.quantity;
 
-            // Add validated item for further processing
             validatedItems.push({
                 offer_id: item.offer_id,
                 quantity: item.quantity,
@@ -369,14 +336,12 @@ router.post('/checkout', async (req, res) => {
             });
         }
 
-        // Create a new order
         const newOrder = await Order.create({
             user_id: userId,
             date: new Date(),
             amount: totalPrice,
         });
 
-        // Insert into OrderOffer table and update Offer quantities
         for (const item of validatedItems) {
             await OrderOffer.create({
                 order_id: newOrder.order_id,
@@ -384,7 +349,6 @@ router.post('/checkout', async (req, res) => {
                 offer_id: item.offer_id,
             });
 
-            // Deduct purchased quantity from the offer
             const offer = await Offer.findByPk(item.offer_id);
             await offer.update({
                 quantity: offer.quantity - item.quantity,
@@ -392,10 +356,8 @@ router.post('/checkout', async (req, res) => {
             });
         }
 
-        // Clear the user's cart
         clearCart(userId);
 
-        // Return success response
         res.status(201).json({
             message: 'Order created successfully.',
             order: {

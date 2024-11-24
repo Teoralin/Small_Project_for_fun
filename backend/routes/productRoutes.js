@@ -3,21 +3,18 @@ const { Product, Category } = require('../models');
 
 const router = express.Router();
 
-// Create a new product
 router.post('/', async (req, res) => {
     try {
         const { name, description, category_id } = req.body;
 
-        // Check if the name is null or empty
         if (!name || name.trim() === '') {
             return res.status(400).json({ message: 'Product name is required.' });
         }
 
-        // Create new product
         const product = await Product.create({
             name,
             description,
-            category_id, //: category_id || null
+            category_id,
         });
 
         res.status(201).json({ message: 'Product created successfully', product });
@@ -28,14 +25,13 @@ router.post('/', async (req, res) => {
 });
 
 
-// Get all products with category information
 router.get('/', async (req, res) => {
     try {
         const products = await Product.findAll({
             include: {
                 model: Category,
                 as: 'Category',
-                attributes: ['category_id', 'name'],  // Include category details
+                attributes: ['category_id', 'name'],
             },
         });
 
@@ -46,7 +42,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get a single product by ID
 router.get('/:id', async (req, res) => {
     try {
         const product = await Product.findByPk(req.params.id, {
@@ -68,7 +63,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update a product by ID
 router.put('/:id', async (req, res) => {
     try {
         const product = await Product.findByPk(req.params.id);
@@ -89,7 +83,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete a product by ID
 router.delete('/:id', async (req, res) => {
     try {
         const product = await Product.findByPk(req.params.id);
