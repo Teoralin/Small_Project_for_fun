@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import api from '../../api';
 import { useParams } from 'react-router-dom';
 import classes from './FarmerPage.module.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function FarmerPage() {
     const { farmerId } = useParams();
@@ -14,6 +15,7 @@ export default function FarmerPage() {
     const [purchaseQuantity, setPurchaseQuantity] = useState(0);
     const [offerRatings, setOfferRatings] = useState({});
     const [modalOpen, setModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOffers = async () => {
@@ -98,7 +100,8 @@ export default function FarmerPage() {
     const handlePurchaseClick = (offer) => {
         const token = localStorage.getItem('token');
         if (!token) {
-            setError('You must be logged in to purchase.');
+            setError('You must be logged in to add items to the cart.');
+            setModalOpen(false); 
             return;
         }
 
@@ -148,6 +151,11 @@ export default function FarmerPage() {
             console.error('Error adding to cart:', err);
             setError('Error adding item to cart.');
         }
+    };
+
+    const handleLogInClick = () => {
+        // Navigate to the farmer detail page when a farmer is clicked
+        navigate('/login');
     };
 
     if(loading){
@@ -234,15 +242,71 @@ export default function FarmerPage() {
                                         onClick={() => handlePurchaseClick(offer)}
                                         className={classes.PurchaseButton}
                                     >
-                                        Buy
+                                        Add to cart
                                     </button>
                                 )}
+                                
+                                     
+                                
+
+
+                                <div className={classes.SelfHarvestEvents}>
+                                        <h4>Self-Harvest Events</h4>
+                                        {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
+                                            <div className={classes.SelfHarvestList}>
+                                                {offer.selfHarvestEvents.map((event) => (
+                                                    <div key={event.event_id} className={classes.SelfHarvestCard}>
+                                                        <p>Harvest start date: {event.start_date}</p>
+                                                        <p>Harvest end date: {event.end_date}</p>
+                                                        {event.Address && (
+                                                            <div className={classes.EventAddress}>
+                                                                <h5>Event Address</h5>
+                                                                <p>city: {event.Address.city},
+                                                                    postcode: {event.Address.post_code}</p>
+                                                                <p>street: {event.Address.street},
+                                                                    house: {event.Address.house_number}</p>
+                                                            </div>
+                                                        )}   
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p>No self-harvest events yet.</p>
+                                        )}
+                                    </div>
                             </div>
                             <div className={classes.separator}></div>
                         </li>
                     ))}
                 </div>
             )}
+
+            {modalOpen && purchaseOffer ? (
+                <div className={classes.ModalOverlay}>
+                    <h2>Purchase {purchaseOffer.title}</h2>
+                    <p>Available: {purchaseOffer.quantity}</p>
+                    <input
+                        type="number"
+                        min="1"
+                        max={purchaseOffer.quantity}
+                        value={purchaseQuantity}
+                        onChange={(e) => setPurchaseQuantity(Number(e.target.value))}
+                        placeholder="Enter quantity"
+                    />
+                    <button onClick={handleSubmitPurchase}>Confirm Purchase</button>
+                </div>
+            ) : (
+                error && (
+                    <div className={classes.ErrorOverlay}>
+                        <h3>{error}</h3>
+                        <button onClick={() => handleLogInClick()}>
+                            Log In
+                        </button>
+                    </div>
+                )
+            )}
+
+            {successMessage && <p className="success-message">{successMessage}</p>}
         </div>
 
     );
