@@ -21,9 +21,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Enable CORS
-app.use(cors()); // Add this line
+app.use(cors());
 
-// Middleware for JSON parsing
 app.use(express.json());
 
 app.use('/users', userRoutes);
@@ -41,27 +40,46 @@ app.use('/reviews', reviewRoutes);
 
 // Test route to confirm server is running
 app.get('/', (req, res) => {
-    res.send('Server is up and running!');
+    res.send('Server is up');
 });
 
-// Database connection and model synchronization
-async function initializeApp() {
+
+// Database initialization function
+async function initializeDatabase(force = false) {
     try {
+        // Authenticate database connection
         await sequelize.authenticate();
-        console.log('Database connection has been established successfully.');
+        console.log('Database connection established successfully.');
 
-        // Synchronize models with the database
-        await sequelize.sync();
-        console.log('Models synchronized with the database.');
-
-        // Start the server
-        app.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
-        });
+        // Synchronize models
+        await sequelize.sync({ force }); // Drop and recreate tables if force is true
+        if (force) {
+            console.log('Database has been initialized with an empty schema (tables dropped and recreated).');
+        } else {
+            console.log('Models synchronized with the database.');
+        }
     } catch (error) {
         console.error('Unable to connect to the database:', error);
-        process.exit(1); 
+        process.exit(1);
     }
+}
+
+// App initialization function
+async function initializeApp() {
+    // Check if --init-db flag is present
+    const forceInit = process.argv.includes('--init-db');
+    if (forceInit) {
+        console.log('Initializing database with an empty schema...');
+        await initializeDatabase(true); // Force initialize the database
+    } else {
+        console.log('Starting application without reinitializing the database...');
+        await initializeDatabase(false); // Sync models without dropping tables
+    }
+
+    // Start the server
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
 }
 
 initializeApp();
