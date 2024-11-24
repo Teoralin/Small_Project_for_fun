@@ -65,6 +65,28 @@ router.get('/offer/:offer_id', async (req, res) => {
     }
 });
 
+router.get('/', async (req, res) => {
+    try {
+        const { offer_id } = req.params;
+
+        const events = await SelfHarvestEvent.findAll({
+            include: [
+                { model: Offer, attributes: ['price', 'quantity', 'status'] },
+                { model: Address, attributes: ['street', 'city', 'post_code', 'house_number'] },
+            ],
+        });
+
+        if (events.length > 0) {
+            res.status(200).json(events);
+        } else {
+            res.status(404).json({ message: 'No self-harvest events found for this offer' });
+        }
+    } catch (error) {
+        console.error('Error fetching self-harvest events:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 router.put('/:event_id', async (req, res) => {
     try {
         const { event_id } = req.params;

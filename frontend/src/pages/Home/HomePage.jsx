@@ -9,17 +9,15 @@ import insta_2 from "../../assets/Insta_2.png";
 import insta_3 from "../../assets/Insta_3.png";
 import insta_4 from "../../assets/Insta_4.png";
 import insta_5 from "../../assets/Insta_5.png";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {jwtDecode} from 'jwt-decode';
 import api from "../../api";
 
 export default function HomePage() {
     const [userRole, setUserRole] = useState(null);
-    const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filteredUsers, setFilteredUsers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-   const [error, setError] = useState(null);
+    const [error, setError] = useState(null);
     const [scrollPosition, setScrollPosition] = useState(0);
 
     const navigate = useNavigate();
@@ -42,25 +40,14 @@ export default function HomePage() {
         }
     }, []);
 
-    const handleSearchChange = (event) => {
-        const term = event.target.value.toLowerCase();
-        setSearchTerm(term);
-
-        const filtered = users.filter((user) =>
-            user.name.toLowerCase().includes(term) ||
-            user.surname.toLowerCase().includes(term)
-        );
-        setFilteredUsers(filtered);
-    };
 
     useEffect(() => {
         async function fetchUsers() {
             try {
+                setLoading(true);
                 const response = await api.get('/users');  
-
                 const farmerUsers = response.data.filter(user => user.is_farmer === true);
 
-                setUsers(farmerUsers);
                 setFilteredUsers(farmerUsers);
             } catch (error) {
                 console.error('Error fetching users:', error);
@@ -81,13 +68,20 @@ export default function HomePage() {
         setScrollPosition(scrollPosition + 300);
     };
 
+    if(loading){
+        return <div>Loading...</div>;
+    }
+    if(error){
+        return <div>{error}</div>;
+    }
+
     return (
         <div className={classes.HomePage}>
-                <div>
+                <div className={classes.welcomescreen}>
                     <div className={classes.heading}>Your Food court at home</div>
                     <div className={classes.information}>
                         <div className={classes.info} onClick={() => handleNavigate('/categories')}>
-                            <h2>Categories</h2>
+                            <h2>Delivery</h2>
                             <p>Order in</p>
                         </div>
                         <div className={classes.info} onClick={() => handleNavigate('/harvestList')}>
@@ -210,6 +204,12 @@ export default function HomePage() {
                         />
                     </div>
                 </div>
+
+                {userRole === "Administrator" && (
+                    <div>
+                        <Link to="/users">Users</Link>
+                    </div>
+                )}
             </div>
 
     );

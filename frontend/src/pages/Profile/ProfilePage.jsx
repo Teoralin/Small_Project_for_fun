@@ -267,7 +267,7 @@ export default function ProfilePage() {
                         Offers
                     </button>
                 )}
-                {userRole === "Administrator" && (
+                {userRole === "Administrator" || userRole === "Moderator" && (
                     <button type="Option"
                             className={classes.OptionButton}
                             onClick={() => handleNavigate('/editUsersList')}
@@ -275,7 +275,7 @@ export default function ProfilePage() {
                         Manage Users
                     </button>
                 )}
-                {userRole === "Moderator" && (
+                {userRole === "Moderator" || userRole === "Administrator" && (
                     <button type="Option"
                             className={classes.OptionButton}
                             onClick={() => handleNavigate('/categories')}
