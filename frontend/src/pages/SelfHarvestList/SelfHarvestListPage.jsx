@@ -65,36 +65,39 @@ export default function SelfHarvestListPage() {
                         aria-label="Search event"
                     />
                 </form>
-
-                
-            </div>
-
-            <div className={classes.PageTitle}>
-                <p>Self Harvest </p> 
             </div>
 
             <div className={classes.SelfHarvestEvents}>
+                <div className={classes.PageTitle}>
+                    <p>Self Harvest </p>
+                </div>
                 {filteredHarvest.length > 0 ? (
                     <div className={classes.SelfHarvestList}>
                         {filteredHarvest.map((event) => (
-                            <div key={event.event_id} className={classes.SelfHarvestCard}>
-                                <p>Harvest start date: {event.start_date}</p>
-                                <p>Harvest end date: {event.end_date}</p>
+                            <div key={event.event_id} className={classes.eventCard}>
+                                <p className={classes.eventDetails}>
+                                    Harvest Start Date: {event.start_date}
+                                </p>
+                                <p className={classes.eventDetails}>
+                                    Harvest End Date: {event.end_date}
+                                </p>
                                 {event.Address && (
-                                    <div className={classes.EventAddress}>
+                                    <div className={classes.eventAddress}>
                                         <h5>Event Address</h5>
-                                            <p>city: {event.Address.city},
-                                                postcode: {event.Address.post_code}</p>
-                                            <p>street: {event.Address.street},
-                                                house: {event.Address.house_number}</p>
+                                        <p>City: {event.Address.city}</p>
+                                        <p>Postcode: {event.Address.post_code}</p>
+                                        <p>Street: {event.Address.street}</p>
+                                        <p>House Number: {event.Address.house_number}</p>
                                     </div>
-                                )}   
+                                )}
+
+                                <div className={classes.separator}></div>
                             </div>
                         ))}
                     </div>
-                    ) : ( 
-                        error &&( <p>No self-harvest events yet.</p>)
-                    )}
+                ) : (
+                    error && (<p>No self-harvest events yet.</p>)
+                )}
             </div>
         </div>
     )
