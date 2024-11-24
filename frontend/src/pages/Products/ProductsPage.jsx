@@ -28,8 +28,6 @@ export default function ProductsPage() {
         const checkUserRole = () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                console.log("not auth")
-                setError('You must be logged in to add items to the cart.');
                 return;
             }
 
@@ -221,7 +219,7 @@ export default function ProductsPage() {
 
             setSuccessMessage('Item added to cart successfully!');
             setError('');
-            setPurchaseOffer(null); // Reset purchase offer
+            setPurchaseOffer(null);
         } catch (err) {
             console.error('Error adding to cart:', err);
             setError('Error adding item to cart.');
