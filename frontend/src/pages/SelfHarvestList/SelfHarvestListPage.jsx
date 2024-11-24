@@ -10,15 +10,10 @@ export default function SelfHarvestListPage() {
     const [harvest, setHarvest] = useState([]);
 
     useEffect(()=>{
-        const fetchSelfHarvestEvents = async (offerId) => {
+        const fetchSelfHarvestEvents = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem('token');
-                const response = await api.get(`/harvests/offer/${offerId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await api.get('/harvests');
                 
                 const today = new Date();
     

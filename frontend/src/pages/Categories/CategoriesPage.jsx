@@ -428,29 +428,6 @@ export default function CategoriesPage() {
                             </button>
                         </div>
                     )}
-
-                    {/* {showForm && (
-                        <div className={classes.AddInput}>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Category Name"
-                                value={newCategory.name}
-                                onChange={(e) => handleInputChange(e, 'category')}
-                            />
-                            <input
-                                type="text"
-                                name="description"
-                                placeholder="Category Description"
-                                value={newCategory.description}
-                                onChange={(e) => handleInputChange(e, 'category')}
-                            />
-                            <div className={classes.FormButtons}>
-                                <button onClick={() => setShowForm(false)}>Cancel</button>
-                                <button onClick={handleAddCategory}>Submit</button>
-                            </div>
-                        </div>
-                    )} */}
                     {showCategoryModal && (
                         <div className={classes.Modal}>
                             <div className={classes.ModalContent}>
