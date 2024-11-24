@@ -125,7 +125,7 @@ export default function EditUserListPage() {
                         Manage Users
                     </button>
                 )}
-                {userRole === "Moderator" && (
+                { userRole === "Moderator" || userRole === "Administrator" && (
                     <button type="Option"
                             className={classes.OptionButton}
                             onClick={() => handleNavigate('/categories')}

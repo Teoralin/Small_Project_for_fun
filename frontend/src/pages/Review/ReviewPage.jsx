@@ -8,7 +8,6 @@ export default function ReviewPage() {
     const [offers, setOffers] = useState([]);
     const [reviews, setReviews] = useState({});
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
     const [modalData, setModalData] = useState(null);
     const [rating, setRating] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -48,7 +47,6 @@ export default function ReviewPage() {
 
             if (!token) {
                 setError('You must be logged in to view your offers.');
-                setLoading(false);
                 return;
             }
 
@@ -96,9 +94,7 @@ export default function ReviewPage() {
             } catch (err) {
                 console.error('Error fetching offers and reviews:', err);
                 setError('Error fetching offers. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
+            } 
         };
 
         fetchOffersAndReviews();
@@ -183,17 +179,6 @@ export default function ReviewPage() {
         }
     };
 
-    if (loading) {
-        return <div style={{ marginTop: '5em' }}>Loading...</div>;
-    }
-
-    if (error) {
-        return <div style={{ marginTop: '5em' }}>{error}</div>;
-    }
-
-    if (offers.length === 0) {
-        return <div style={{ marginTop: '5em' }}>No offers found.</div>;
-    }
 
     return (
         <div className={classes.ReviewPage}>
@@ -225,7 +210,7 @@ export default function ReviewPage() {
                         Offers
                     </button>
                 )}
-                {userRole === "Administrator" && (
+                 {userRole === "Administrator"&& (
                     <button type="Option"
                             className={classes.OptionButton}
                             onClick={() => handleNavigate('/editUsersList')}
@@ -233,7 +218,7 @@ export default function ReviewPage() {
                         Manage Users
                     </button>
                 )}
-                {userRole === "Moderator" && (
+                {(userRole === "Moderator" || userRole === "Administrator") && (
                     <button type="Option"
                             className={classes.OptionButton}
                             onClick={() => handleNavigate('/categories')}
@@ -244,7 +229,7 @@ export default function ReviewPage() {
             </div>
 
             <div className={classes.Review}>
-                <p className={classes.PageTitle}>Your Offers</p>
+                <p className={classes.PageTitle}>Your last purchased offers</p>
                 <ul className={classes.ReviewList}>
                     {offers.map((offer) => (
                         <li key={offer.offer_id} style={{marginBottom: '1em'}}>

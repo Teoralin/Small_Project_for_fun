@@ -258,7 +258,7 @@ export default function ProfilePage() {
                         Offers
                     </button>
                 )}
-                {userRole === "Administrator" || userRole === "Moderator" && (
+                {userRole === "Administrator"  && (
                     <button type="Option"
                             className={classes.OptionButton}
                             onClick={() => handleNavigate('/editUsersList')}

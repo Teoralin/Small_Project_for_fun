@@ -243,7 +243,9 @@ export default function CategoriesPage() {
     }
 
     return (
+
         <div className={classes.CategoriesPage}>
+            
             {id ? (
                 <>
                     <div>

@@ -154,7 +154,7 @@ export default function Header() {
                                         </Link>
                                     )}
 
-                                    {userRole === "Moderator" && (
+                                    {userRole === "Moderator" || userRole === "Administrator" && (
                                         <Link to="/categories" className={classes.OptionButton}>
                                             Manage Categories
                                         </Link>

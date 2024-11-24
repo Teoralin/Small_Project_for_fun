@@ -380,7 +380,7 @@ export default function OffersListPage() {
                         Offers
                     </button>
                 )}
-                {userRole === "Administrator" && (
+                 {userRole === "Administrator" && (
                     <button type="Option"
                             className={classes.OptionButton}
                             onClick={() => handleNavigate('/editUsersList')}
@@ -388,7 +388,7 @@ export default function OffersListPage() {
                         Manage Users
                     </button>
                 )}
-                {userRole === "Moderator" && (
+                {userRole === "Moderator" || userRole === "Administrator" && (
                     <button type="Option"
                             className={classes.OptionButton}
                             onClick={() => handleNavigate('/categories')}
