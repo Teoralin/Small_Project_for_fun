@@ -106,6 +106,21 @@
     transform: scale(1.05);
 }
 
+.ProductsPage .RemoveProductButton {
+    padding: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-left: 50px;
+}
+
+.ProductsPage .RemoveProductButton:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
 .ProductsPage .separator {
     background: #d4d7e5;
     height: 1px;

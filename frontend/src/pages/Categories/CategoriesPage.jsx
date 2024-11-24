@@ -439,8 +439,8 @@ export default function CategoriesPage() {
                                     onChange={(e) => setNewCategory((prev) => ({ ...prev, description: e.target.value }))}
                                 />
                                 <div className={classes.ModalButtons}>
-                                    <button onClick={() => setShowCategoryModal(false)}>Cancel</button>
-                                    <button onClick={handleAddCategory}>Submit</button>
+                                    <button onClick={() => setShowCategoryModal(false)} className={classes.DisapproveButton}>Cancel</button>
+                                    <button onClick={handleAddCategory} className={classes.ApproveButton}>Submit</button>
                                 </div>
                             </div>
                         </div>
