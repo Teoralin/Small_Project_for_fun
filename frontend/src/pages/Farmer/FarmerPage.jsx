@@ -101,7 +101,6 @@ export default function FarmerPage() {
         const token = localStorage.getItem('token');
         if (!token) {
             setError('You must be logged in to add items to the cart.');
-            setModalOpen(false); 
             return;
         }
 

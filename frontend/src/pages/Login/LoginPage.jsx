@@ -4,7 +4,6 @@ import api from '../../api';
 import classes from './LoginPage.module.css';
 import Key from "../../assets/Key.png";
 import MailIcon from "../../assets/Mail.png";
-import { jwtDecode } from 'jwt-decode';
 
 
 export default function LoginPage() {
@@ -35,14 +34,6 @@ export default function LoginPage() {
             });
             
             localStorage.setItem('token', response.data.token);
-            const token = localStorage.getItem("token");
-            console.log(token);
-            const decodedToken = jwtDecode(response.data.token);
-            console.log(decodedToken);
-
-            navigate('/');
-
-            console.log(decodedToken.name);
 
             navigate('/');
         } catch (err) {
