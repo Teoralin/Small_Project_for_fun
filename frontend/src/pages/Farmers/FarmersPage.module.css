@@ -25,6 +25,8 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 30px;
     padding: 0;
+    width: 100%;
+    justify-items: center;
 }
 
 .FarmersPage .userCompo {
@@ -33,10 +35,12 @@
     width: 296px;
     height: 296px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    align-items: center;
 }
 
-.FarmersPage .userCompo img {
-    margin: 0;
+.FarmersPage .userCompo:hover {
+    cursor: pointer;
+    background-color: #ebedf0;
 }
 
 .FarmersPage .UserInfo {
@@ -50,26 +54,16 @@
     line-height: 30px;
 }
 
-.FarmersPage .search {
-    display: flex;
-    justify-content: center;
-    height: 50px;
-    position: relative;  /* Add this to avoid overlapping with other content */
-    z-index: 10;
-}
-
 .FarmersPage .searchContainer {
     justify-content: center;
     border-radius: 6px;
     box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     gap: 8px;
-    letter-spacing: 0.5px;
     flex-wrap: wrap;
     font: 300 16px Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
     max-width: 100%;
-    width: 1600px;
-    margin-right: 15px;
+    padding: 10px;
 }
 
 .FarmersPage .searchIcon {
@@ -78,7 +72,6 @@
     object-position: center;
     width: 24px;
     margin-left: 15px;
-
 }
 
 .FarmersPage .searchInput {
@@ -92,20 +85,30 @@
     font-weight: 300;
 }
 
+@media (max-width: 1600px) {
+    .FarmersPage .UserComponent {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1300px) {
+    .FarmersPage .UserComponent {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 991px) {
-    .searchInput {
+    .FarmersPage .UserComponent {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .FarmersPage .searchInput {
         max-width: 100%;
     }
 }
 
-.FarmersPage .SearchButton {
-    width: fit-content;
-    height: 70px;
-    padding: 20px;
-    background-color: #FFE145;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #B79C10;
+@media (max-width: 600px) {
+    .FarmersPage .UserComponent {
+        grid-template-columns: 1fr;
+    }
 }

@@ -12,12 +12,10 @@ export default function FarmersPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetch users from the API using axios
         async function fetchUsers() {
             try {
                 const response = await api.get('/users'); // Adjust the API URL
                 
-                // Filter users who have 'is_farmer' set to true
                 const farmerUsers = response.data.filter(user => user.is_farmer === true);
                 
                 setUsers(farmerUsers);
@@ -26,18 +24,17 @@ export default function FarmersPage() {
                 console.error('Error fetching users:', error);
                 setError('An error occurred while fetching users');
             } finally {
-                setLoading(false); // Set loading to false once the request is complete
+                setLoading(false);
             }
         }
 
         fetchUsers();
-    }, []); // Empty dependency array to run the effect once on mount
+    }, []);
 
     const handleSearchChange = (event) => {
         const term = event.target.value.toLowerCase();
         setSearchTerm(term);
 
-        // Filter users based on the search term
         const filtered = users.filter((user) =>
             user.name.toLowerCase().includes(term) || 
             user.surname.toLowerCase().includes(term)
@@ -46,7 +43,6 @@ export default function FarmersPage() {
     };
 
     const handleFarmerClick = (farmerId) => {
-        // Navigate to the farmer detail page when a farmer is clicked
         navigate(`/farmer/${farmerId}`);
     };
 
@@ -89,15 +85,8 @@ export default function FarmersPage() {
                 <ul className={classes.UserComponent}>
                     {filteredUsers.map((user) => (
                         <li key={user.user_id} className={classes.userCompo} onClick={() => handleFarmerClick(user.user_id)}>
-                            <div>
-                                <img
-                                    src="https://via.placeholder.com/296x184"
-                                    alt="User Avatar"
-                                />
-                            </div>
-
                             <div className={classes.UserInfo}>
-                                {user.name} <br />
+                                {user.name} <br/>
                                 {user.surname}
                             </div>
                         </li>
