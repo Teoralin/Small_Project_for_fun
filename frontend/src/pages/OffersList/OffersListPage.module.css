@@ -3,14 +3,19 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     font-family: martel sans, sans-serif;
     font-weight: 300;
-}
-
-.OffersListPage .Options {
     margin: 120px 60px;
 }
 
-.OffersListPage .OptionButton {
-    width: 405px;
+.OffersListPage .Options {
+    grid-column: span 1;
+}
+
+.OffersListPage .OptionButton,
+.OffersListPage .OptionButtonSelected {
+    display: grid;
+    align-content: center;
+    justify-content: start;
+    width: 365px;
     height: 56px;
     padding: 10px;
     border: none;
@@ -23,36 +28,19 @@
     font-family: martel sans, sans-serif;
     line-height: 20px;
     margin-bottom: 20px;
-
-    display: grid;
-    align-content: center;
-    justify-content: start;
 }
 
 .OffersListPage .OptionButtonSelected {
-    width: 405px;
-    height: 56px;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #313030;
-    border-radius: 8px;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
     background-color: #ebedf0;
-    font-family: martel sans, sans-serif;
-    line-height: 20px;
-    margin-bottom: 20px;
+}
 
-    display: grid;
-    align-content: center;
-    justify-content: start;
+.OffersListPage .Contacts {
+    grid-column: span 1;
 }
 
 .OffersListPage .Offers {
     display: grid;
     justify-content: center;
-    margin: 120px 60px;
     grid-column: span 3;
 }
 
@@ -200,4 +188,14 @@
 .OffersListPage .Update button:hover {
     background-color: #F8D140;
     transform: scale(1.05);
+}
+
+@media (max-width: 950px) {
+    .OffersListPage {
+        grid-template-columns: 1fr; /* Stack in one column on smaller screens */
+    }
+
+    .OffersListPage .Contacts {
+        grid-column: span 1; /* Ensure contacts span across one column */
+    }
 }

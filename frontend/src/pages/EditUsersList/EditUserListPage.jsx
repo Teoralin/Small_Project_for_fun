@@ -1,14 +1,12 @@
-//page of administrator to edit users 
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import classes from "./EditUserListPage.module.css";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from '../../api';
 import Edit_User from "../../assets/Edit_User.png";
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 export default function EditUserListPage() {
     const navigate = useNavigate();
-
 
     const handleNavigate = (path) => {
         navigate(path);
@@ -18,7 +16,7 @@ export default function EditUserListPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isAuthorized, setIsAuthorized] = useState(false);
-    const [filteredUsers, setFilteredUsers] = useState([]); 
+    const [filteredUsers, setFilteredUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [farmer, setFarmer] = useState('');
     const [userRole, setUserRole] = useState(null);
@@ -34,7 +32,7 @@ export default function EditUserListPage() {
 
             try {
                 const decodedToken = jwtDecode(token);
-                if(decodedToken.is_farmer){
+                if (decodedToken.is_farmer) {
                     setFarmer('farmer');
                 }
                 setUserRole(decodedToken.role);
@@ -49,20 +47,20 @@ export default function EditUserListPage() {
         };
 
         checkAuthorization();
-    }, );
+    }, []);
 
     useEffect(() => {
         // Fetch users from the API using axios
         async function fetchUsers() {
             try {
                 const response = await api.get('/users'); // Adjust the API URL
-                setUsers(response.data);   
-                setFilteredUsers(response.data); 
+                setUsers(response.data);
+                setFilteredUsers(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
-                setError('An error occurred while fetching users');  // Set error state
+                setError('An error occurred while fetching users'); // Set error state
             } finally {
-                setLoading(false);  // Set loading to false once the request is complete
+                setLoading(false); // Set loading to false once the request is complete
             }
         }
 
@@ -76,7 +74,7 @@ export default function EditUserListPage() {
 
         // Filter users based on the search term
         const filtered = users.filter((user) =>
-            user.name.toLowerCase().includes(term) || 
+            user.name.toLowerCase().includes(term) ||
             user.surname.toLowerCase().includes(term)
         );
         setFilteredUsers(filtered);
@@ -106,24 +104,38 @@ export default function EditUserListPage() {
                 >
                     Orders
                 </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/review')}
+                >
+                    Reviews
+                </button>
+
                 {farmer === "farmer" && (
-                <button type="Option"
-                        className={classes.OptionButton}
-                        onClick={() => handleNavigate('/offersList')}
-                >
-                    Offers
-                </button>
-                 )}
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/offersList')}
+                    >
+                        Offers
+                    </button>
+                )}
                 {userRole === "Administrator" && (
-                <button type="Option"
-                        className={classes.OptionButton}
-                        onClick={() => handleNavigate('/editUsersList')}
-                >
-                    Manage Users
-                </button>
+                    <button type="Option"
+                            className={classes.OptionButtonSelected}
+                            onClick={() => handleNavigate('/editUsersList')}
+                    >
+                        Manage Users
+                    </button>
+                )}
+                {userRole === "Moderator" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/categories')}
+                    >
+                        Manage Categories
+                    </button>
                 )}
             </div>
-
 
             <div className={classes.ManageUsers}>
                 <div className={classes.Title}>
@@ -147,7 +159,6 @@ export default function EditUserListPage() {
                             aria-label="Search user"
                         />
                     </form>
-
                 </div>
 
                 <div>
@@ -177,7 +188,6 @@ export default function EditUserListPage() {
                 </div>
             </div>
 
-
         </div>
-    )
+    );
 }

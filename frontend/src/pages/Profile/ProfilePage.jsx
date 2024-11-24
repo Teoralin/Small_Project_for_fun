@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import classes from "./ProfilePage.module.css";
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import api from '../../api';
 import User_light from "../../assets/User_light.png";
 import MailIcon from "../../assets/Mail.png";
@@ -9,8 +9,6 @@ import Phone from "../../assets/Phone.png";
 import Key from "../../assets/Key.png";
 import Point from "../../assets/Map_Point.png";
 import House from "../../assets/House.png";
-import Edit from "../../assets/Edit.png";
-
 
 export default function ProfilePage() {
 
@@ -56,7 +54,7 @@ export default function ProfilePage() {
                 }
 
                 const decodedToken = jwtDecode(token);
-                if(decodedToken.is_farmer){
+                if (decodedToken.is_farmer) {
                     setFarmer('farmer');
                 }
                 setUserRole(decodedToken.role);
@@ -86,7 +84,6 @@ export default function ProfilePage() {
 
         fetchUserData();
     }, []);
-
 
     const handleEdit = (field) => {
         setIsEditing((prev) => ({
@@ -286,10 +283,10 @@ export default function ProfilePage() {
             </div>
 
             <div className={classes.Contacts}>
-                <p>Contact information</p>
+                <p className={classes.PageTitle}>Contact information</p>
                 <div className={classes.registerForm}>
                     <div className={classes.formGroup}>
-                    <label htmlFor="name">Name</label>
+                        <label htmlFor="name">Name</label>
                         <div className={classes.form}>
                             <div className={classes.formLeft}>
                                 <img
@@ -305,17 +302,9 @@ export default function ProfilePage() {
                                         onChange={(e) => handleInputChange('name', e.target.value)}
                                     />
                                 ) : (
-                                    <span>{userData.name}</span>
+                                    <span onClick={() => handleEdit('name')}>{userData.name}</span>
                                 )}
                             </div>
-                            <img
-                                src={Edit}
-                                alt="Edit Icon"
-                                className={classes.icon}
-                                onClick={() => handleEdit('name')}
-                                style={{cursor: 'pointer'}}
-                                disabled={isEditing.name}
-                            />
                         </div>
                     </div>
 
@@ -336,20 +325,11 @@ export default function ProfilePage() {
                                         onChange={(e) => handleInputChange('surname', e.target.value)}
                                     />
                                 ) : (
-                                    <span>{userData.surname}</span>
+                                    <span onClick={() => handleEdit('surname')}>{userData.surname}</span>
                                 )}
                             </div>
-                            <img
-                                src={Edit}
-                                alt="Edit Icon"
-                                className={classes.icon}
-                                onClick={() => handleEdit('surname')}
-                                style={{cursor: 'pointer'}}
-                                disabled={isEditing.surname}
-                            />
                         </div>
                     </div>
-
 
                     <div className={classes.formGroup}>
                         <label htmlFor="email">Email Address</label>
@@ -367,20 +347,11 @@ export default function ProfilePage() {
                                         onChange={(e) => handleInputChange('email', e.target.value)}
                                     />
                                 ) : (
-                                    <span>{userData.email}</span>
+                                    <span onClick={() => handleEdit('email')}>{userData.email}</span>
                                 )}
                             </div>
-                            <img
-                                src={Edit}
-                                alt="Edit Icon"
-                                className={classes.icon}
-                                onClick={() => handleEdit('email')}
-                                style={{cursor: 'pointer'}}
-                                disabled={isEditing.email}
-                            />
                         </div>
                     </div>
-
 
                     <div className={classes.formGroup}>
                         <label htmlFor="phone">Phone Number</label>
@@ -398,157 +369,22 @@ export default function ProfilePage() {
                                         onChange={(e) => handleInputChange('contact_info', e.target.value)}
                                     />
                                 ) : (
-                                    <span>{userData.contact_info}</span>
+                                    <span onClick={() => handleEdit('contact_info')}>{userData.contact_info}</span>
                                 )}
                             </div>
-                            <img
-                                src={Edit}
-                                alt="Edit Icon"
-                                className={classes.icon}
-                                onClick={() => handleEdit('contact_info')}
-                                style={{cursor: 'pointer'}}
-                                disabled={isEditing.contact_info}
-                            />
                         </div>
                     </div>
 
-                    {userData.is_farmer && (
-                        <>
-                            <div className={classes.formGroup}>
-                                <label htmlFor="city">City</label>
-                                <div className={classes.form}>
-                                    <div className={classes.formLeft}>
-                                        <img
-                                            src={House}
-                                            alt="House Icon"
-                                            className={classes.icon}
-                                        />
-                                        {isEditing.city ? (
-                                            <input
-                                                type="text"
-                                                value={updatedAddress.city || ''}
-                                                onChange={(e) => handleInputChange('city', e.target.value)}
-                                            />
-                                        ) : (
-                                            <span>{addressData?.city}</span>
-                                        )}
-                                    </div>
-                                    <img
-                                        src={Edit}
-                                        alt="Edit Icon"
-                                        className={classes.icon}
-                                        onClick={() => handleEdit('city')}
-                                        style={{cursor: 'pointer'}}
-                                        disabled={isEditing.city}
-                                    />
-                                </div>
-                            </div>
 
-                            <div className={classes.formGroup}>
-                                <label htmlFor="street">Street</label>
-                                <div className={classes.form}>
-                                    <div className={classes.formLeft}>
-                                        <img
-                                            src={House}
-                                            alt="House Icon"
-                                            className={classes.icon}
-                                        />
-                                        {isEditing.street ? (
-                                            <input
-                                                type="text"
-                                                value={updatedAddress.street || ''}
-                                                onChange={(e) => handleInputChange('street', e.target.value)}
-                                            />
-                                        ) : (
-                                            <span>{addressData?.street}</span>
-                                        )}
-                                    </div>
-                                    <img
-                                        src={Edit}
-                                        alt="Edit Icon"
-                                        className={classes.icon}
-                                        onClick={() => handleEdit('street')}
-                                        style={{cursor: 'pointer'}}
-                                        disabled={isEditing.street}
-                                    />
-                                </div>
-                            </div>
+                    <button onClick={handleSubmit} className={classes.Submit}>Submit Changes</button>
 
-                            <div className={classes.formGroup}>
-                                <label htmlFor="house_number">House Number</label>
-                                <div className={classes.form}>
-                                    <div className={classes.formLeft}>
-                                        <img
-                                            src={Point}
-                                            alt="Point Icon"
-                                            className={classes.icon}
-                                        />
-                                        {isEditing.house_number ? (
-                                            <input
-                                                type="number"
-                                                value={updatedAddress.house_number || ''}
-                                                onChange={(e) => handleInputChange('house_number', e.target.value)}
-                                            />
-                                        ) : (
-                                            <span>{addressData?.house_number}</span>
-                                        )}
-                                    </div>
-                                    <img
-                                        src={Edit}
-                                        alt="Edit Icon"
-                                        className={classes.icon}
-                                        onClick={() => handleEdit('house_number')}
-                                        style={{cursor: 'pointer'}}
-                                        disabled={isEditing.house_number}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className={classes.formGroup}>
-                                <label htmlFor="post_code">Post Code</label>
-                                <div className={classes.form}>
-                                    <div className={classes.formLeft}>
-                                        <img
-                                            src={Point}
-                                            alt="Point Icon"
-                                            className={classes.icon}
-                                        />
-                                        {isEditing.post_code ? (
-                                            <input
-                                                type="number"
-                                                value={updatedAddress.post_code || ''}
-                                                onChange={(e) => handleInputChange('post_code', e.target.value)}
-                                            />
-                                        ) : (
-                                            <span>{addressData?.post_code}</span>
-                                        )}
-                                    </div>
-                                    <img
-                                        src={Edit}
-                                        alt="Edit Icon"
-                                        className={classes.icon}
-                                        onClick={() => handleEdit('post_code')}
-                                        style={{cursor: 'pointer'}}
-                                        disabled={isEditing.post_code}
-                                    />
-                                </div>
-                            </div>
-
-                        </>
-                    )}
-
-                    {Object.values(isEditing).some(val => val === true) && (
-                        <button onClick={handleSubmit} className={classes.Submit}>Submit Changes</button>
-                    )}
-
-
-                    <button onClick={() => setIsChangingPassword(true)} className={classes.Change}>
+                    <button onClick={() => setIsChangingPassword(prev => !prev)} className={classes.Change}>
                         Change Password
                     </button>
 
                     {isChangingPassword && (
                         <div className={classes.formCompo}>
-                            <div className={classes.formGroup}>
+                        <div className={classes.formGroup}>
                                 <label>Current Password:</label>
                                 <div className={classes.form}>
                                     <div className={classes.formLeft}>

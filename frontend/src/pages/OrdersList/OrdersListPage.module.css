@@ -38,6 +38,7 @@
 .OrdersListPage .Orders {
     display: grid;
     grid-column: span 4;
+    margin-right: 100px;
 }
 
 .OrdersListPage .PageTitle {
@@ -61,9 +62,18 @@
     margin: 20px 0;
 }
 
+.OrdersListPage .OrderInformation {
+    padding: 10px;
 
-/* For screen width less than 900px */
-@media (max-width: 899px) {
+}
+
+.OrdersListPage .OrderInformation:hover {
+    cursor: pointer;
+    background-color: #ebedf0;
+}
+
+
+@media (max-width: 950px) {
     .OrdersListPage {
         grid-template-columns: 1fr;
     }

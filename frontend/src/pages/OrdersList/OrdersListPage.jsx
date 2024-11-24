@@ -172,7 +172,7 @@ export default function OrdersListPage() {
                             <li key={order.order_id}>
                                 <div
                                     onClick={() => toggleOrderDetails(order.order_id)}
-                                    style={{cursor: 'pointer'}}
+                                    className={classes.OrderInformation}
                                 >
                                     <p>
                                         <strong>Order ID:</strong> {order.order_id}

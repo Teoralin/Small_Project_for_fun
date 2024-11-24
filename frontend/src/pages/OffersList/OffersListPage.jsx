@@ -507,11 +507,13 @@ export default function OffersListPage() {
                                                         <div className={classes.SelfHarvestActions}>
                                                             <button
                                                                 onClick={() => editSelfHarvest(event)}
+                                                                className={classes.ApproveButton}
                                                             >
                                                                 Edit
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDeleteHarvest(event.event_id)}
+                                                                className={classes.DisapproveButton}
                                                             >
                                                                 Delete
                                                             </button>

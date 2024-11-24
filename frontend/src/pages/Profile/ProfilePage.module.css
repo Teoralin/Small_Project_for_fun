@@ -1,6 +1,6 @@
 .ProfilePage {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     margin: 120px 60px;
 }
 
@@ -36,7 +36,7 @@
     grid-column: span 1;
 }
 
-.ProfilePage .Contacts p {
+.ProfilePage .PageTitle {
     display: grid;
     justify-content: center;
     font-family: martel sans, sans-serif;
@@ -99,6 +99,11 @@
     margin: 10px auto 30px;
 }
 
+.ProfilePage .Change:hover {
+    background-color: #EBEDF0;
+    transform: scale(1.05);
+}
+
 .ProfilePage .formCompo {
     display: grid;
     justify-content: center;
@@ -114,6 +119,11 @@
     font-size: 1rem;
     color: #B79C10;
     margin: 0 auto 30px;
+}
+
+.ProfilePage .Submit:hover {
+    background-color: #F8D140;
+    transform: scale(1.05);
 }
 
 .ProfilePage .checkboxLabel {
