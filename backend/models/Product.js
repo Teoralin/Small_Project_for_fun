@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbconfig/sequelize');
-const Category = require('./Category'); // Assuming Category is already defined
+const Category = require('./Category');
 
 const Product = sequelize.define('Product', {
     product_id: {
@@ -18,7 +18,7 @@ const Product = sequelize.define('Product', {
     },
     category_id: {
         type: DataTypes.INTEGER,
-        allowNull: true, // Make category_id nullable to resolve the conflict
+        allowNull: true,
         references: {
             model: Category,
             key: 'category_id',
@@ -30,7 +30,6 @@ const Product = sequelize.define('Product', {
     tableName: 'Products',
 });
 
-// Define relationship between Product and Category
 Product.belongsTo(Category, { foreignKey: 'category_id', as: 'Category' });
 
 module.exports = Product;

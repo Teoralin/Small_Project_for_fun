@@ -21,30 +21,7 @@ export default function ProductsPage() {
     });
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-
     
-    useEffect(() => {
-        const getRole = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    setError('User is not logged in');
-                    return;
-                }
-
-                const decodedToken = jwtDecode(token);
-                setUserRole(decodedToken.role);
-
-
-
-            } catch (err) {
-                setError(err.response?.data?.message || 'Error fetching user data');
-            }
-        };
-
-        getRole();
-    }, []);
-
     useEffect(() => {
         const checkUserRole = () => {
             const token = localStorage.getItem('token');
