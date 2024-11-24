@@ -242,16 +242,11 @@ export default function FarmerPage() {
                                         onClick={() => handlePurchaseClick(offer)}
                                         className={classes.PurchaseButton}
                                     >
-                                        Buy
+                                        Add to cart
                                     </button>
                                 )}
                                 
-                                    <button
-                                        onClick={() => handlePurchaseClick(offer)}
-                                        className="purchase-button"
-                                    >
-                                        Add to cart
-                                    </button>
+                                     
                                 
 
 
