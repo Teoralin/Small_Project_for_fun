@@ -131,8 +131,13 @@ export default function OffersListPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log(response.data);
-            return response.data;  
+            const today = new Date();
+            const filteredEvents = response.data.filter(event => {
+                const eventEndDate = new Date(event.end_date);
+                return eventEndDate >= today; 
+                });
+    
+                return filteredEvents;  
         } catch (err) {
             console.error('Error fetching self-harvest events:', err);
             setError('Failed to fetch self-harvest events');

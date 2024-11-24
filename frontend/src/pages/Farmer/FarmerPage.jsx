@@ -24,13 +24,11 @@ export default function FarmerPage() {
                     return;
                 }
 
-                console.log(farmerId);
                 const response = await api.get(`/offers/user/${farmerId}`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
-                console.log(response);
 
                 const offersWithHarvests = await Promise.all(
                     response.data.map(async (offer) => {
@@ -83,7 +81,15 @@ export default function FarmerPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            return response.data;  
+            
+            const today = new Date();
+
+            const filteredEvents = response.data.filter(event => {
+            const eventEndDate = new Date(event.end_date);
+            return eventEndDate >= today; 
+            });
+
+            return filteredEvents; 
         } catch (err) {
             console.error('Error fetching self-harvest events:', err);
             setError('Failed to fetch self-harvest events');
@@ -155,7 +161,7 @@ export default function FarmerPage() {
 
     return (
         <div className="farmer-page">
-            <h1>My Offers</h1>
+            <h1>Offers of a farmer</h1>
             {userOffers.length === 0 ? (
                 <p>No offers available. Add some to get started!</p>
             ) : (
@@ -179,9 +185,34 @@ export default function FarmerPage() {
                                     onClick={() => handlePurchaseClick(offer)}
                                     className="purchase-button"
                                 >
-                                    Buy
+                                    Add to cart
                                 </button>
 
+
+                                <div className={classes.SelfHarvestEvents}>
+                                        <h4>Self-Harvest Events</h4>
+                                        {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
+                                            <div className={classes.SelfHarvestList}>
+                                                {offer.selfHarvestEvents.map((event) => (
+                                                    <div key={event.event_id} className={classes.SelfHarvestCard}>
+                                                        <p>Harvest start date: {event.start_date}</p>
+                                                        <p>Harvest end date: {event.end_date}</p>
+                                                        {event.Address && (
+                                                            <div className={classes.EventAddress}>
+                                                                <h5>Event Address</h5>
+                                                                <p>city: {event.Address.city},
+                                                                    postcode: {event.Address.post_code}</p>
+                                                                <p>street: {event.Address.street},
+                                                                    house: {event.Address.house_number}</p>
+                                                            </div>
+                                                        )}   
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p>No self-harvest events yet.</p>
+                                        )}
+                                    </div>
                             </div>
                         </li>
                     ))}
