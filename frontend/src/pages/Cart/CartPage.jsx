@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api';
+import classes from './CartPage.module.css';
 
 export default function CartPage() {
     const [cartItems, setCartItems] = useState([]); // Cart items
@@ -147,22 +148,39 @@ export default function CartPage() {
     }
 
     return (
-        <div style={{ marginTop: '5em' }}>
-            <h1>Cart</h1>
-            <ul>
-                {cartItems.map((item) => (
-                    <li key={item.offer_id} style={{ marginBottom: '1em' }}>
-                        <p><strong>Offer Name:</strong> {item.Product.name || 'N/A'}</p>
-                        <p><strong>Quantity:</strong> {item.quantity}</p>
-                        <p><strong>Price per Unit:</strong> {item.price} CZK</p>
-                        <p><strong>Total Price:</strong> {item.price * item.quantity} CZK</p>
-                        <button onClick={() => handleRemoveItem(item.offer_id)}>Remove</button>
-                    </li>
-                ))}
-            </ul>
-            <h2>Total Price: {totalPrice} CZK</h2>
-            <button onClick={handleCheckout}>Checkout</button>
-            {successMessage && <p>{successMessage}</p>}
+        <div className={classes.CartPage}>
+            {error && <div className={classes.ErrorMessage}>{error}</div>}
+            {successMessage && <div className={classes.SuccessMessage}>{successMessage}</div>}
+
+            <p className={classes.PageTitle}>Your Cart</p>
+
+            {cartItems.length === 0 ? (
+                <div className={classes.EmptyCart}>
+                    {successMessage ? (
+                        <div>
+                            <h2>{successMessage}</h2>
+                        </div>
+                    ) : (
+                        <div>Your cart is empty.</div>
+                    )}
+                </div>
+            ) : (
+                <div className={classes.CartItems}>
+                    {cartItems.map((item) => (
+                        <div key={item.offer_id} className={classes.CartItem}>
+                            <p><strong>Product Name:</strong> {item.Product.name || 'N/A'}</p>
+                            <p><strong>Quantity:</strong> {item.quantity}</p>
+                            <p><strong>Price per Unit:</strong> {item.price} CZK</p>
+                            <p><strong>Total Price:</strong> {item.price * item.quantity} CZK</p>
+                            <button onClick={() => handleRemoveItem(item.offer_id)} className={classes.RemoveButton}>Remove</button>
+
+                            <div className={classes.separator}></div>
+                        </div>
+                    ))}
+                    <h2 className={classes.TotalPrice}>Total Price: {totalPrice} CZK</h2>
+                    <button onClick={handleCheckout} className={classes.CheckoutButton}>Checkout</button>
+                </div>
+            )}
         </div>
     );
 }

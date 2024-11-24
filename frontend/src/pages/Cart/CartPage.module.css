@@ -1,0 +1,94 @@
+.CartPage {
+    margin-top: 5em;
+    padding: 20px;
+    font-family: martel sans, sans-serif;
+    font-weight: 300;
+    display: grid;
+    justify-content: center;
+}
+
+.CartPage .PageTitle {
+    font-size: 40px;
+    color: #3F4255;
+    margin-left: 40px;
+}
+
+
+.CartPage .CartItem {
+    margin-bottom: 10px;
+    padding: 10px;
+    display: grid;
+}
+
+.CartPage .CartItem p {
+    margin: 5px 0;
+}
+
+.CartPage .CartItems {
+    display: grid;
+}
+
+.CartPage .RemoveButton {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    width: fit-content;
+    margin: 10px auto;
+}
+
+.CartPage .RemoveButton:hover {
+    background-color: #e53935;
+    transform: scale(1.05);
+}
+
+.CartPage .CheckoutButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px auto;
+}
+
+.CartPage .CheckoutButton:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+
+}
+
+.CartPage .ErrorMessage, .SuccessMessage {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    color: white;
+}
+
+.CartPage .ErrorMessage {
+    background-color: #f44336;
+}
+
+.CartPage .SuccessMessage {
+    background-color: #4CAF50;
+}
+
+.CartPage .EmptyCart {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+
+.CartPage .TotalPrice {
+    font-size: 1.5rem;
+    margin-top: 20px;
+}
+
+.CartPage .separator {
+    background: #d4d7e5;
+    height: 1px;
+    width: 100%;
+    margin: 10px 0;
+}

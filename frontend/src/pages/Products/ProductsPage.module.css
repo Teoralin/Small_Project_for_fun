@@ -4,29 +4,29 @@
     font-weight: 300;
 }
 
-.PageTitle {
+.ProductsPage .PageTitle {
     font-size: 40px;
     color: #3F4255;
     text-align: center;
 }
 
-.Title {
+.ProductsPage .Title {
     margin-top: 2rem;
     font-size: 30px;
     color: #3F4255;
 }
 
-.OfferList {
+.ProductsPage .OfferList {
     list-style-type: none;
     padding: 0;
 }
 
-.OfferItem {
+.ProductsPage .OfferItem {
     padding: 15px;
     background-color: #fff;
 }
 
-.PurchaseButton {
+.ProductsPage .PurchaseButton {
     padding: 10px;
     background-color: #4CAF50;
     color: white;
@@ -35,23 +35,23 @@
     margin-top: 10px;
 }
 
-.PurchaseButton:hover {
+.ProductsPage .PurchaseButton:hover {
     background-color: #45a049;
+    transform: scale(1.05);
 }
 
-.PurchaseForm {
+.ProductsPage .PurchaseForm {
     background-color: #e9f7ef;
     padding: 20px;
     border-radius: 8px;
     margin-top: 20px;
 }
 
-.AddOffer {
+.ProductsPage .AddOffer {
     margin: 20px 50px;
 }
 
-
-.AddOfferButton {
+.ProductsPage .AddOfferButton {
     padding: 10px;
     background-color: #28a745;
     color: white;
@@ -59,20 +59,20 @@
     cursor: pointer;
 }
 
-
-.AddOfferButton:hover {
+.ProductsPage .AddOfferButton:hover {
     background-color: #218838;
+    transform: scale(1.05);
 }
 
-input {
+.ProductsPage input {
     margin-left: 10px;
 }
 
-.OfferForm {
+.ProductsPage .OfferForm {
     margin-top: 15px;
 }
 
-.SubmitButton {
+.ProductsPage .SubmitButton {
     padding: 10px;
     background-color: #28a745;
     color: white;
@@ -81,15 +81,17 @@ input {
     margin-top: 1rem;
 }
 
-.SubmitButton:hover {
+.ProductsPage .SubmitButton:hover {
     background-color: #218838;
+    transform: scale(1.05);
 }
 
-.SuccessMessage {
+.ProductsPage .SuccessMessage {
     color: green;
     font-weight: bold;
 }
-.CancelButton {
+
+.ProductsPage .CancelButton {
     padding: 10px;
     background-color: #dc3545;
     color: white;
@@ -97,25 +99,25 @@ input {
     cursor: pointer;
     margin-top: 1rem;
     margin-left: 2rem;
-
 }
 
-.CancelButton:hover {
+.ProductsPage .CancelButton:hover {
     background-color: #c82333;
+    transform: scale(1.05);
 }
 
-.separator {
+.ProductsPage .separator {
     background: #d4d7e5;
     height: 1px;
     width: 100%;
     margin: 10px 0;
 }
 
-.OfferCompo {
+.ProductsPage .OfferCompo {
     margin: 0 30px;
 }
 
-.EditUsersListPage .SearchButton {
+.ProductsPage .EditUsersListPage .SearchButton {
     width: fit-content;
     height: 70px;
     padding: 20px;
@@ -125,4 +127,19 @@ input {
     cursor: pointer;
     font-size: 1rem;
     color: #B79C10;
+}
+
+.ProductsPage .Update {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ProductsPage .Update input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }

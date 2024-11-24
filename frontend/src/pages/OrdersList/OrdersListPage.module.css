@@ -1,6 +1,8 @@
 .OrdersListPage {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(5, 1fr);
+    font-family: martel sans, sans-serif;
+    font-weight: 300;
 }
 
 .OrdersListPage .Options {
@@ -49,9 +51,27 @@
 
 .OrdersListPage .Orders {
     display: grid;
-    justify-content: center;
     margin: 120px 60px;
-    font-family: martel sans, sans-serif;
-    font-weight: 300;
+    grid-column: span 4;
+}
+
+.OrdersListPage .PageTitle {
     font-size: 40px;
+    color: #3F4255;
+    margin-left: 40px;
+}
+
+.OrdersListPage .separator {
+    background: #d4d7e5;
+    height: 1px;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.OrdersListPage .OrderList {
+    list-style: none;
+}
+
+.OrdersListPage .OrderInfo {
+    margin: 20px 0;
 }

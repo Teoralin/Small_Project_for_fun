@@ -195,7 +195,7 @@ export default function ProductsPage() {
                     {showForm ? (
                         <div className={classes.OfferForm}>
                             <div>
-                                <label>
+                                <label className={classes.Update}>
                                     Price:
                                     <input
                                         type="number"
@@ -206,7 +206,7 @@ export default function ProductsPage() {
                                 </label>
                             </div>
                             <div>
-                                <label>
+                                <label className={classes.Update}>
                                     Quantity:
                                     <input
                                         type="number"
@@ -217,7 +217,7 @@ export default function ProductsPage() {
                                 </label>
                             </div>
                             <div>
-                                <label>
+                                <label className={classes.Update}>
                                     Pickable:
                                     <input
                                         type="checkbox"

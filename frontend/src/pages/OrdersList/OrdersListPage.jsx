@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { jwtDecode } from 'jwt-decode';
+import classes from "./OrdersListPage.module.css";
 
 export default function OrdersListPage() {
     const navigate = useNavigate();
@@ -10,24 +11,35 @@ export default function OrdersListPage() {
     const [offers, setOffers] = useState({}); // Store offers for each order
     const [error, setError] = useState('');
     const [userRole, setUserRole] = useState('');
+    const [farmer, setFarmer] = useState('');
 
     // Decode token and check user role
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const getRole = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    setError('User is not logged in');
+                    return;
+                }
 
-        if (!token) {
-            setError('You must be logged in to view your orders.');
-            return;
-        }
+                const decodedToken = jwtDecode(token);
+                if(decodedToken.is_farmer){
+                    setFarmer('farmer');
+                }
+                setUserRole(decodedToken.role);
 
-        try {
-            const decodedToken = jwtDecode(token);
-            setUserRole(decodedToken.role);
-        } catch (err) {
-            console.error('Error decoding token:', err);
-            setError('Invalid token. Please log in again.');
-        }
+
+
+            } catch (err) {
+                setError(err.response?.data?.message || 'Error fetching user data');
+            }
+        };
+
+        getRole();
     }, []);
+
+
 
     // Fetch user orders
     useEffect(() => {
@@ -101,63 +113,88 @@ export default function OrdersListPage() {
     };
 
     return (
-        <div style={{ marginTop: '5em' }}>
-            <div>
-                <button type="Option" onClick={() => handleNavigate('/profile')}>
+        <div className={classes.OrdersListPage}>
+            <div className={classes.Options}>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/profile')}
+                >
                     Contact information
                 </button>
-                <button type="Option" onClick={() => handleNavigate('/ordersList')}>
+                <button type="Option"
+                        className={classes.OptionButtonSelected}
+                        onClick={() => handleNavigate('/ordersList')}
+                >
                     Orders
                 </button>
-                <button type="Option" onClick={() => handleNavigate('/offersList')}>
-                    Offers
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/review')}
+                >
+                    Reviews
                 </button>
-                {userRole === 'Administrator' && (
-                    <button type="Option" onClick={() => handleNavigate('/editUsersList')}>
+
+                {farmer === "farmer" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/offersList')}
+                    >
+                        Offers
+                    </button>
+                )}
+                {userRole === "Administrator" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/editUsersList')}
+                    >
                         Manage Users
+                    </button>
+                )}
+                {userRole === "Moderator" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/categories')}
+                    >
+                        Manage Categories
                     </button>
                 )}
             </div>
 
-            <div>
-                <h1>Orders</h1>
+            <div className={classes.Orders}>
+                <p className={classes.PageTitle}>Orders</p>
                 {error ? (
                     <p>{error}</p>
                 ) : orders.length === 0 ? (
                     <p>No orders found.</p>
                 ) : (
-                    <ul>
+                    <ul className={classes.OrderList}>
                         {orders.map((order) => (
-                            <li key={order.order_id} style={{ marginBottom: '1em' }}>
+                            <li key={order.order_id}>
                                 <div
                                     onClick={() => toggleOrderDetails(order.order_id)}
-                                    style={{ cursor: 'pointer' }}
+                                    style={{cursor: 'pointer'}}
                                 >
                                     <p>
                                         <strong>Order ID:</strong> {order.order_id}
                                     </p>
                                     <p>
-                                        <strong>Date:</strong> {new Date(order.date).toLocaleString()}
-                                    </p>
-                                    <p>
-                                        <strong>Total Price:</strong> {order.amount} CZK
+                                        {new Date(order.date).toLocaleDateString('cs-CZ')} | {order.amount} CZK
                                     </p>
                                 </div>
                                 {expandedOrderId === order.order_id && (
-                                    <div style={{ marginTop: '1em', marginLeft: '1em' }}>
-                                        <h4>Offers</h4>
+                                    <div>
                                         {offers[order.order_id] && (
-                                            <ul>
+                                            <ul className={classes.OrderList}>
                                                 {offers[order.order_id].map((offer, index) => (
-                                                    <li key={index}>
+                                                    <li key={index} className={classes.OrderInfo}>
                                                         <p>
-                                                            <strong>Offer Name:</strong> {offer.offer_name}
+                                                            Offer Name: {offer.offer_name}
                                                         </p>
                                                         <p>
-                                                            <strong>Price:</strong> {offer.price} CZK
+                                                            Price: {offer.price} CZK
                                                         </p>
                                                         <p>
-                                                            <strong>Quantity:</strong> {offer.quantity}
+                                                            Quantity: {offer.quantity}
                                                         </p>
                                                     </li>
                                                 ))}
@@ -165,11 +202,14 @@ export default function OrdersListPage() {
                                         )}
                                     </div>
                                 )}
+                                <div className={classes.separator}></div>
                             </li>
                         ))}
                     </ul>
                 )}
             </div>
+
+
         </div>
     );
 }

@@ -1,15 +1,15 @@
-.OffersListPage {
+.ReviewPage {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(5, 1fr);
     font-family: martel sans, sans-serif;
     font-weight: 300;
 }
 
-.OffersListPage .Options {
+.ReviewPage .Options {
     margin: 120px 60px;
 }
 
-.OffersListPage .OptionButton {
+.ReviewPage .OptionButton {
     width: 405px;
     height: 56px;
     padding: 10px;
@@ -29,7 +29,7 @@
     justify-content: start;
 }
 
-.OffersListPage .OptionButtonSelected {
+.ReviewPage .OptionButtonSelected {
     width: 405px;
     height: 56px;
     padding: 10px;
@@ -49,43 +49,30 @@
     justify-content: start;
 }
 
-.OffersListPage .Offers {
+.ReviewPage .Review {
     display: grid;
-    justify-content: center;
     margin: 120px 60px;
-    grid-column: span 3;
+    grid-column: span 4;
 }
 
-.OffersListPage .PageTitle {
+.ReviewPage .PageTitle {
     font-size: 40px;
     color: #3F4255;
     margin-left: 40px;
 }
 
-.OffersListPage .OfferCard {
-    margin: 10px 20px 0 40px;
-}
-
-.OffersListPage .OfferWrapper {
-    margin-bottom: 20px;
-}
-
-.OffersListPage .ProductName {
-    font-size: 30px;
-}
-
-.OffersListPage .separator {
+.ReviewPage .separator {
     background: #d4d7e5;
     height: 1px;
     width: 100%;
     margin: 10px 0;
 }
 
-.OffersListPage .NewOffer .AddSelfHarvest {
-    margin-left: 40px;
+.ReviewPage .ReviewList {
+    list-style: none;
 }
 
-.OffersListPage .AddSelfHarvest {
+.ReviewPage .ReviewButton {
     background-color: #F2F4FA;
     border: none;
     height: 48px;
@@ -99,17 +86,14 @@
     border-radius: 5px;
 }
 
-.OffersListPage .AddSelfHarvest:hover {
+
+.ReviewPage .ReviewButton:hover {
     background-color: #EBEDF0;
     transform: scale(1.05);
 }
 
-.OffersListPage .SelfHarvestEvents {
-    margin-top: 15px;
-}
 
-
-.OffersListPage .ApproveButton {
+.ReviewPage .ApproveButton {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -117,12 +101,12 @@
     margin: 10px;
 }
 
-.OffersListPage .ApproveButton:hover {
+.ReviewPage .ApproveButton:hover {
     background-color: #45a049;
     transform: scale(1.05);
 }
 
-.OffersListPage .DisapproveButton {
+.ReviewPage .DisapproveButton {
     background-color: #f44336;
     color: white;
     border: none;
@@ -130,12 +114,18 @@
     margin: 10px;
 }
 
-.OffersListPage .DisapproveButton:hover {
+.ReviewPage .DisapproveButton:hover {
     background-color: #e53935;
     transform: scale(1.05);
 }
 
-.OffersListPage .ModalOverlay {
+.ReviewPage input[type="number"] {
+    width: 100px; /* Adjust input width as necessary */
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.ReviewPage .ModalOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -148,56 +138,25 @@
     z-index: 1000;
 }
 
-.OffersListPage .Modal {
+.ReviewPage .Modal {
     background: whitesmoke;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.OffersListPage .ModalText {
+.ReviewPage .ModalText {
     font-size: 30px;
     text-align: center;
 }
 
-.OffersListPage .ModalDate {
+.ReviewPage .ModalDate {
     display: grid;
     justify-content: center;
 }
 
-.OffersListPage .ModalActions{
+.ReviewPage .ModalActions{
     display: flex;
     justify-content: center;
     gap: 10px;
-}
-
-.OffersListPage .Update {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.OffersListPage .Update input {
-    width: 60px;
-    padding: 5px;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.OffersListPage .Update button {
-    padding: 5px 15px;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    background-color: #FFE145;
-    color: #B79C10;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.OffersListPage .Update button:hover {
-    background-color: #F8D140;
-    transform: scale(1.05);
 }

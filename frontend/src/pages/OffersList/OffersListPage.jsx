@@ -377,20 +377,20 @@ export default function OffersListPage() {
                 </button>
 
                 {farmer === "farmer" && (
-                <button type="Option"
-                        className={classes.OptionButton}
-                        onClick={() => handleNavigate('/offersList')}
-                >
-                    Offers
-                </button>
-                 )}
+                    <button type="Option"
+                            className={classes.OptionButtonSelected}
+                            onClick={() => handleNavigate('/offersList')}
+                    >
+                        Offers
+                    </button>
+                )}
                 {userRole === "Administrator" && (
-                <button type="Option"
-                        className={classes.OptionButton}
-                        onClick={() => handleNavigate('/editUsersList')}
-                >
-                    Manage Users
-                </button>
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/editUsersList')}
+                    >
+                        Manage Users
+                    </button>
                 )}
                 {userRole === "Moderator" && (
                     <button type="Option"
@@ -403,7 +403,18 @@ export default function OffersListPage() {
             </div>
 
             <div className={classes.Offers}>
-                <p>Your Offers</p>
+                <p className={classes.PageTitle}>Offers</p>
+
+                <div className={classes.NewOffer}>
+                    <button
+                        onClick={() => handleNavigate('/categories')}
+                        className={classes.AddSelfHarvest}
+                    >
+                        Add new offer
+                    </button>
+                </div>
+                <div className={classes.separator}></div>
+
                 {loading ? (
                     <p>Loading...</p>
                 ) : error ? (
@@ -413,158 +424,161 @@ export default function OffersListPage() {
                 ) : (
                     <div className={classes.OfferList}>
                         {userOffers.map((offer) => (
-                            <div key={offer.offer_id} className={classes.OfferCard}>
-                                <h3>{offer.Product.name}</h3>
-                                <p>{offer.Product.description}</p>
-                                <p>Price: ${offer.price}</p>
-                                <p>Quantity: {offer.quantity}</p>
-                                <p>Status: {offer.status}</p>
-                                {offer.is_pickable && <p>Pickable: Yes</p>}
-                                
-                                <div className={classes.Update}>
-                                    <label htmlFor={`quantity-${offer.offer_id}`}>Quantity:</label>
-                                    <input
-                                        type="number"
-                                        id={`quantity-${offer.offer_id}`}
-                                        value={offer.quantity}
-                                        min="0"
-                                        onChange={(e) =>
-                                            setUserOffers((prevOffers) =>
-                                                prevOffers.map((o) =>
-                                                    o.offer_id === offer.offer_id
-                                                        ? { ...o, quantity: e.target.value }
-                                                        : o
+                            <div key={offer.offer_id} className={classes.OfferWrapper}>
+                                <div className={classes.OfferCard}>
+                                    <p className={classes.ProductName}>{offer.Product.name}</p>
+                                    <p>{offer.Product.description}</p>
+                                    <p>Status: {offer.status}</p>
+                                    {offer.is_pickable && <p>Pickable: Yes</p>}
+
+                                    <div className={classes.Update}>
+                                        <label htmlFor={`quantity-${offer.offer_id}`}>Quantity:</label>
+                                        <input
+                                            type="number"
+                                            id={`quantity-${offer.offer_id}`}
+                                            value={offer.quantity}
+                                            min="0"
+                                            onChange={(e) =>
+                                                setUserOffers((prevOffers) =>
+                                                    prevOffers.map((o) =>
+                                                        o.offer_id === offer.offer_id
+                                                            ? {...o, quantity: e.target.value}
+                                                            : o
+                                                    )
                                                 )
-                                            )
-                                        }
-                                    />
-                                    <button
-                                        onClick={() =>
-                                            updateQuantity(
-                                                offer.offer_id,
-                                                parseInt(offer.quantity, 10)
-                                            )
-                                        }
-                                    >
-                                        Update
-                                    </button>
-                                </div>
-                                <div className={classes.Update}>
-                                    <label htmlFor={`price-${offer.offer_id}`}>Price:</label>
-                                    <input
-                                        type="number"
-                                        id={`price-${offer.offer_id}`}
-                                        value={offer.price}
-                                        min="0"
-                                        onChange={(e) =>
-                                            setUserOffers((prevOffers) =>
-                                                prevOffers.map((o) =>
-                                                    o.offer_id === offer.offer_id
-                                                        ? { ...o, price: e.target.value }
-                                                        : o
+                                            }
+                                        />
+                                        <button
+                                            onClick={() =>
+                                                updateQuantity(offer.offer_id, parseInt(offer.quantity, 10))
+                                            }
+                                        >
+                                            Update
+                                        </button>
+                                    </div>
+                                    <div className={classes.Update}>
+                                        <label htmlFor={`price-${offer.offer_id}`}>Price:</label>
+                                        <input
+                                            type="number"
+                                            id={`price-${offer.offer_id}`}
+                                            value={offer.price}
+                                            min="0"
+                                            onChange={(e) =>
+                                                setUserOffers((prevOffers) =>
+                                                    prevOffers.map((o) =>
+                                                        o.offer_id === offer.offer_id
+                                                            ? {...o, price: e.target.value}
+                                                            : o
+                                                    )
                                                 )
-                                            )
-                                        }
-                                    />
-                                    <button
-                                        onClick={() =>
-                                            updatePrice(
-                                                offer.offer_id,
-                                                parseInt(offer.price, 10)
-                                            )
-                                        }
-                                    >
-                                        Update
-                                    </button>
-                                </div>
-                                  <div className={classes.SelfHarvestEvents}>
-                                    <h4>Self-Harvest Events</h4>
-                                    {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
-                                        <div className={classes.SelfHarvestList}>
-                                            {offer.selfHarvestEvents.map((event) => (
-                                                <div key={event.event_id} className={classes.SelfHarvestCard}>
-                                                    <p>Harvest start date: {event.start_date}</p>
-                                                    <p>Harvest end date: {event.end_date}</p>
-                                                    {event.Address && (
-                                                        <div className={classes.EventAddress}>
-                                                            <h5>Event Address</h5>
-                                                            <p>city: {event.Address.city}, postcode: {event.Address.post_code}</p>
-                                                            <p>street: {event.Address.street}, house: {event.Address.house_number}</p>
+                                            }
+                                        />
+                                        <button
+                                            onClick={() =>
+                                                updatePrice(offer.offer_id, parseInt(offer.price, 10))
+                                            }
+                                        >
+                                            Update
+                                        </button>
+                                    </div>
+
+                                    <div className={classes.SelfHarvestEvents}>
+                                        <h4>Self-Harvest Events</h4>
+                                        {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
+                                            <div className={classes.SelfHarvestList}>
+                                                {offer.selfHarvestEvents.map((event) => (
+                                                    <div key={event.event_id} className={classes.SelfHarvestCard}>
+                                                        <p>Harvest start date: {event.start_date}</p>
+                                                        <p>Harvest end date: {event.end_date}</p>
+                                                        {event.Address && (
+                                                            <div className={classes.EventAddress}>
+                                                                <h5>Event Address</h5>
+                                                                <p>city: {event.Address.city},
+                                                                    postcode: {event.Address.post_code}</p>
+                                                                <p>street: {event.Address.street},
+                                                                    house: {event.Address.house_number}</p>
+                                                            </div>
+                                                        )}
+                                                        <div className={classes.SelfHarvestActions}>
+                                                            <button
+                                                                onClick={() => editSelfHarvest(event)}
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteHarvest(event.event_id)}
+                                                            >
+                                                                Delete
+                                                            </button>
                                                         </div>
-                                                    )}
-                                                    <div className={classes.SelfHarvestActions}>
-                                                        <button
-                                                            onClick={() => editSelfHarvest(event)} 
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDeleteHarvest(event.event_id)}
-                                                        >
-                                                            Delete
-                                                        </button>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p>No self-harvest events yet.</p> // Show a message if no events exist
-                                    )}
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p>No self-harvest events yet.</p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <button
+                                            onClick={() => handleAddHarvest(offer)}
+                                            className={classes.AddSelfHarvest}
+                                        >
+                                            Add self harvest
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className={classes.AddSelfHarvest}>
-                                    <button
-                                        onClick={() => handleAddHarvest(offer)}
-                                    >
-                                        Add self harvest
-                                    </button>
-                                </div>
+
+                                {/* Separator placed after each offer */}
+                                <div className={classes.separator}></div>
                             </div>
                         ))}
-                        <div className={classes.AddSelfHarvest}>
-                            <button
-                                onClick={() => handleNavigate('/categories')}
-                            >
-                                Add new offer
-                            </button>
-                        </div>
                     </div>
                 )}
             </div>
 
+
             {modalOpen && (
                 <div className={classes.ModalOverlay}>
                     <div className={classes.Modal}>
-                        <h3>Create New Self-Harvest Event</h3>
+                        <p className={classes.ModalText}>Create New Self-Harvest Event</p>
                         {error && <p className={classes.Error}>{error}</p>}
                         {success && <p className={classes.Success}>{success}</p>}
 
                         <form onSubmit={handleSubmit}>
-                            <label htmlFor="start_date">Start Date:</label>
-                            <input
-                                type="datetime-local"
-                                id="start_date"
-                                value={newHarvest.start_date || ''}
-                                onChange={(e) => setNewHarvest({ ...newHarvest, start_date: e.target.value })}
-                                required
-                            />
+                            <div className={classes.ModalDate}>
+                                <div>
+                                    <label htmlFor="start_date">Start Date:</label>
+                                    <input
+                                        type="datetime-local"
+                                        id="start_date"
+                                        value={newHarvest.start_date || ''}
+                                        onChange={(e) => setNewHarvest({...newHarvest, start_date: e.target.value})}
+                                        required
+                                    />
+                                </div>
 
-                            <label htmlFor="end_date">End Date:</label>
-                            <input
-                                type="datetime-local"
-                                id="end_date"
-                                value={newHarvest.end_date || ''}
-                                onChange={(e) => setNewHarvest({ ...newHarvest, end_date: e.target.value })}
-                                required
-                            />
-
-                            <div className={classes.ModalActions}>
-                                <button type="submit" className={classes.SubmitButton}>
-                                    Create Event
-                                </button>
-                                <button type="button" onClick={handleCloseModal} className={classes.CancelButton}>
-                                    Cancel
-                                </button>
+                                <div>
+                                    <label htmlFor="end_date">End Date:</label>
+                                    <input
+                                        type="datetime-local"
+                                        id="end_date"
+                                        value={newHarvest.end_date || ''}
+                                        onChange={(e) => setNewHarvest({...newHarvest, end_date: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className={classes.ModalActions}>
+                                    <button type="submit" className={classes.ApproveButton}>
+                                        Create Event
+                                    </button>
+                                    <button type="button" onClick={handleCloseModal}
+                                            className={classes.DisapproveButton}>
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
+
+
                         </form>
                     </div>
                 </div>
@@ -584,7 +598,7 @@ export default function OffersListPage() {
                                 id="start_date"
                                 value={editHarvest.start_date || ''}
                                 onChange={(e) =>
-                                    setEditHarvest({ ...editHarvest, start_date: e.target.value })
+                                    setEditHarvest({...editHarvest, start_date: e.target.value})
                                 }
                                 required
                             />
@@ -595,16 +609,16 @@ export default function OffersListPage() {
                                 id="end_date"
                                 value={editHarvest.end_date || ''}
                                 onChange={(e) =>
-                                    setEditHarvest({ ...editHarvest, end_date: e.target.value })
+                                    setEditHarvest({...editHarvest, end_date: e.target.value})
                                 }
                                 required
                             />
 
                             <div className={classes.ModalActions}>
-                                <button type="submit" className={classes.SubmitButton}>
+                                <button type="submit" className={classes.ApproveButton}>
                                     Save Changes
                                 </button>
-                                <button type="button" onClick={handleCloseModal} className={classes.CancelButton}>
+                                <button type="button" onClick={handleCloseModal} className={classes.DisapproveButton}>
                                     Cancel
                                 </button>
                             </div>
@@ -612,7 +626,7 @@ export default function OffersListPage() {
                     </div>
                 </div>
             )}
-             
+
         </div>
     )
 }

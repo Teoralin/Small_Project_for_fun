@@ -1,17 +1,47 @@
 import { useEffect, useState } from 'react';
 import api from '../../api';
 import { jwtDecode } from 'jwt-decode';
+import classes from "./ReviewPage.module.css";
+import {useNavigate} from "react-router-dom";
 
 export default function ReviewPage() {
-    const [offers, setOffers] = useState([]); // List of offers
-    const [reviews, setReviews] = useState({}); // Reviews by offer_id
-    const [error, setError] = useState(''); // Error handling
-    const [loading, setLoading] = useState(true); // Loading state
-    const [modalData, setModalData] = useState(null); // Data for the active modal (offer being reviewed)
-    const [rating, setRating] = useState(''); // Rating input
-    const [successMessage, setSuccessMessage] = useState(''); // Success message
+    const [offers, setOffers] = useState([]);
+    const [reviews, setReviews] = useState({});
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [modalData, setModalData] = useState(null);
+    const [rating, setRating] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const navigate = useNavigate();
+    const [userRole, setUserRole] = useState('');
+    const [farmer, setFarmer] = useState('');
 
-    // Fetch all offers for the logged-in user
+    useEffect(() => {
+        const getRole = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    setError('User is not logged in');
+                    return;
+                }
+
+                const decodedToken = jwtDecode(token);
+                if(decodedToken.is_farmer){
+                    setFarmer('farmer');
+                }
+                setUserRole(decodedToken.role);
+
+
+
+            } catch (err) {
+                setError(err.response?.data?.message || 'Error fetching user data');
+            }
+        };
+
+        getRole();
+    }, []);
+
+
     useEffect(() => {
         const fetchOffersAndReviews = async () => {
             const token = localStorage.getItem('token');
@@ -26,7 +56,6 @@ export default function ReviewPage() {
                 const decodedToken = jwtDecode(token);
                 const userId = decodedToken.userId;
 
-                // Fetch offers for the user
                 const offersResponse = await api.get(
                     `/orders/getAllOffersForUser/${userId}`,
                     {
@@ -38,7 +67,6 @@ export default function ReviewPage() {
 
                 const fetchedOffers = offersResponse.data;
 
-                // Fetch reviews for each offer
                 const reviewsResponse = await Promise.all(
                     fetchedOffers.map(async (offer) => {
                         try {
@@ -57,7 +85,6 @@ export default function ReviewPage() {
                     })
                 );
 
-                // Map reviews by offer_id
                 const reviewsMap = {};
                 reviewsResponse.forEach((res) => {
                     reviewsMap[res.offer_id] = res.review;
@@ -79,14 +106,18 @@ export default function ReviewPage() {
 
     // Handle opening the modal
     const handleOpenModal = (offer) => {
-        setModalData(offer); // Set the current offer for the modal
-        setRating(reviews[offer.offer_id]?.rating || ''); // Set the current rating if it exists
-        setSuccessMessage(''); // Clear any previous success message
+        setModalData(offer);
+        setRating(reviews[offer.offer_id]?.rating || '');
+        setSuccessMessage('');
     };
 
     // Handle closing the modal
     const handleCloseModal = () => {
         setModalData(null);
+    };
+
+    const handleNavigate = (path) => {
+        navigate(path);
     };
 
     // Handle submitting the review
@@ -107,14 +138,13 @@ export default function ReviewPage() {
             const decodedToken = jwtDecode(token);
             const userId = decodedToken.userId;
 
-            // Submit the review (POST or PUT based on existence)
             if (reviews[modalData.offer_id]) {
                 await api.put(
-                    `/reviews/${reviews[modalData.offer_id].review_id}`, // Pass the review_id in the URL
+                    `/reviews/${reviews[modalData.offer_id].review_id}`,
                     {
                         rating,
                         user_id: userId,
-                        offer_id: modalData.offer_id, // Use the offer_id from the modal data
+                        offer_id: modalData.offer_id,
                     },
                     {
                         headers: {
@@ -129,7 +159,7 @@ export default function ReviewPage() {
                     {
                         rating,
                         user_id: userId,
-                        offer_id: modalData.offer_id, // Use the offer_id from the modal data
+                        offer_id: modalData.offer_id,
                     },
                     {
                         headers: {
@@ -141,7 +171,7 @@ export default function ReviewPage() {
 
             setSuccessMessage('Review submitted successfully!');
             setError('');
-            handleCloseModal(); // Close the modal after submission
+            handleCloseModal();
 
             // Update the reviews map
             setReviews((prev) => ({
@@ -167,60 +197,118 @@ export default function ReviewPage() {
     }
 
     return (
-        <div style={{ marginTop: '5em' }}>
-            <h1>Your Offers</h1>
-            <ul>
-                {offers.map((offer) => (
-                    <li key={offer.offer_id} style={{ marginBottom: '1em' }}>
-                        <p>
-                            <strong>Product Name:</strong> {offer.product_name}
-                        </p>
-                        <p>
-                            <strong>Price:</strong> {offer.price} CZK
-                        </p>
-                        {reviews[offer.offer_id] ? (
-                            <button onClick={() => handleOpenModal(offer)}>Edit Review</button>
-                        ) : (
-                            <button onClick={() => handleOpenModal(offer)}>Add Review</button>
-                        )}
-                    </li>
-                ))}
-            </ul>
-
-            {/* Modal for adding/editing a review */}
-            {modalData && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        backgroundColor: 'white',
-                        padding: '20px',
-                        border: '1px solid black',
-                        zIndex: 1000,
-                    }}
+        <div className={classes.ReviewPage}>
+            <div className={classes.Options}>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/profile')}
                 >
-                    <h2>Review for {modalData.product_name}</h2>
-                    <div>
-                        <label>
-                            Rating (1 to 5):
-                            <input
-                                type="number"
-                                value={rating}
-                                onChange={(e) => setRating(Number(e.target.value))}
-                            />
-                        </label>
+                    Contact information
+                </button>
+                <button type="Option"
+                        className={classes.OptionButton}
+                        onClick={() => handleNavigate('/ordersList')}
+                >
+                    Orders
+                </button>
+                <button type="Option"
+                        className={classes.OptionButtonSelected}
+                        onClick={() => handleNavigate('/review')}
+                >
+                    Reviews
+                </button>
+
+                {farmer === "farmer" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/offersList')}
+                    >
+                        Offers
+                    </button>
+                )}
+                {userRole === "Administrator" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/editUsersList')}
+                    >
+                        Manage Users
+                    </button>
+                )}
+                {userRole === "Moderator" && (
+                    <button type="Option"
+                            className={classes.OptionButton}
+                            onClick={() => handleNavigate('/categories')}
+                    >
+                        Manage Categories
+                    </button>
+                )}
+            </div>
+
+            <div className={classes.Review}>
+                <p className={classes.PageTitle}>Your Offers</p>
+                <ul className={classes.ReviewList}>
+                    {offers.map((offer) => (
+                        <li key={offer.offer_id} style={{marginBottom: '1em'}}>
+                            <p>
+                                Product Name: {offer.product_name}
+                            </p>
+                            <p>
+                                Price: {offer.price} CZK
+                            </p>
+                            {reviews[offer.offer_id] ? (
+                                <button onClick={() => handleOpenModal(offer)} className={classes.ReviewButton}>Edit Review</button>
+                            ) : (
+                                <button onClick={() => handleOpenModal(offer)} className={classes.ReviewButton}>Add Review</button>
+                            )}
+
+                            <div className={classes.separator}></div>
+                        </li>
+                    ))}
+                </ul>
+
+                {modalData && (
+                    <div className={classes.ModalOverlay}>
+                        <div className={classes.Modal}>
+                            <p className={classes.ModalText}>Review for {modalData.product_name}</p>
+                            {successMessage && <p className={classes.Success}>{successMessage}</p>}
+                            {error && <p className={classes.Error}>{error}</p>}
+
+                            <form onSubmit={handleSubmitReview}>
+                                <div className={classes.ModalDate}>
+                                    <div>
+                                        <label htmlFor="rating">Rating (1 to 5):</label>
+                                        <input
+                                            type="number"
+                                            id="rating"
+                                            value={rating}
+                                            onChange={(e) => setRating(Number(e.target.value))}
+                                            required
+                                            min="1"
+                                            max="5"
+                                        />
+                                    </div>
+
+                                    <div className={classes.ModalActions}>
+                                        <button type="submit" className={classes.ApproveButton}>
+                                            {reviews[modalData.offer_id] ? 'Update Review' : 'Submit Review'}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={handleCloseModal}
+                                            className={classes.DisapproveButton}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <button onClick={handleSubmitReview}>
-                        {reviews[modalData.offer_id] ? 'Update Review' : 'Submit Review'}
-                    </button>
-                    <button onClick={handleCloseModal} style={{ marginLeft: '10px' }}>
-                        Cancel
-                    </button>
-                    {successMessage && <p>{successMessage}</p>}
-                </div>
-            )}
+                )}
+
+
+            </div>
+
         </div>
     );
 }
