@@ -9,6 +9,7 @@ export default function ProductsPage() {
     const [product, setProduct] = useState(null); // Product details
     const [offers, setOffers] = useState([]); // Offers for this product
     const [offerRatings, setOfferRatings] = useState({}); // Ratings for each offer
+    const [userRole, setUserRole] = useState(''); // Check if the user is a moderator/administrator
     const [isFarmer, setIsFarmer] = useState(false); // Check if the user is a farmer
     const [showForm, setShowForm] = useState(false); // Toggle add offer form
     const [purchaseOffer, setPurchaseOffer] = useState(null); // Offer being purchased
@@ -29,6 +30,7 @@ export default function ProductsPage() {
 
             try {
                 const decodedToken = jwtDecode(token);
+                setUserRole(decodedToken.role)
                 setIsFarmer(decodedToken.is_farmer); // Set farmer status from JWT token
             } catch (err) {
                 console.error('Error decoding token:', err);
@@ -85,6 +87,23 @@ export default function ProductsPage() {
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
         }));
+    };
+
+    // Handle removing the current product
+    const handleRemoveProduct = async () => {
+        try {
+            await api.delete(`/products/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            setSuccessMessage('Product removed successfully!');
+            setError('');
+        } catch (err) {
+            console.error('Error removing product:', err);
+            setError('Error removing product. Please try again later.');
+        }
     };
 
     // Handle submitting the new offer
@@ -189,6 +208,13 @@ export default function ProductsPage() {
             <p>{product.description}</p>
 
             <p className={classes.Title}>Offers</p>
+
+            {/* Remove Current Product Button for Moderators/Administrators */}
+            {(userRole === 'Moderator' || userRole === 'Administrator') && (
+                <button onClick={handleRemoveProduct} className={classes.RemoveProductButton}>
+                    Remove Current Product
+                </button>
+            )}
 
             {isFarmer && (
                 <div className={classes.AddOffer}>
