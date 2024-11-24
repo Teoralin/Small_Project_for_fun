@@ -130,7 +130,7 @@ export default function CategoriesPage() {
             const payload = {
                 ...newCategory,
                 parent_category_id: id || null,
-                was_approved: decodedToken.role?.toLowerCase() === 'moderator',
+                was_approved: decodedToken.role?.toLowerCase() === 'moderator' || decodedToken.role?.toLowerCase() === 'administrator',
             };
 
             const response = await api.post('/categories', payload);
