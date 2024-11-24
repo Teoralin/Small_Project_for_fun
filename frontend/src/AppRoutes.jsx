@@ -5,6 +5,7 @@ import HomePage from "./pages/Home/HomePage.jsx";
 import RegisterPage from "./pages/Register/RegisterPage.jsx";
 import UsersPage from "./pages/Users/UsersPage.jsx";
 import FarmersPage from "./pages/Farmers/FarmersPage.jsx";
+import FarmerPage from './pages/Farmer/FarmerPage.jsx';
 import ProfilePage from "./pages/Profile/ProfilePage.jsx";
 import OrdersListPage from "./pages/OrdersList/OrdersListPage.jsx";
 import OffersListPage from "./pages/OffersList/OffersListPage.jsx";
@@ -35,6 +36,7 @@ export default function AppRoutes() {
             <Route path="/products/:id" element={<ProductsPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/review" element={<ReviewPage />} />
+            <Route path='/farmer/:farmerId' element={<FarmerPage/>} />
         </Routes>
     )
 }

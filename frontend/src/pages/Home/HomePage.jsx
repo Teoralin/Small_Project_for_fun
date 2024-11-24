@@ -31,7 +31,6 @@ export default function HomePage() {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        console.log(token);
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);

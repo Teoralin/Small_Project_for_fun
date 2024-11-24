@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../api';
 import classes from './FarmersPage.module.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function FarmersPage() {
     const [users, setUsers] = useState([]);
@@ -8,6 +9,7 @@ export default function FarmersPage() {
     const [filteredUsers, setFilteredUsers] = useState([]); 
     const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState(null); 
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Fetch users from the API using axios
@@ -41,6 +43,11 @@ export default function FarmersPage() {
             user.surname.toLowerCase().includes(term)
         );
         setFilteredUsers(filtered);
+    };
+
+    const handleFarmerClick = (farmerId) => {
+        // Navigate to the farmer detail page when a farmer is clicked
+        navigate(`/farmer/${farmerId}`);
     };
 
     if (loading) {
@@ -81,7 +88,7 @@ export default function FarmersPage() {
             ) : (
                 <ul className={classes.UserComponent}>
                     {filteredUsers.map((user) => (
-                        <li key={user.id} className={classes.userCompo}>
+                        <li key={user.user_id} className={classes.userCompo} onClick={() => handleFarmerClick(user.user_id)}>
                             <div>
                                 <img
                                     src="https://via.placeholder.com/296x184"
