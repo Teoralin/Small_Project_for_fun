@@ -145,9 +145,7 @@ export default function OffersListPage() {
   
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        // Validate required fields
-        if (!newHarvest.start_date || !newHarvest.end_date) {
+            if (!newHarvest.start_date || !newHarvest.end_date) {
             setError('Please fill all required fields.');
             return;
         }
@@ -155,7 +153,7 @@ export default function OffersListPage() {
         try {
             const token = localStorage.getItem('token');
             await api.post(
-                'http://localhost:3000/harvests',
+                '/harvests',
                 {
                     start_date: newHarvest.start_date,
                     end_date: newHarvest.end_date,

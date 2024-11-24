@@ -407,7 +407,7 @@ export default function CategoriesPage() {
 
 
             {products.length === 0 && (userRole === 'Moderator'
-                || userRole === 'Administrator') && (
+                || userRole === 'Administrator' || userRole === 'Registered User') && (
                 <div>
                     {!showForm && (
                     <div className={classes.AddCompo}>
@@ -418,7 +418,7 @@ export default function CategoriesPage() {
                                         alt="Add Icon"
                                         className={classes.icon}
                                     />
-                                    Add category
+                                    Addcategory 
                                  
                                 </div>
                             </button>
