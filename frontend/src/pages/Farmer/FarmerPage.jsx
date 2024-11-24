@@ -101,7 +101,6 @@ export default function FarmerPage() {
         const token = localStorage.getItem('token');
         if (!token) {
             setError('You must be logged in to add items to the cart.');
-            setModalOpen(false); 
             return;
         }
 
@@ -159,9 +158,6 @@ export default function FarmerPage() {
 
     if(loading){
         return <div>Loading...</div>;
-    }
-    if(error){
-        return <div>{error}</div>;
     }
 
     return (
@@ -244,35 +240,7 @@ export default function FarmerPage() {
                                         Add to cart
                                     </button>
                                 )}
-                                
-                                     
-                                
 
-
-                                <div className={classes.SelfHarvestEvents}>
-                                        <h4>Self-Harvest Events</h4>
-                                        {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
-                                            <div className={classes.SelfHarvestList}>
-                                                {offer.selfHarvestEvents.map((event) => (
-                                                    <div key={event.event_id} className={classes.SelfHarvestCard}>
-                                                        <p>Harvest start date: {event.start_date}</p>
-                                                        <p>Harvest end date: {event.end_date}</p>
-                                                        {event.Address && (
-                                                            <div className={classes.EventAddress}>
-                                                                <h5>Event Address</h5>
-                                                                <p>city: {event.Address.city},
-                                                                    postcode: {event.Address.post_code}</p>
-                                                                <p>street: {event.Address.street},
-                                                                    house: {event.Address.house_number}</p>
-                                                            </div>
-                                                        )}   
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <p>No self-harvest events yet.</p>
-                                        )}
-                                    </div>
                             </div>
                             <div className={classes.separator}></div>
                         </li>
