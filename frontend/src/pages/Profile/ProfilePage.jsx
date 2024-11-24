@@ -7,8 +7,6 @@ import User_light from "../../assets/User_light.png";
 import MailIcon from "../../assets/Mail.png";
 import Phone from "../../assets/Phone.png";
 import Key from "../../assets/Key.png";
-import Point from "../../assets/Map_Point.png";
-import House from "../../assets/House.png";
 
 export default function ProfilePage() {
 

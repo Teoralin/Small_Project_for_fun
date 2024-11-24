@@ -3,6 +3,7 @@ import {jwtDecode} from 'jwt-decode';
 import api from '../../api';
 import classes from'./FarmerPage.module.css'; 
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function FarmerPage() {
     const { farmerId } = useParams(); 
@@ -14,6 +15,7 @@ export default function FarmerPage() {
     const [purchaseQuantity, setPurchaseQuantity] = useState(0);
     const [offerRatings, setOfferRatings] = useState({}); 
     const [modalOpen, setModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOffers = async () => {
@@ -100,7 +102,8 @@ export default function FarmerPage() {
     const handlePurchaseClick = (offer) => {
         const token = localStorage.getItem('token');
         if (!token) {
-            setError('You must be logged in to purchase.');
+            setError('You must be logged in to add items to the cart.');
+            setModalOpen(false); 
             return;
         }
 
@@ -152,6 +155,11 @@ export default function FarmerPage() {
         }
     };
 
+    const handleLogInClick = () => {
+        // Navigate to the farmer detail page when a farmer is clicked
+        navigate('/login');
+    };
+
     if(loading){
         return <div>Loading...</div>;
     }
@@ -181,12 +189,14 @@ export default function FarmerPage() {
                                 <p className={classes.Text}>
                                     Average Rating: {offerRatings[offer.offer_id] || 'No ratings yet'}
                                 </p>
-                                <button
-                                    onClick={() => handlePurchaseClick(offer)}
-                                    className="purchase-button"
-                                >
-                                    Add to cart
-                                </button>
+                                
+                                    <button
+                                        onClick={() => handlePurchaseClick(offer)}
+                                        className="purchase-button"
+                                    >
+                                        Add to cart
+                                    </button>
+                                
 
 
                                 <div className={classes.SelfHarvestEvents}>
@@ -219,9 +229,8 @@ export default function FarmerPage() {
                 </div>
             )}
 
-            {/* Purchase Modal */}
-            {modalOpen && purchaseOffer && (
-                 <div className={classes.ModalOverlay}>
+            {modalOpen && purchaseOffer ? (
+                <div className={classes.ModalOverlay}>
                     <h2>Purchase {purchaseOffer.title}</h2>
                     <p>Available: {purchaseOffer.quantity}</p>
                     <input
@@ -234,6 +243,15 @@ export default function FarmerPage() {
                     />
                     <button onClick={handleSubmitPurchase}>Confirm Purchase</button>
                 </div>
+            ) : (
+                error && (
+                    <div className={classes.ErrorOverlay}>
+                        <h3>{error}</h3>
+                        <button onClick={() => handleLogInClick()}>
+                            Log In
+                        </button>
+                    </div>
+                )
             )}
 
             {successMessage && <p className="success-message">{successMessage}</p>}
