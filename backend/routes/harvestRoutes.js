@@ -9,18 +9,15 @@ router.post('/', async (req, res) => {
     try {
         const { offer_id, address_id, start_date, end_date } = req.body;
 
-        // Validate required fields
         if (!offer_id || !address_id || !start_date || !end_date) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
-        // Find the associated offer
         const offer = await Offer.findByPk(offer_id);
         if (!offer) {
             return res.status(404).json({ message: 'Offer not found' });
         }
 
-        // Create a new self-harvest event
         const newEvent = await SelfHarvestEvent.create({
             offer_id,
             address_id,
@@ -28,7 +25,6 @@ router.post('/', async (req, res) => {
             end_date,
         });
 
-        // Update the is_pickable parameter of the offer
         offer.is_pickable = true;
         await offer.save();
 
@@ -91,11 +87,9 @@ router.put('/:event_id', async (req, res) => {
     try {
         const { event_id } = req.params;
 
-        // Find the event by ID
         const event = await SelfHarvestEvent.findByPk(event_id);
 
         if (event) {
-            // Update the event fields
             const updatedEvent = await event.update({
                 start_date: req.body.start_date || event.start_date,
                 end_date: req.body.end_date || event.end_date,

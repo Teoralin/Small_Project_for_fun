@@ -3,7 +3,6 @@ const { Offer, Product, User } = require('../models');
 
 const router = express.Router();
 
-// Create a new offer
 router.post('/', async (req, res) => {
     try {
         const { product_id, user_id, price, quantity, status, is_pickable } = req.body;
@@ -24,13 +23,12 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Retrieve all offers with product and farmer details
 router.get('/', async (req, res) => {
     try {
         const offers = await Offer.findAll({
             include: [
                 { model: Product, attributes: ['name', 'description'] },
-                { model: User, attributes: ['user_id'] }, // Adjust attributes as needed
+                { model: User, attributes: ['user_id'] },
             ],
         });
 
@@ -63,7 +61,6 @@ router.get('/user/:user_id', async (req, res) => {
     }
 });
 
-// Retrieve a specific offer by product_id and user_id
 router.get('/:product_id/:user_id', async (req, res) => {
     try {
         const { product_id, user_id } = req.params;
@@ -87,7 +84,6 @@ router.get('/:product_id/:user_id', async (req, res) => {
     }
 });
 
-// Retrieve a specific offer by offer_id
 router.get('/:offer_id', async (req, res) => {
     try {
         const { offer_id } = req.params;
@@ -97,18 +93,18 @@ router.get('/:offer_id', async (req, res) => {
             include: [
                 {
                     model: Product,
-                    attributes: ['name', 'description'], // Include product details
+                    attributes: ['name', 'description'],
                 },
                 {
                     model: User,
                     as: 'User',
-                    attributes: ['user_id'], // Include user details (if needed)
+                    attributes: ['user_id'],
                 },
             ],
         });
 
         if (offer) {
-            res.status(200).json(offer); // Send the offer details as a response
+            res.status(200).json(offer);
         } else {
             res.status(404).json({ message: 'Offer not found' });
         }
@@ -122,11 +118,9 @@ router.put('/:offer_id', async (req, res) => {
     try {
         const { offer_id } = req.params;
 
-        // Find the offer by its ID
         const offer = await Offer.findByPk(offer_id);
 
         if (offer) {
-            // Update the offer properties
             const updatedOffer = await offer.update({
                 price: req.body.price !== undefined ? req.body.price : offer.price,
                 quantity: req.body.quantity !== undefined ? req.body.quantity : offer.quantity,
@@ -134,10 +128,8 @@ router.put('/:offer_id', async (req, res) => {
                 is_pickable: req.body.is_pickable !== undefined ? req.body.is_pickable : offer.is_pickable,
             });
 
-            // Respond with the updated offer
             res.status(200).json({ message: 'Offer updated successfully', updatedOffer });
         } else {
-            // Offer not found
             res.status(404).json({ message: 'Offer not found' });
         }
     } catch (error) {
@@ -145,7 +137,6 @@ router.put('/:offer_id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-// Update an offer by product_id and user_id
 router.put('/:product_id/:user_id', async (req, res) => {
     try {
         const { product_id, user_id } = req.params;
@@ -170,7 +161,6 @@ router.put('/:product_id/:user_id', async (req, res) => {
     }
 });
 
-// Delete an offer by product_id and user_id
 router.delete('/:product_id/:user_id', async (req, res) => {
     try {
         const { product_id, user_id } = req.params;

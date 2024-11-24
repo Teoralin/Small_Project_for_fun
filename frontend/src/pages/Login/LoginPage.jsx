@@ -34,6 +34,7 @@ export default function LoginPage() {
             });
             
             localStorage.setItem('token', response.data.token);
+
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Something went wrong');

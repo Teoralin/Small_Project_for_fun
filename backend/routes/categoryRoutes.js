@@ -3,12 +3,10 @@ const { Category } = require('../models');
 
 const router = express.Router();
 
-// Create a new category
 router.post('/', async (req, res) => {
     try {
         const { name, description, parent_category_id, was_approved } = req.body;
 
-        // Create new category
         const category = await Category.create({
             name,
             description,
@@ -23,14 +21,13 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get all categories with parent-child relationships
 router.get('/', async (req, res) => {
     try {
         const categories = await Category.findAll({
             include: {
                 model: Category,
-                as: 'Subcategories', // Include subcategories
-                attributes: ['category_id', 'name', 'description', 'was_approved'], // Specify fields for subcategories
+                as: 'Subcategories',
+                attributes: ['category_id', 'name', 'description', 'was_approved'],
             },
         });
 
@@ -41,13 +38,12 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get a single category by ID
 router.get('/:id', async (req, res) => {
     try {
         const category = await Category.findByPk(req.params.id, {
             include: [
                 { model: Category, as: 'ParentCategory', attributes: ['category_id', 'name'] },
-                { model: Category, as: 'Subcategories', attributes: ['category_id', 'name', 'description','was_approved'] }, // Include subcategories
+                { model: Category, as: 'Subcategories', attributes: ['category_id', 'name', 'description','was_approved'] },
             ],
         });
 
@@ -63,7 +59,6 @@ router.get('/:id', async (req, res) => {
 });
 
 
-// Update a category by ID
 router.put('/:id', async (req, res) => {
     try {
         const category = await Category.findByPk(req.params.id);
@@ -85,7 +80,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete a category by ID
 router.delete('/:id', async (req, res) => {
     try {
         const category = await Category.findByPk(req.params.id);

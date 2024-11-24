@@ -1,4 +1,3 @@
-// models/index.js
 const sequelize = require('../dbconfig/sequelize');
 const User = require('./User');
 const Category = require('./Category');
@@ -10,7 +9,6 @@ const Order = require('./Order');
 const OrderOffer = require('./OrderOffer');
 const Review = require('./Review');
 
-// Export all models as a single module
 module.exports = {
     sequelize,
     User,

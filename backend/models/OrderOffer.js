@@ -34,7 +34,6 @@ const OrderOffer = sequelize.define('OrderOffer', {
     tableName: 'OrderOffers',
 });
 
-// Set up associations
 Order.belongsToMany(Offer, {
     through: OrderOffer,
     foreignKey: 'order_id',

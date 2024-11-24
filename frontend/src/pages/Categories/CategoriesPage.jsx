@@ -311,8 +311,8 @@ export default function CategoriesPage() {
                                             onChange={(e) => setNewProduct((prev) => ({ ...prev, description: e.target.value }))}
                                         />
                                         <div className={classes.ModalButtons}>
-                                            <button onClick={() => setShowProductModal(false)}>Cancel</button>
-                                            <button onClick={handleAddProduct}>Submit</button>
+                                            <button onClick={() => setShowProductModal(false)} className={classes.DisapproveButton}>Cancel</button>
+                                            <button onClick={handleAddProduct} className={classes.ApproveButton}>Submit</button>
                                         </div>
                                     </div>
                                 </div>

@@ -1,19 +1,23 @@
 .CategoriesPage {
     margin: 5em;
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
 }
 
 .CategoriesPage .PageTitle {
     display: flex;
     font-size: 40px;
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
     color: #3F4255;
 }
 
 .CategoriesPage .CategoryName {
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
     font-size: 30px;
+    width: fit-content;
+    padding: 10px;
+}
+
+.CategoriesPage .CategoryName:hover {
+    transform: scale(1.2);
 }
 
 .CategoriesPage .separator {
@@ -30,7 +34,11 @@
 .CategoriesPage .SubcategoryCompo {
     display: flex;
     gap: 27px;
-    margin: 30px 30px 30px 0;
+    margin: 0 30px 30px 0;
+}
+
+.CategoriesPage .categoryButton:hover {
+    background-color: #ebedf0;
 }
 
 .CategoriesPage .AddCompo {
@@ -68,9 +76,11 @@
     cursor: pointer;
     align-items: center;
     justify-content: center;
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
     font-size: 20px;
+}
+
+.CategoriesPage .Products:hover {
+    background-color: #ebedf0;
 }
 
 .CategoriesPage .SubcategoriesList {
@@ -81,9 +91,11 @@
     cursor: pointer;
     align-items: center;
     justify-content: center;
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
     font-size: 20px;
+}
+
+.CategoriesPage .SubcategoriesList:hover {
+    background-color: #ebedf0;
 }
 
 .CategoriesPage .ProductsCompo {
@@ -132,8 +144,6 @@
     cursor: pointer;
     width: inherit;
     height: 100%;
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
     font-size: 15px;
 }
 
@@ -152,8 +162,6 @@
 .CategoriesPage .TitleCategory {
     display: grid;
     justify-content: center;
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
     font-size: 30px;
 }
 
@@ -204,15 +212,13 @@
 }
 
 .CategoriesPage .NoProductsFound {
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
+
     font-size: 20px;
     margin: 30px;
 }
 
 .CategoriesPage .NoSubcategoriesFound {
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
+
     font-size: 20px;
     margin-left: 30px;
 }
@@ -320,12 +326,10 @@
 }
 
 .CategoriesPage .SectionTitle {
-    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
-    font-weight: 300;
     font-size: 20px;
 }
 
-.Modal {
+.CategoriesPage .Modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -333,33 +337,29 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
-.ModalContent {
-    background: #fff;
+.CategoriesPage .ModalContent {
+    display: grid;
+    justify-content: center;
+    background: whitesmoke;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
-.ModalButtons {
+.CategoriesPage input {
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.CategoriesPage .ModalButtons {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.Success {
-    color: green;
-    margin: 10px 0;
-}
-
-.Error {
-    color: red;
-    margin: 10px 0;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 10px;
 }

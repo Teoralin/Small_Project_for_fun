@@ -33,7 +33,6 @@ const Category = sequelize.define('Category', {
     tableName: 'Categories',
 });
 
-// Define self-reference for parent-child relationship
 Category.belongsTo(Category, { as: 'ParentCategory', foreignKey: 'parent_category_id', onDelete: 'CASCADE' });
 Category.hasMany(Category, { as: 'Subcategories', foreignKey: 'parent_category_id', onDelete: 'CASCADE' });
 

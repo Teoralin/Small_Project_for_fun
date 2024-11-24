@@ -1,28 +1,13 @@
-// routes/userRoutes.js
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const authenticate = require('../middleware/auth');
 
 const router = express.Router();
-//TODO CODES ERROR
-// Apply authentication middleware
-// router.get('/', async (req, res) => {
-//     try {
-//         // if (req.user.role !== 'Administrator') {
-//         //     return res.status(403).json({ message: 'Access denied' });
-//         // }
-//         const users = await User.findAll({ attributes: { exclude: ['password'] } });
-//         res.status(200).json(users);
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 
-// Create a new user
+
 router.post('/', async (req, res) => {
     try {
-        // Hash the password before saving
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = await User.create({
             ...req.body,
@@ -35,7 +20,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get all users (Admin only, potentially filtered by role)
 router.get('/', async (req, res) => {
     try {
         const users = await User.findAll({
@@ -47,7 +31,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get a single user by ID
 router.get('/:id', async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id, {
@@ -63,7 +46,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update a user by ID
 router.put('/:id', async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
@@ -72,7 +54,6 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // If password is being updated, verify current password and hash the new password
         if (req.body.password) {
             const isMatch = await bcrypt.compare(req.body.currentPassword, user.password);
             if (!isMatch) {
@@ -90,7 +71,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete a user by ID
 router.delete('/:id', async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
