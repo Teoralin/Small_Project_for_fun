@@ -198,3 +198,8 @@
     justify-content: center;
     gap: 20px;
 }
+
+
+.ProductsPage .Buttons2  .CancelButton{
+    margin-left: 20px;
+}

@@ -273,8 +273,10 @@ export default function ProductsPage() {
                                     />
                                 </label>
                             </div>
-                            <button onClick={handleAddOffer} className={classes.SubmitButton}>Submit</button>
-                            <button onClick={() => setShowForm(false)} className={classes.CancelButton}>Cancel</button>
+                            <div className={classes.Buttons2}>
+                                <button onClick={handleAddOffer} className={classes.SubmitButton}>Submit</button>
+                                <button onClick={() => setShowForm(false)} className={classes.CancelButton}>Cancel</button>
+                            </div>
                         </div>
                     ) : (
                         <button onClick={() => setShowForm(true)} className={classes.AddOfferButton}>
@@ -354,7 +356,6 @@ export default function ProductsPage() {
                                     </button>
                                 )}
                             </div>
-                            <div className={classes.separator}></div>
                         </li>
                     ))}
                 </div>
