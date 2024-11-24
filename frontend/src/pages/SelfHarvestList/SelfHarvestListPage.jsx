@@ -5,6 +5,7 @@ import api from "../../api";
 export default function SelfHarvestListPage() {
     const [error, setError] = useState(null);
     const [harvest, setHarvest] = useState([]);
+    const [filteredHarvest, setFilteredHarvest] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(()=>{
@@ -21,6 +22,7 @@ export default function SelfHarvestListPage() {
                 return eventEndDate >= today; 
                 });
                 setHarvest(filteredEvents);
+                setFilteredHarvest(filteredEvents);
 
             } catch (err) {
                 console.error('Error fetching self-harvest events:', err);
@@ -39,7 +41,7 @@ export default function SelfHarvestListPage() {
             user.Address.city.toLowerCase().includes(term) || 
             user.Address.street.toLowerCase().includes(term)
         );
-        setHarvest(filtered);
+        setFilteredHarvest(filtered);
     };
 
 
@@ -72,9 +74,9 @@ export default function SelfHarvestListPage() {
             </div>
 
             <div className={classes.SelfHarvestEvents}>
-                {harvest.length > 0 ? (
+                {filteredHarvest.length > 0 ? (
                     <div className={classes.SelfHarvestList}>
-                        {harvest.map((event) => (
+                        {filteredHarvest.map((event) => (
                             <div key={event.event_id} className={classes.SelfHarvestCard}>
                                 <p>Harvest start date: {event.start_date}</p>
                                 <p>Harvest end date: {event.end_date}</p>
