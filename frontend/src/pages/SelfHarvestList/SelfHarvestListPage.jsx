@@ -1,17 +1,16 @@
 import classes from "./SelfHarvestListPage.module.css";
-import Apple from "../../assets/Apple.png";
 import { useState, useEffect } from "react";
 import api from "../../api";
 
 export default function SelfHarvestListPage() {
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [harvest, setHarvest] = useState([]);
+    const [filteredHarvests, setFiltredHarvests] = useState([]); 
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(()=>{
         const fetchSelfHarvestEvents = async () => {
             try {
-                setLoading(true);
                 const response = await api.get('/harvests');
                 
                 const today = new Date();
@@ -20,7 +19,6 @@ export default function SelfHarvestListPage() {
                 const eventEndDate = new Date(event.end_date);
                 return eventEndDate >= today; 
                 });
-                setLoading(false);
                 setHarvest(filteredEvents);
 
             } catch (err) {
@@ -32,13 +30,17 @@ export default function SelfHarvestListPage() {
         fetchSelfHarvestEvents();
     }, []);
 
+    const handleSearchChange = (event) => {
+        const term = event.target.value.toLowerCase();
+        setSearchTerm(term);
 
-    if(loading){
-        return <div>Loading...</div>;
-    }
-    if(error){
-        return <div>{error}</div>;
-    }
+        const filtered = harvest.filter((user) =>
+            user.Address.city.toLowerCase().includes(term) || 
+            user.Address.street.toLowerCase().includes(term)
+        );
+        setFiltredHarvests(filtered);
+    };
+
 
     return (
         <div className={classes.SelfHarvestListPage}>
@@ -55,29 +57,23 @@ export default function SelfHarvestListPage() {
                         id="eventSearch"
                         className={classes.searchInput}
                         placeholder="Search event"
-                        //onChange={handleChange}
+                        value={searchTerm}
+                        onChange={handleSearchChange}
                         aria-label="Search event"
                     />
                 </form>
 
-                <button type="search" className={classes.SearchButton}>
-                    Search
-                </button>
+                
             </div>
 
             <div className={classes.PageTitle}>
-                <p>Self Harvest </p>
-                <img
-                    src={Apple}
-                    alt="Apple Icon"
-                    className={classes.icon}
-                />
+                <p>Self Harvest </p> 
             </div>
 
             <div className={classes.SelfHarvestEvents}>
                 {harvest.length > 0 ? (
                     <div className={classes.SelfHarvestList}>
-                        {harvest.map((event) => (
+                        {filteredHarvests.map((event) => (
                             <div key={event.event_id} className={classes.SelfHarvestCard}>
                                 <p>Harvest start date: {event.start_date}</p>
                                 <p>Harvest end date: {event.end_date}</p>
@@ -93,8 +89,8 @@ export default function SelfHarvestListPage() {
                             </div>
                         ))}
                     </div>
-                    ) : (
-                     <p>No self-harvest events yet.</p>
+                    ) : ( 
+                        error &&( <p>No self-harvest events yet.</p>)
                     )}
             </div>
         </div>

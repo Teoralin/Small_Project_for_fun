@@ -22,10 +22,15 @@ export default function ProductsPage() {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
+
     useEffect(() => {
         const checkUserRole = () => {
             const token = localStorage.getItem('token');
-            if (!token) return;
+            if (!token) {
+                console.log("not auth")
+                setError('You must be logged in to add items to the cart.');
+                return;
+            }
 
             try {
                 const decodedToken = jwtDecode(token);
@@ -303,7 +308,7 @@ export default function ProductsPage() {
                                         onClick={() => handlePurchaseClick(offer)}
                                         className={classes.PurchaseButton}
                                     >
-                                        Buy
+                                        Add to cart
                                     </button>
                                 )}
                             </div>
