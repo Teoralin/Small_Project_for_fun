@@ -100,7 +100,22 @@
 }
 
 .HomePage .instagram {
-    padding: 50px 140px;
+    padding: 0 140px;
+}
+
+
+.HomePage .instagram_img {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.HomePage .instagram_img .icon {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    object-fit: cover;
 }
 
 .HomePage .instagram_text {
@@ -110,12 +125,6 @@
     font-size: 30px;
     font-weight: 300;
 }
-
-.HomePage .instagram_img {
-    display: flex;
-    justify-content: space-between;
-}
-
 
 .HomePage .UserInfo {
     height: 112px;
@@ -131,23 +140,25 @@
 
 .HomePage .scrollContainer {
     display: flex;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     position: relative;
     overflow-x: hidden;
     overflow-y: hidden;
-    max-width: calc(296px * 5.4 + 30px * 4);
     margin-bottom: 100px;
-    padding: 30px;
+    gap: 20px;
 }
 
 .HomePage .UserComponent {
     display: flex;
     transition: transform 0.3s ease;
     list-style: none;
-    padding: 0;
     margin: 0;
     white-space: nowrap;
+    flex-wrap: nowrap;
+    gap: 20px;
+    padding: 40px 0;
 }
 
 .HomePage .userCompo {
@@ -199,22 +210,6 @@
     }
 }
 
-
-.HomePage .instagram_img {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.HomePage .instagram_img .icon {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-    object-fit: cover;
-}
-
-
 @media (max-width: 768px) {
     .HomePage .instagram_text {
         font-size: 20px;
@@ -222,43 +217,43 @@
     }
 
     .HomePage .instagram_img {
-        justify-content: center; /* Center images */
+        justify-content: center;
     }
 
     .HomePage .instagram_img .icon {
-        width: 45%; /* Adjust image size on smaller screens */
-        margin-bottom: 10px; /* Add some space below images */
+        width: 45%;
+        margin-bottom: 10px;
     }
 }
 
-/* Responsiveness for the "farmers" section */
 @media (max-width: 768px) {
     .HomePage .compo p {
-        font-size: 25px; /* Reduce font size */
+        font-size: 25px;
     }
 
     .HomePage .ShowAllButton {
-        padding: 10px 15px; /* Adjust button size */
-        font-size: 14px; /* Smaller font size */
+        padding: 10px 15px;
+        font-size: 14px;
     }
 
-    /* Scrollable users section */
+
     .HomePage .scrollContainer {
-        max-width: 100%;
-        padding: 15px;
+        justify-content: flex-start;
+        overflow-x: scroll;
+        gap: 10px;
     }
 
     .HomePage .UserComponent {
-        flex-direction: column; /* Stack users vertically on small screens */
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        width: max-content;
     }
 
     .HomePage .userCompo {
-        width: 100%; /* Make each user card take full width */
-        margin-right: 0;
-        margin-bottom: 10px; /* Add space between cards */
+        min-width: 200px; /* Adjust min width for smaller screens */
     }
 
-    /* Adjust buttons for smaller screens */
     .HomePage .scrollButton {
         font-size: 20px;
         padding: 6px;

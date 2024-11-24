@@ -1,14 +1,19 @@
 .ProfilePage {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-}
-
-.ProfilePage .Options {
     margin: 120px 60px;
 }
 
-.ProfilePage .OptionButton {
-    width: 405px;
+.ProfilePage .Options {
+    grid-column: span 1;
+}
+
+.ProfilePage .OptionButton,
+.ProfilePage .OptionButtonSelected {
+    display: grid;
+    align-content: center;
+    justify-content: start;
+    width: 365px;
     height: 56px;
     padding: 10px;
     border: none;
@@ -21,38 +26,19 @@
     font-family: martel sans, sans-serif;
     line-height: 20px;
     margin-bottom: 20px;
-
-    display: grid;
-    align-content: center;
-    justify-content: start;
 }
 
 .ProfilePage .OptionButtonSelected {
-    width: 405px;
-    height: 56px;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #313030;
-    border-radius: 8px;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
     background-color: #ebedf0;
-    font-family: martel sans, sans-serif;
-    line-height: 20px;
-    margin-bottom: 20px;
-
-    display: grid;
-    align-content: center;
-    justify-content: start;
 }
 
-
+.ProfilePage .Contacts {
+    grid-column: span 1;
+}
 
 .ProfilePage .Contacts p {
     display: grid;
     justify-content: center;
-    margin: 120px 60px 30px 60px;
     font-family: martel sans, sans-serif;
     font-weight: 300;
     font-size: 40px;
@@ -139,4 +125,20 @@
 
 .ProfilePage .checkboxLabel p {
     padding-top: 8px;
+}
+
+@media (max-width: 1400px) {
+    .ProfilePage .Contacts {
+        grid-column: span 2; /* Span across two columns */
+    }
+}
+
+@media (max-width: 950px) {
+    .ProfilePage {
+        grid-template-columns: 1fr; /* Stack in one column on smaller screens */
+    }
+
+    .ProfilePage .Contacts {
+        grid-column: span 1; /* Ensure contacts span across one column */
+    }
 }
