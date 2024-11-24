@@ -2,6 +2,7 @@
     margin: 5rem;
     font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
     font-weight: 300;
+    list-style: none;
 }
 
 .ProductsPage .PageTitle {
@@ -21,9 +22,52 @@
     padding: 0;
 }
 
+.ProductsPage .OfferGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    justify-items: center;
+}
+
+@media (max-width: 1200px) {
+    .ProductsPage .OfferGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1000px) {
+    .ProductsPage .OfferGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .ProductsPage .OfferGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .ProductsPage .OfferItem {
     padding: 15px;
     background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    width: 100%;
+}
+
+.ProductsPage .OfferItem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.ProductsPage .OfferCompo {
+    margin: 0 30px;
+}
+
+.ProductsPage .Text {
+    margin: 5px 0;
 }
 
 .ProductsPage .PurchaseButton {
@@ -32,7 +76,6 @@
     color: white;
     border: none;
     cursor: pointer;
-    margin-top: 10px;
 }
 
 .ProductsPage .PurchaseButton:hover {
@@ -97,8 +140,6 @@
     color: white;
     border: none;
     cursor: pointer;
-    margin-top: 1rem;
-    margin-left: 2rem;
 }
 
 .ProductsPage .CancelButton:hover {
@@ -128,33 +169,32 @@
     margin: 10px 0;
 }
 
-.ProductsPage .OfferCompo {
-    margin: 0 30px;
+.ProductsPage .selfHarvestEvents {
+    margin-top: 20px;
 }
 
-.ProductsPage .EditUsersListPage .SearchButton {
+.ProductsPage .selfHarvestList {
+    display: grid;
+    gap: 15px;
+}
+
+.ProductsPage .selfHarvestCard {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: fit-content;
-    height: 70px;
-    padding: 20px;
-    background-color: #FFE145;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #B79C10;
 }
 
-.ProductsPage .Update {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.ProductsPage .Update input {
-    width: 60px;
-    padding: 5px;
-    text-align: center;
-    border: 1px solid #ccc;
+.ProductsPage .eventAddress {
+    background-color: #f1f1f1;
+    padding: 10px;
     border-radius: 5px;
+}
+
+.ProductsPage .Buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
