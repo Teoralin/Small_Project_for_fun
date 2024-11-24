@@ -39,6 +39,27 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get offers filtered by product_id
+router.get('/product/:product_id', async (req, res) => {
+    try {
+        const { product_id } = req.params;
+
+        // Find all offers with the given product_id
+        const offers = await Offer.findAll({
+            where: { product_id },
+            include: [
+                { model: Product, attributes: ['name', 'description'] }, // Include product details
+                { model: User, attributes: ['user_id'] }, // Include user details
+            ],
+        });
+        res.status(200).json(offers);
+    } catch (error) {
+        console.error('Error retrieving offers by product_id:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 router.get('/user/:user_id', async (req, res) => {
     try {
         const { user_id } = req.params;

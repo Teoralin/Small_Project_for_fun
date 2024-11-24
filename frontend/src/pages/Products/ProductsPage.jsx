@@ -51,7 +51,7 @@ export default function ProductsPage() {
                 const productResponse = await api.get(`/products/${id}`);
                 setProduct(productResponse.data);
 
-                const offersResponse = await api.get('/offers');
+                const offersResponse = await api.get(`/offers/product/${id}`);
                 const productOffers = offersResponse.data.filter(
                     (offer) => offer.product_id === parseInt(id)
                 );
