@@ -98,7 +98,7 @@ export default function ProductsPage() {
             });
 
             setSuccessMessage('Product removed successfully!');
-            navigate('categories/');
+            navigate('/categories');
             setError('');
         } catch (err) {
             console.error('Error removing product:', err);
