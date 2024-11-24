@@ -103,6 +103,7 @@ export default function CategoriesPage() {
                         (cat) => !cat.parent_category_id && cat.was_approved
                     );
                     setCategories(parentCategories); 
+                    console.log(parentCategories);
                 }
                 
             } catch (err) {
