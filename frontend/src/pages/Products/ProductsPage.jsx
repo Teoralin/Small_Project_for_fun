@@ -57,6 +57,20 @@ export default function ProductsPage() {
                 );
                 setOffers(productOffers);
 
+                const offersWithHarvests = await Promise.all(
+                    offersResponse.data.map(async (offer) => {
+                        // Fetch self-harvest events for pickable offers
+                        if (offer.is_pickable) {
+                            const selfHarvestEvents = await fetchSelfHarvestEvents(offer.offer_id);
+                            return { ...offer, selfHarvestEvents };
+                        } else {
+                            return { ...offer, selfHarvestEvents: [] };
+                        }
+                    })
+                );
+
+                setOffers(offersWithHarvests);
+
                 const ratings = await Promise.all(
                     productOffers.map(async (offer) => {
                         const ratingResponse = await api.get(
@@ -80,6 +94,30 @@ export default function ProductsPage() {
 
         fetchProductAndOffers();
     }, [id]);
+
+    const fetchSelfHarvestEvents = async (offerId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.get(`/harvests/offer/${offerId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const today = new Date();
+
+            const filteredEvents = response.data.filter(event => {
+                const eventEndDate = new Date(event.end_date);
+                return eventEndDate >= today;
+            });
+
+            return filteredEvents;
+        } catch (err) {
+            console.error('Error fetching self-harvest events:', err);
+            setError('Failed to fetch self-harvest events');
+            return [];
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -269,6 +307,28 @@ export default function ProductsPage() {
                                 <p className={classes.Text}>
                                     Average Rating: {offerRatings[offer.offer_id] || 'No ratings yet'}
                                 </p>
+                                <div className={classes.selfHarvestEvents}>
+                                    <h4>Self-Harvest Events</h4>
+                                    {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
+                                        <div className={classes.selfHarvestList}>
+                                            {offer.selfHarvestEvents.map((event) => (
+                                                <div key={event.event_id} className={classes.selfHarvestCard}>
+                                                    <p>Harvest start date: {event.start_date}</p>
+                                                    <p>Harvest end date: {event.end_date}</p>
+                                                    {event.Address && (
+                                                        <div className={classes.eventAddress}>
+                                                            <h5>Event Address</h5>
+                                                            <p>city: {event.Address.city}, postcode: {event.Address.post_code}</p>
+                                                            <p>street: {event.Address.street}, house: {event.Address.house_number}</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p>No self-harvest events yet.</p>
+                                    )}
+                                </div>
 
                                 {purchaseOffer?.offer_id === offer.offer_id ? (
                                     <div className={classes.PurchaseForm}>

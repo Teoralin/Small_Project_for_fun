@@ -5,13 +5,14 @@ import api from "../../api";
 export default function SelfHarvestListPage() {
     const [error, setError] = useState(null);
     const [harvest, setHarvest] = useState([]);
-    const [filteredHarvests, setFiltredHarvests] = useState([]); 
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(()=>{
         const fetchSelfHarvestEvents = async () => {
             try {
                 const response = await api.get('/harvests');
+                console.log(response);
+
                 
                 const today = new Date();
     
@@ -38,7 +39,7 @@ export default function SelfHarvestListPage() {
             user.Address.city.toLowerCase().includes(term) || 
             user.Address.street.toLowerCase().includes(term)
         );
-        setFiltredHarvests(filtered);
+        setHarvest(filtered);
     };
 
 
@@ -73,7 +74,7 @@ export default function SelfHarvestListPage() {
             <div className={classes.SelfHarvestEvents}>
                 {harvest.length > 0 ? (
                     <div className={classes.SelfHarvestList}>
-                        {filteredHarvests.map((event) => (
+                        {harvest.map((event) => (
                             <div key={event.event_id} className={classes.SelfHarvestCard}>
                                 <p>Harvest start date: {event.start_date}</p>
                                 <p>Harvest end date: {event.end_date}</p>
