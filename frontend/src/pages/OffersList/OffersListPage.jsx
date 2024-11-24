@@ -101,17 +101,15 @@ export default function OffersListPage() {
                 });
                 
                 const offersWithHarvests = await Promise.all(response.data.map(async (offer) => {
-                    // Only fetch self-harvest events if the offer is pickable
                     if (offer.is_pickable) {
                         const selfHarvestEvents = await fetchSelfHarvestEvents(offer.offer_id);
                         return { ...offer, selfHarvestEvents };  
                     } else {
-                        // If not pickable, no self-harvest events are associated
                         return { ...offer, selfHarvestEvents: [] };
                     }
                 }));
 
-                setUserOffers(offersWithHarvests);  // Set the offers with their self-harvest events
+                setUserOffers(offersWithHarvests);
                 setLoading(false);
             } catch (err) {
                 setError(err.response?.data?.message || 'Error fetching offers');
@@ -157,12 +155,12 @@ export default function OffersListPage() {
         try {
             const token = localStorage.getItem('token');
             await api.post(
-                'http://localhost:3000/harvests', // Backend endpoint to create harvest
+                'http://localhost:3000/harvests',
                 {
                     start_date: newHarvest.start_date,
                     end_date: newHarvest.end_date,
                     quantity: newHarvest.quantity,
-                    address_id: newHarvest.address_id, // Only pass address_id
+                    address_id: newHarvest.address_id,
                     offer_id: newHarvest.offer_id,
                 },
                 {
@@ -172,26 +170,23 @@ export default function OffersListPage() {
                 }
             );
     
-            // Success feedback
             setSuccess('Self-harvest event created successfully!');
             setError('');
     
-            // Update the local state for UI updates (if necessary)
         const updatedSelfHarvestEvents = await fetchSelfHarvestEvents(newHarvest.offer_id);
 
-        // Update state with new self-harvest events
         setUserOffers((prevOffers) =>
             prevOffers.map((offer) =>
                 offer.offer_id === newHarvest.offer_id
                     ? {
                           ...offer,
-                          selfHarvestEvents: updatedSelfHarvestEvents, // Use updated list
+                          selfHarvestEvents: updatedSelfHarvestEvents,
                       }
                     : offer
             )
         );
     
-            handleCloseModal(); // Close the modal
+            handleCloseModal();
         } catch (err) {
             console.error('Error creating self-harvest event:', err);
             setError('Failed to create self-harvest event. Please try again.');
@@ -230,7 +225,6 @@ export default function OffersListPage() {
                 }
             );
 
-            // Update the local state after a successful API call
             setUserOffers((prevOffers) =>
                 prevOffers.map((offer) =>
                     offer.offer_id === offerId
@@ -262,7 +256,6 @@ export default function OffersListPage() {
                 }
             );
 
-            // Update the local state after a successful API call
             setUserOffers((prevOffers) =>
                 prevOffers.map((offer) =>
                     offer.offer_id === offerId
@@ -318,7 +311,7 @@ export default function OffersListPage() {
         try {
             const token = localStorage.getItem('token');
             await api.put(
-                `/harvests/${editHarvest.event_id}`, // Backend endpoint for updating
+                `/harvests/${editHarvest.event_id}`,
                 {
                     start_date: editHarvest.start_date,
                     end_date: editHarvest.end_date,
@@ -330,10 +323,8 @@ export default function OffersListPage() {
                 }
             );
     
-            // Fetch updated events for the offer
             const updatedSelfHarvestEvents = await fetchSelfHarvestEvents(editHarvest.offer_id);
     
-            // Update the state with the refreshed list
             setUserOffers((prevOffers) =>
                 prevOffers.map((offer) =>
                     offer.offer_id === editHarvest.offer_id
@@ -347,7 +338,7 @@ export default function OffersListPage() {
     
             setSuccess('Self-harvest event updated successfully!');
             setError('');
-            handleCloseModal(); // Close the modal
+            handleCloseModal();
         } catch (err) {
             console.error('Error updating self-harvest event:', err);
             setError('Failed to update self-harvest event. Please try again.');
@@ -535,7 +526,6 @@ export default function OffersListPage() {
                                     </div>
                                 </div>
 
-                                {/* Separator placed after each offer */}
                                 <div className={classes.separator}></div>
                             </div>
                         ))}

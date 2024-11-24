@@ -9,7 +9,7 @@ import insta_2 from "../../assets/Insta_2.png";
 import insta_3 from "../../assets/Insta_3.png";
 import insta_4 from "../../assets/Insta_4.png";
 import insta_5 from "../../assets/Insta_5.png";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {jwtDecode} from 'jwt-decode';
 import api from "../../api";
 
@@ -85,7 +85,7 @@ export default function HomePage() {
                     <div className={classes.heading}>Your Food court at home</div>
                     <div className={classes.information}>
                         <div className={classes.info} onClick={() => handleNavigate('/categories')}>
-                            <h2>Delivery</h2>
+                            <h2>Categories</h2>
                             <p>Order in</p>
                         </div>
                         <div className={classes.info} onClick={() => handleNavigate('/harvestList')}>

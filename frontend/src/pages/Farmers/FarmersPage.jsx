@@ -14,7 +14,7 @@ export default function FarmersPage() {
     useEffect(() => {
         async function fetchUsers() {
             try {
-                const response = await api.get('/users'); // Adjust the API URL
+                const response = await api.get('/users');
                 
                 const farmerUsers = response.data.filter(user => user.is_farmer === true);
                 

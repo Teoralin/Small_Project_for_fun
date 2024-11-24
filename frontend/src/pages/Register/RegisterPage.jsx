@@ -33,7 +33,6 @@ export default function RegisterPage() {
         const { id, value, type, checked, dataset } = e.target;
 
         if (dataset.group === "address") {
-            // Handle nested address field changes
             setFormData((prevData) => ({
                 ...prevData,
                 address: {
@@ -49,11 +48,9 @@ export default function RegisterPage() {
         }
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Check if passwords match
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
             return;
@@ -70,7 +67,6 @@ export default function RegisterPage() {
                 is_farmer: formData.isFarmer,
             };
     
-            // Include address if the user is a farmer
             if (formData.isFarmer) {
                 payload.address = {
                     street: formData.address.street,
@@ -80,10 +76,8 @@ export default function RegisterPage() {
                 };
             }
     
-            // Send the request to the server
             await api.post('/auth/register', payload);
 
-            // Handle success
             setSuccess('User registered successfully!');
             setError('');
             setFormData({
@@ -101,7 +95,6 @@ export default function RegisterPage() {
                     postCode: '',
             }});
         } catch (err) {
-            // Handle error
             setError(err.response?.data?.message || 'Something went wrong');
             setSuccess('');
         }

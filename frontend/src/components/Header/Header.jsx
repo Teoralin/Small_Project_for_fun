@@ -130,64 +130,41 @@ export default function Header() {
                                     {userName}
                                 </Link>
                                 <div className={classes.menu}>
-                                    <div className={classes.Options}>
-                                        <Link
-                                            to="/profile"
-                                            className={classes.OptionButton}
-                                        >
-                                            Profile
+                                    <Link to="/profile" className={classes.OptionButton}>
+                                        Profile
+                                    </Link>
+
+                                    <Link to="/ordersList" className={classes.OptionButton}>
+                                        Orders
+                                    </Link>
+
+                                    <Link to="/review" className={classes.OptionButton}>
+                                        Reviews
+                                    </Link>
+
+                                    {farmer === "farmer" && (
+                                        <Link to="/offersList" className={classes.OptionButton}>
+                                            Offers
                                         </Link>
+                                    )}
 
-                                        <Link
-                                            to="/ordersList"
-                                            className={classes.OptionButton}
-                                        >
-                                            Orders
+                                    {userRole === "Administrator" && (
+                                        <Link to="/editUsersList" className={classes.OptionButton}>
+                                            Manage Users
                                         </Link>
+                                    )}
 
-                                        <Link
-                                            to="/review"
-                                            className={classes.OptionButton}
-                                        >
-                                            Reviews
+                                    {userRole === "Moderator" && (
+                                        <Link to="/categories" className={classes.OptionButton}>
+                                            Manage Categories
                                         </Link>
+                                    )}
 
-                                        {farmer === "farmer" && (
-                                            <Link
-                                                to="/offersList"
-                                                className={classes.OptionButton}
-                                            >
-                                                Offers
-                                            </Link>
-                                        )}
-
-                                        {userRole === "Administrator" && (
-                                            <Link
-                                                to="/editUsersList"
-                                                className={classes.OptionButton}
-                                            >
-                                                Manage Users
-                                            </Link>
-                                        )}
-
-                                        {userRole === "Moderator" && (
-                                            <Link
-                                                to="/categories"
-                                                className={classes.OptionButton}
-                                            >
-                                                Manage Categories
-                                            </Link>
-                                        )}
-
-                                        <a
-                                            onClick={logout}
-                                            style={{cursor: 'pointer'}}
-                                            className={classes.OptionButton}
-                                        >
-                                            Logout
-                                        </a>
-                                    </div>
+                                    <a onClick={logout} style={{cursor: "pointer"}} className={classes.OptionButton}>
+                                        Logout
+                                    </a>
                                 </div>
+
                             </li>
                         ) : (
                             <li>

@@ -256,7 +256,7 @@
     }
 
     .HomePage .userCompo {
-        min-width: 200px; /* Adjust min width for smaller screens */
+        min-width: 200px;
     }
 
     .HomePage .scrollButton {

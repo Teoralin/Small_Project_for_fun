@@ -1,4 +1,3 @@
-
 import classes from "./SelfHarvestListPage.module.css";
 import Apple from "../../assets/Apple.png";
 import { useState, useEffect } from "react";

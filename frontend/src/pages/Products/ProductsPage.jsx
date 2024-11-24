@@ -5,15 +5,15 @@ import { jwtDecode } from 'jwt-decode';
 import classes from './ProductsPage.module.css';
 
 export default function ProductsPage() {
-    const { id } = useParams(); // Product ID from the URL params
-    const [product, setProduct] = useState(null); // Product details
-    const [offers, setOffers] = useState([]); // Offers for this product
-    const [offerRatings, setOfferRatings] = useState({}); // Ratings for each offer
-    const [userRole, setUserRole] = useState(''); // Check if the user is a moderator/administrator
-    const [isFarmer, setIsFarmer] = useState(false); // Check if the user is a farmer
-    const [showForm, setShowForm] = useState(false); // Toggle add offer form
-    const [purchaseOffer, setPurchaseOffer] = useState(null); // Offer being purchased
-    const [purchaseQuantity, setPurchaseQuantity] = useState(0); // Quantity to purchase
+    const { id } = useParams();
+    const [product, setProduct] = useState(null);
+    const [offers, setOffers] = useState([]);
+    const [offerRatings, setOfferRatings] = useState({});
+    const [userRole, setUserRole] = useState('');
+    const [isFarmer, setIsFarmer] = useState(false);
+    const [showForm, setShowForm] = useState(false);
+    const [purchaseOffer, setPurchaseOffer] = useState(null);
+    const [purchaseQuantity, setPurchaseQuantity] = useState(0);
     const [newOffer, setNewOffer] = useState({
         price: '',
         quantity: '',
@@ -45,7 +45,6 @@ export default function ProductsPage() {
         getRole();
     }, []);
 
-    // Check if the logged-in user is a farmer
     useEffect(() => {
         const checkUserRole = () => {
             const token = localStorage.getItem('token');
@@ -54,7 +53,7 @@ export default function ProductsPage() {
             try {
                 const decodedToken = jwtDecode(token);
                 setUserRole(decodedToken.role)
-                setIsFarmer(decodedToken.is_farmer); // Set farmer status from JWT token
+                setIsFarmer(decodedToken.is_farmer);
             } catch (err) {
                 console.error('Error decoding token:', err);
             }
@@ -63,22 +62,18 @@ export default function ProductsPage() {
         checkUserRole();
     }, []);
 
-    // Fetch product and offers data
     useEffect(() => {
         const fetchProductAndOffers = async () => {
             try {
-                // Fetch product details
                 const productResponse = await api.get(`/products/${id}`);
                 setProduct(productResponse.data);
 
-                // Fetch offers for this product
                 const offersResponse = await api.get('/offers');
                 const productOffers = offersResponse.data.filter(
                     (offer) => offer.product_id === parseInt(id)
                 );
                 setOffers(productOffers);
 
-                // Fetch average ratings for offers
                 const ratings = await Promise.all(
                     productOffers.map(async (offer) => {
                         const ratingResponse = await api.get(
@@ -103,7 +98,6 @@ export default function ProductsPage() {
         fetchProductAndOffers();
     }, [id]);
 
-    // Handle input changes for the new offer form
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         setNewOffer((prev) => ({
@@ -112,7 +106,6 @@ export default function ProductsPage() {
         }));
     };
 
-    // Handle removing the current product
     const handleRemoveProduct = async () => {
         try {
             await api.delete(`/products/${id}`, {
@@ -129,14 +122,13 @@ export default function ProductsPage() {
         }
     };
 
-    // Handle submitting the new offer
     const handleAddOffer = async () => {
         const token = localStorage.getItem('token');
         try {
             const payload = {
                 ...newOffer,
                 product_id: parseInt(id),
-                user_id: jwtDecode(token).userId, // Set user_id from JWT token
+                user_id: jwtDecode(token).userId,
             };
 
             await api.post('/offers', payload, {
@@ -150,7 +142,6 @@ export default function ProductsPage() {
             setShowForm(false);
             setNewOffer({ price: '', quantity: '', is_pickable: false });
 
-            // Refresh offers
             const offersResponse = await api.get('/offers');
             const productOffers = offersResponse.data.filter(
                 (offer) => offer.product_id === parseInt(id)
@@ -162,7 +153,6 @@ export default function ProductsPage() {
         }
     };
 
-    // Handle starting the purchase process
     const handlePurchaseClick = (offer) => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -177,8 +167,8 @@ export default function ProductsPage() {
                 return;
             }
 
-            setPurchaseOffer(offer); // Set the current offer being purchased
-            setPurchaseQuantity(0); // Reset quantity
+            setPurchaseOffer(offer);
+            setPurchaseQuantity(0);
             setError('');
         } catch (err) {
             console.error('Error decoding token:', err);
@@ -186,7 +176,6 @@ export default function ProductsPage() {
         }
     };
 
-    // Handle submitting the purchase
     const handleSubmitPurchase = async () => {
         if (purchaseQuantity <= 0 || purchaseQuantity > purchaseOffer.quantity) {
             setError('Invalid quantity. Please check the available stock.');
@@ -232,7 +221,6 @@ export default function ProductsPage() {
 
             <p className={classes.Title}>Offers</p>
 
-            {/* Remove Current Product Button for Moderators/Administrators */}
             {(userRole === 'Moderator' || userRole === 'Administrator') && (
                 <button onClick={handleRemoveProduct} className={classes.RemoveProductButton}>
                     Remove Current Product

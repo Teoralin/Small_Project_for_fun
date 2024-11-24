@@ -19,7 +19,7 @@
 
 .farmerPage .offersList {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     justify-items: center;
 }
@@ -132,19 +132,19 @@
 
 @media (max-width: 1200px) {
     .farmerPage .offersList {
-        grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 1000px) {
     .farmerPage .offersList {
-        grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
     .farmerPage .offersList {
-        grid-template-columns: 1fr; /* 1 card per row */
+        grid-template-columns: 1fr;
     }
 
     .farmerPage .purchaseButton {

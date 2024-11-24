@@ -40,6 +40,10 @@
     transform: scale(1.05);
 }
 
+.menu:hover {
+    color: #9093A6;
+}
+
 
 .header ul {
     display: flex;
@@ -67,6 +71,21 @@
     display: none;
 }
 
+.OptionButton {
+    padding: 10px;
+    color: #4CAF50;
+    text-decoration: none;
+    display: inline-block;
+    width: 100%;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.OptionButton:hover {
+    background-color: #9093A6;
+    color: white;
+}
+
 .header .menu_container:hover .menu {
     display: block;
 }
@@ -79,6 +98,7 @@
 .header .cart_link {
     display: flex;
     margin-bottom: 5px;
+    border-radius: 5px;
 }
 
 .header .cart_count {
@@ -98,6 +118,7 @@
 .header .user_link {
     display: flex;
     align-items: center;
+    border-radius: 5px;
 }
 
 .header .user_link:hover,

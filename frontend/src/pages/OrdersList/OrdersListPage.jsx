@@ -7,13 +7,12 @@ import classes from "./OrdersListPage.module.css";
 export default function OrdersListPage() {
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
-    const [expandedOrderId, setExpandedOrderId] = useState(null); // To track expanded orders
-    const [offers, setOffers] = useState({}); // Store offers for each order
+    const [expandedOrderId, setExpandedOrderId] = useState(null);
+    const [offers, setOffers] = useState({});
     const [error, setError] = useState('');
     const [userRole, setUserRole] = useState('');
     const [farmer, setFarmer] = useState('');
 
-    // Decode token and check user role
     useEffect(() => {
         const getRole = async () => {
             try {
@@ -52,11 +51,9 @@ export default function OrdersListPage() {
             }
 
             try {
-                // Decode the token to get userId
                 const decodedToken = jwtDecode(token);
                 const userId = decodedToken.userId;
 
-                // Fetch orders for the specific user
                 const response = await api.get(`/orders/by-user`, {
                     params: { userId },  
                     headers: {
@@ -75,7 +72,6 @@ export default function OrdersListPage() {
     }, []);
 
 
-    // Fetch offers for a specific order
     const fetchOrderOffers = async (orderId) => {
         const token = localStorage.getItem('token');
 
@@ -86,7 +82,6 @@ export default function OrdersListPage() {
                 },
             });
 
-            // Store offers for the specific order
             setOffers((prevOffers) => ({
                 ...prevOffers,
                 [orderId]: response.data,
@@ -96,14 +91,13 @@ export default function OrdersListPage() {
         }
     };
 
-    // Handle expanding/collapsing an order
     const toggleOrderDetails = (orderId) => {
         if (expandedOrderId === orderId) {
-            setExpandedOrderId(null); // Collapse if already expanded
+            setExpandedOrderId(null);
         } else {
-            setExpandedOrderId(orderId); // Expand the order
+            setExpandedOrderId(orderId);
             if (!offers[orderId]) {
-                fetchOrderOffers(orderId); // Fetch offers only if not already fetched
+                fetchOrderOffers(orderId);
             }
         }
     };

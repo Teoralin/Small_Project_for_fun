@@ -115,7 +115,7 @@ export default function FarmerPage() {
             setPurchaseOffer(offer);
             setPurchaseQuantity(0);
             setError('');
-            setModalOpen(true); // Open the modal
+            setModalOpen(true);
         } catch (err) {
             console.error('Error decoding token:', err);
             setError('Invalid token.');
@@ -154,7 +154,6 @@ export default function FarmerPage() {
     };
 
     const handleLogInClick = () => {
-        // Navigate to the farmer detail page when a farmer is clicked
         navigate('/login');
     };
 

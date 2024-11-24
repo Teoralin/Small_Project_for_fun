@@ -6,10 +6,10 @@ import classes from './CategoriesPage.module.css';
 import Add from "../../assets/Add.png";
 
 export default function CategoriesPage() {
-    const { id } = useParams(); // Get the category ID from the URL params (if provided)
+    const { id } = useParams();
     const [categories, setCategories] = useState([]);
     const [parentCategory, setParentCategory] = useState([]);
-    const [products, setProducts] = useState([]); // Products in the current category
+    const [products, setProducts] = useState([]);
     const [suggestedCategory, setSuggestedCategory] = useState([]);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -22,7 +22,7 @@ export default function CategoriesPage() {
     const [farmer, setFarmer] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {//TODO IS AUTHORISED
+    useEffect(() => {
         const checkUserRole = () => {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -49,8 +49,8 @@ export default function CategoriesPage() {
         try {
             const response = await api.get(
                 id
-                    ? `/categories/${id}` // Fetch a single category and its children
-                    : '/categories' // Fetch all categories
+                    ? `/categories/${id}`
+                    : '/categories'
             );
             const fetchedCategory = response.data;
             
@@ -192,7 +192,7 @@ export default function CategoriesPage() {
             });
 
             setSuccessMessage('Category deleted successfully!');
-            navigate('/categories'); // Redirect to the top-level categories after deletion
+            navigate('/categories');
         } catch (err) {
             setError('Error deleting category');
             console.error(err);
@@ -249,13 +249,11 @@ export default function CategoriesPage() {
             {id ? (
                 <>
                     <div>
-                        {/* Отображаем имя родительской категории */}
                         <p onClick={() => handleNavigate(parentCategory?.category_id)} className={classes.CategoryName}>
                             {parentCategory?.name}
                         </p>
                         <p>{parentCategory?.description}</p>
 
-                        {/* Отображаем подкатегории */}
                         {categories.length > 0 && (
                             <div className={classes.ProductsList}>
                                 {categories.map((category) => (
@@ -296,7 +294,6 @@ export default function CategoriesPage() {
                                 </div>
                             )}
 
-                            {/* Форма для заполнения */}
                             {showProductModal && (
                                 <div className={classes.Modal}>
                                     <div className={classes.ModalContent}>
@@ -415,13 +412,12 @@ export default function CategoriesPage() {
                     {!showForm && (
                     <div className={classes.AddCompo}>
                             <button onClick={() => setShowCategoryModal(true)} className={classes.categoryButton}>
-                                <div className={classes.TitleAdd}> {/* Используем TitleCategory как у продуктов */}
+                                <div className={classes.TitleAdd}>
                                     <img
                                         src={Add}
                                         alt="Add Icon"
                                         className={classes.icon}
                                     />
-                                    {/* {showForm ? null : 'Add Category'} */}
                                     Add category
                                  
                                 </div>

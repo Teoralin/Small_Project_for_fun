@@ -173,7 +173,6 @@ export default function ReviewPage() {
             setError('');
             handleCloseModal();
 
-            // Update the reviews map
             setReviews((prev) => ({
                 ...prev,
                 [modalData.offer_id]: { rating },

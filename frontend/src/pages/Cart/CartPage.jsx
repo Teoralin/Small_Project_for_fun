@@ -3,12 +3,11 @@ import api from '../../api';
 import classes from './CartPage.module.css';
 
 export default function CartPage() {
-    const [cartItems, setCartItems] = useState([]); // Cart items
-    const [totalPrice, setTotalPrice] = useState(0); // Total price of all items
+    const [cartItems, setCartItems] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
     const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState(''); // Success message
+    const [successMessage, setSuccessMessage] = useState('');
 
-    // Fetch cart items and offers
     useEffect(() => {
         const fetchCart = async () => {
             const token = localStorage.getItem('token');
@@ -19,14 +18,12 @@ export default function CartPage() {
             }
 
             try {
-                // Fetch cart items
                 const cartResponse = await api.get('/cart', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                // Fetch details for each offer in the cart using offer_id
                 const offerDetails = await Promise.all(
                     cartResponse.data.map(async (item) => {
                         if (!item.offer_id) {
@@ -35,7 +32,6 @@ export default function CartPage() {
                         }
 
                         try {
-                            // Fetch offer details by offer_id
                             const offerResponse = await api.get(
                                 `/offers/${item.offer_id}`, // Fetch by offer_id
                                 {
@@ -47,21 +43,19 @@ export default function CartPage() {
 
                             return {
                                 ...offerResponse.data,
-                                quantity: item.quantity, // Include quantity from the cart
+                                quantity: item.quantity,
                             };
                         } catch (err) {
                             console.error(`Error fetching offer with ID ${item.offer_id}:`, err);
-                            return null; // Skip this offer if there's an error
+                            return null;
                         }
                     })
                 );
 
-                // Filter out any null responses (e.g., missing or invalid offer_id)
                 const validOffers = offerDetails.filter((offer) => offer !== null);
 
                 setCartItems(validOffers);
 
-                // Calculate total price
                 const total = validOffers.reduce(
                     (acc, item) => acc + item.price * item.quantity,
                     0
@@ -74,24 +68,20 @@ export default function CartPage() {
         };
 
         fetchCart();
-    }, []); // Run on component mount
+    }, []);
 
-    // Remove item from the cart
     const handleRemoveItem = async (offer_id) => {
         const token = localStorage.getItem('token');
         try {
-            // Call the backend route to remove the item from the cart
             await api.delete(`/cart/${offer_id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
-            // Update cart state
             const updatedCart = cartItems.filter((item) => item.offer_id !== offer_id);
             setCartItems(updatedCart);
 
-            // Update total price
             const updatedTotal = updatedCart.reduce(
                 (acc, item) => acc + item.price * item.quantity,
                 0
@@ -103,11 +93,9 @@ export default function CartPage() {
         }
     };
 
-    // Handle checkout
     const handleCheckout = async () => {
         const token = localStorage.getItem('token');
         try {
-            // Call the backend checkout route
             const response = await api.post(
                 '/orders/checkout',
                 {},
@@ -118,7 +106,6 @@ export default function CartPage() {
                 }
             );
 
-            // Clear the cart and show success message
             setCartItems([]);
             setTotalPrice(0);
             setSuccessMessage(response.data.message);

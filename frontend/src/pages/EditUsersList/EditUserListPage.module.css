@@ -124,7 +124,7 @@
 
 @media (max-width: 1100px) {
     .EditUsersListPage {
-        grid-template-columns: 1fr; /* Switch to a single column layout */
+        grid-template-columns: 1fr;
     }
 
     .EditUsersListPage .Options {
@@ -133,7 +133,7 @@
     }
 
     .EditUsersListPage .ManageUsers {
-        grid-column: span 1; /* Ensure that the manage users section takes up the full width */
+        grid-column: span 1;
         margin-right: 0;
     }
 

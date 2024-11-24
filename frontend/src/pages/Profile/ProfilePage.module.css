@@ -139,16 +139,16 @@
 
 @media (max-width: 1400px) {
     .ProfilePage .Contacts {
-        grid-column: span 2; /* Span across two columns */
+        grid-column: span 2;
     }
 }
 
 @media (max-width: 950px) {
     .ProfilePage {
-        grid-template-columns: 1fr; /* Stack in one column on smaller screens */
+        grid-template-columns: 1fr;
     }
 
     .ProfilePage .Contacts {
-        grid-column: span 1; /* Ensure contacts span across one column */
+        grid-column: span 1;
     }
 }

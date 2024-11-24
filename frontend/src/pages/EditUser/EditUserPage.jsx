@@ -1,4 +1,3 @@
-//edit user only administrator
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api';
@@ -12,7 +11,7 @@ import Downgrade from "../../assets/Downgrade.png";
 import Delete from "../../assets/Delete.png";
 
 export default function EditUserPage() {
-    const { id } = useParams(); // Get the user ID from the URL params
+    const { id } = useParams();
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [error, setError] = useState('');
@@ -41,7 +40,7 @@ export default function EditUserPage() {
                 if (decodedToken.role !== 'Administrator') {
                     setError('Access denied. Insufficient permissions.');
                 } else {
-                    setIsAuthorized(true); // User is authorized
+                    setIsAuthorized(true);
                 }
             } catch (err) {
                 setError('Invalid token. Please log in again: ', err);
@@ -105,7 +104,7 @@ export default function EditUserPage() {
             await api.delete(`/users/${id}`);
             setSuccessMessage('User deleted successfully.');
             setError('');
-            navigate('/editUsersList'); // Redirect back to the users list page
+            navigate('/editUsersList');
         } catch (err) {
             setError('Error deleting user: ', err);
         }

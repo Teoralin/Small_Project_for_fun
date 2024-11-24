@@ -66,7 +66,6 @@ export default function ProfilePage() {
 
                 setUserData(userResponse.data);
 
-                // If the user is a farmer, fetch their address
                 if (userResponse.data.is_farmer) {
                     const addressResponse = await api.get(`/addresses/${userId}`, {
                         headers: {
@@ -128,7 +127,6 @@ export default function ProfilePage() {
             const decodedToken = jwtDecode(token);
             const userId = decodedToken.userId;
 
-            // Update user data
             if (Object.values(isEditing).some(val => val === true)) {
                 await api.put(
                     `/users/${userId}`,
@@ -141,7 +139,6 @@ export default function ProfilePage() {
                 );
             }
 
-            // Update address data if edited
             if (Object.values(isEditing).some(val => val === true)) {
                 await api.put(
                     `/addresses/${userId}`,
@@ -167,7 +164,6 @@ export default function ProfilePage() {
                 post_code: false,
             });
 
-            // Refresh user and address data
             const userResponse = await api.get(`/users/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,

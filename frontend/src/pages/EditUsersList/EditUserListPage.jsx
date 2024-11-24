@@ -39,7 +39,7 @@ export default function EditUserListPage() {
                 if (decodedToken.role !== 'Administrator') {
                     setError('Access denied. Insufficient permissions.');
                 } else {
-                    setIsAuthorized(true); // User is authorized
+                    setIsAuthorized(true);
                 }
             } catch (err) {
                 setError('Invalid token. Please log in again: ', err);
@@ -50,29 +50,27 @@ export default function EditUserListPage() {
     }, []);
 
     useEffect(() => {
-        // Fetch users from the API using axios
         async function fetchUsers() {
             try {
-                const response = await api.get('/users'); // Adjust the API URL
+                const response = await api.get('/users');
                 setUsers(response.data);
                 setFilteredUsers(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
-                setError('An error occurred while fetching users'); // Set error state
+                setError('An error occurred while fetching users');
             } finally {
-                setLoading(false); // Set loading to false once the request is complete
+                setLoading(false);
             }
         }
 
         fetchUsers();
-    }, []);  // Empty dependency array to run the effect once on mount
+    }, []);
 
 
     const handleSearchChange = (event) => {
         const term = event.target.value.toLowerCase();
         setSearchTerm(term);
 
-        // Filter users based on the search term
         const filtered = users.filter((user) =>
             user.name.toLowerCase().includes(term) ||
             user.surname.toLowerCase().includes(term)
