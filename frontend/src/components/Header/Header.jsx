@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../../api";
 import classes from "./Header.module.css";
@@ -9,16 +9,18 @@ import leftIcon from "../../assets/Left.png";
 
 export default function Header() {
     const [userName, setUserName] = useState(null);
-    const [cartCount, setCartCount] = useState(0); // Number of items in the cart
+    const [cartCount, setCartCount] = useState(0);
     const navigate = useNavigate();
-    const location = useLocation(); // Detect route changes
+    const location = useLocation();
+    const [userRole, setUserRole] = useState(null);
+    const [farmer, setFarmer] = useState('');
+    const [error, setError] = useState('');
 
-    // Check if the user is logged in and fetch their name
     const fetchUserName = async () => {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            setUserName(null); // User is not logged in
+            setUserName(null);
             return;
         }
 
@@ -32,19 +34,43 @@ export default function Header() {
                 },
             });
 
-            setUserName(response.data.name); // Set the user's name
+            setUserName(response.data.name);
         } catch (err) {
             console.error("Error fetching user data:", err);
             setUserName(null);
         }
     };
 
-    // Fetch the cart count
+    useEffect(() => {
+        const getRole = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    setError('User is not logged in');
+                    return;
+                }
+
+                const decodedToken = jwtDecode(token);
+                if(decodedToken.is_farmer){
+                    setFarmer('farmer');
+                }
+                setUserRole(decodedToken.role);
+
+
+
+            } catch (err) {
+                setError(err.response?.data?.message || 'Error fetching user data');
+            }
+        };
+
+        getRole();
+    }, []);
+
     const fetchCartCount = async () => {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            setCartCount(0); // Reset cart count if the user is not logged in
+            setCartCount(0);
             return;
         }
 
@@ -55,25 +81,24 @@ export default function Header() {
                 },
             });
 
-            setCartCount(response.data.length); // Set cart count based on the number of items
+            setCartCount(response.data.length);
         } catch (err) {
             console.error("Error fetching cart data:", err);
             setCartCount(0);
         }
     };
 
-    // Use useEffect to trigger updates when the location changes
     useEffect(() => {
         fetchUserName();
         fetchCartCount();
-    }, [location]); // Re-run on route change
+    }, [location]);
 
     // Logout logic
     const logout = () => {
-        localStorage.removeItem("token"); // Remove token from localStorage
-        setUserName(null); // Reset userName state
-        setCartCount(0); // Reset cart count
-        navigate("/login"); // Redirect to the login page
+        localStorage.removeItem("token");
+        setUserName(null);
+        setCartCount(0);
+        navigate("/login");
     };
 
     return (
@@ -105,11 +130,63 @@ export default function Header() {
                                     {userName}
                                 </Link>
                                 <div className={classes.menu}>
-                                    <Link to="/profile">Profile</Link>
-                                    <Link to="/ordersList">Orders</Link>
-                                    <a onClick={logout} style={{ cursor: "pointer" }}>
-                                        Logout
-                                    </a>
+                                    <div className={classes.Options}>
+                                        <Link
+                                            to="/profile"
+                                            className={classes.OptionButton}
+                                        >
+                                            Profile
+                                        </Link>
+
+                                        <Link
+                                            to="/ordersList"
+                                            className={classes.OptionButton}
+                                        >
+                                            Orders
+                                        </Link>
+
+                                        <Link
+                                            to="/review"
+                                            className={classes.OptionButton}
+                                        >
+                                            Reviews
+                                        </Link>
+
+                                        {farmer === "farmer" && (
+                                            <Link
+                                                to="/offersList"
+                                                className={classes.OptionButton}
+                                            >
+                                                Offers
+                                            </Link>
+                                        )}
+
+                                        {userRole === "Administrator" && (
+                                            <Link
+                                                to="/editUsersList"
+                                                className={classes.OptionButton}
+                                            >
+                                                Manage Users
+                                            </Link>
+                                        )}
+
+                                        {userRole === "Moderator" && (
+                                            <Link
+                                                to="/categories"
+                                                className={classes.OptionButton}
+                                            >
+                                                Manage Categories
+                                            </Link>
+                                        )}
+
+                                        <a
+                                            onClick={logout}
+                                            style={{cursor: 'pointer'}}
+                                            className={classes.OptionButton}
+                                        >
+                                            Logout
+                                        </a>
+                                    </div>
                                 </div>
                             </li>
                         ) : (

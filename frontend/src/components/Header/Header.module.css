@@ -36,11 +36,15 @@
     margin-top: 10px;
 }
 
+.header .logo:hover {
+    transform: scale(1.05);
+}
+
 
 .header ul {
     display: flex;
     list-style-type: none;
-    padding: 0px 20px 0px 0px;
+    padding: 0 20px;
     margin-top: 8px;
 }
 
@@ -87,9 +91,19 @@
     vertical-align: middle;
 }
 
+.header .icon:hover {
+    transform: scale(1.2);
+}
+
 .header .user_link {
     display: flex;
     align-items: center;
+}
+
+.header .user_link:hover,
+.header .cart_link:hover {
+    transform: scale(1.05);
+    background: #ebedf0;
 }
 
 .header .cart_link {
