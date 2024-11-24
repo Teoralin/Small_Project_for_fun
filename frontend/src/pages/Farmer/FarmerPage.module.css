@@ -1,59 +1,153 @@
-.farmer-page {
-    padding: 20px;
-    font-family: Arial, sans-serif;
+.farmerPage {
+    font-family: Martel Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    font-weight: 300;
+    margin: 5rem;
+    list-style: none;
 }
 
-h1 {
+.farmerPage .PageTitle {
+    font-size: 40px;
+    color: #3F4255;
     text-align: center;
-    margin-bottom: 20px;
 }
 
-.offers-list {
-    display: flex;
-    flex-wrap: wrap;
+.farmerPage .Title {
+    margin-top: 2rem;
+    font-size: 30px;
+    color: #3F4255;
+}
+
+.farmerPage .offersList {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
     gap: 20px;
-    justify-content: center;
+    justify-items: center;
 }
 
-.offer-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
+.farmerPage .offerCard {
     padding: 15px;
-    width: 300px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s, box-shadow 0.2s;
-    background-color: #f9f9f9;
+    cursor: pointer;
+    width: 100%;
 }
 
-.offer-card:hover {
+.farmerPage .offerCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
-.offer-card h2 {
-    margin: 0 0 10px;
+.farmerPage .productName {
     font-size: 1.5em;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #3F4255;
 }
 
-.offer-card p {
+.farmerPage .text {
     margin: 5px 0;
 }
 
-.offer-card.pickable {
-    border: 2px solid #4caf50;
-    background-color: #e8f5e9;
+.farmerPage .purchaseButton {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
 }
 
-.OffersListPage .ModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+.farmerPage .purchaseButton:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.farmerPage .selfHarvestEvents {
+    margin-top: 20px;
+}
+
+.farmerPage .selfHarvestList {
+    display: grid;
+    gap: 15px;
+}
+
+.farmerPage .selfHarvestCard {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+}
+
+.farmerPage .eventAddress {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.farmerPage .PurchaseButton {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.farmerPage .PurchaseButton:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.farmerPage .PurchaseForm {
+    background-color: #e9f7ef;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.farmerPage .SuccessMessage {
+    color: green;
+    font-weight: bold;
+}
+
+.farmerPage .CancelButton {
+    padding: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-left: 2rem;
+}
+
+.farmerPage .CancelButton:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+@media (max-width: 1200px) {
+    .farmerPage .offersList {
+        grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    }
+}
+
+@media (max-width: 1000px) {
+    .farmerPage .offersList {
+        grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+    }
+}
+
+@media (max-width: 768px) {
+    .farmerPage .offersList {
+        grid-template-columns: 1fr; /* 1 card per row */
+    }
+
+    .farmerPage .purchaseButton {
+        width: 100%;
+    }
 }

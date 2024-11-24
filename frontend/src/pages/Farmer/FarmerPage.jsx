@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import api from '../../api';
-import classes from'./FarmerPage.module.css'; 
 import { useParams } from 'react-router-dom';
+import classes from './FarmerPage.module.css';
 import { useNavigate } from 'react-router-dom';
 
 export default function FarmerPage() {
-    const { farmerId } = useParams(); 
+    const { farmerId } = useParams();
     const [userOffers, setUserOffers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [purchaseOffer, setPurchaseOffer] = useState(null);
     const [purchaseQuantity, setPurchaseQuantity] = useState(0);
-    const [offerRatings, setOfferRatings] = useState({}); 
+    const [offerRatings, setOfferRatings] = useState({});
     const [modalOpen, setModalOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -46,7 +46,6 @@ export default function FarmerPage() {
 
                 setUserOffers(offersWithHarvests);
 
-
                 const ratings = await Promise.all(
                     response.data.map(async (offer) => {
                         const ratingResponse = await api.get(
@@ -65,7 +64,6 @@ export default function FarmerPage() {
 
                 setLoading(false);
 
-
             } catch (err) {
                 setError(err.response?.data?.message || 'Error fetching offers');
                 setLoading(false);
@@ -83,15 +81,15 @@ export default function FarmerPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            
+
             const today = new Date();
 
             const filteredEvents = response.data.filter(event => {
-            const eventEndDate = new Date(event.end_date);
-            return eventEndDate >= today; 
+                const eventEndDate = new Date(event.end_date);
+                return eventEndDate >= today;
             });
 
-            return filteredEvents; 
+            return filteredEvents;
         } catch (err) {
             console.error('Error fetching self-harvest events:', err);
             setError('Failed to fetch self-harvest events');
@@ -147,8 +145,8 @@ export default function FarmerPage() {
 
             setSuccessMessage('Item added to cart successfully!');
             setError('');
-            setModalOpen(false); // Close the modal after successful purchase
-            setPurchaseOffer(null); // Reset the purchase offer
+            setModalOpen(false);
+            setPurchaseOffer(null);
         } catch (err) {
             console.error('Error adding to cart:', err);
             setError('Error adding item to cart.');
@@ -168,27 +166,85 @@ export default function FarmerPage() {
     }
 
     return (
-        <div className="farmer-page">
-            <h1>Offers of a farmer</h1>
+        <div className={classes.farmerPage}>
+            <p className={classes.PageTitle}>Offers of a farmer</p>
             {userOffers.length === 0 ? (
                 <p>No offers available. Add some to get started!</p>
             ) : (
-                <div className="offers-list">
+                <div className={classes.offersList}>
                     {userOffers.map((offer) => (
-                        <li key={offer.offer_id} className={classes.OfferItem}>
-                            <div className={classes.OfferCompo}>
-                                <p className={classes.Text}>
+                        <li key={offer.offer_id} className={classes.offerCard}>
+                            <div className={classes.offerCompo}>
+                                <p className={classes.text}>
                                     Price: {offer.price} CZK
                                 </p>
-                                <p className={classes.Text}>
+                                <p className={classes.text}>
                                     Quantity: {offer.quantity}
                                 </p>
-                                <p className={classes.Text}>
+                                <p className={classes.text}>
                                     Pickable: {offer.is_pickable ? 'Yes' : 'No'}
                                 </p>
-                                <p className={classes.Text}>
+                                <p className={classes.text}>
                                     Average Rating: {offerRatings[offer.offer_id] || 'No ratings yet'}
                                 </p>
+
+                                {/* Check if there are Self-Harvest Events */}
+                                <div className={classes.selfHarvestEvents}>
+                                    <h4>Self-Harvest Events</h4>
+                                    {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
+                                        <div className={classes.selfHarvestList}>
+                                            {offer.selfHarvestEvents.map((event) => (
+                                                <div key={event.event_id} className={classes.selfHarvestCard}>
+                                                    <p>Harvest start date: {event.start_date}</p>
+                                                    <p>Harvest end date: {event.end_date}</p>
+                                                    {event.Address && (
+                                                        <div className={classes.eventAddress}>
+                                                            <h5>Event Address</h5>
+                                                            <p>city: {event.Address.city}, postcode: {event.Address.post_code}</p>
+                                                            <p>street: {event.Address.street}, house: {event.Address.house_number}</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p>No self-harvest events yet.</p>
+                                    )}
+                                </div>
+
+                                {purchaseOffer?.offer_id === offer.offer_id ? (
+                                    <div className={classes.PurchaseForm}>
+                                        <p className={classes.text}>
+                                            Quantity:
+                                            <input
+                                                type="number"
+                                                value={purchaseQuantity}
+                                                onChange={(e) => setPurchaseQuantity(parseInt(e.target.value, 10))}
+                                            />
+                                        </p>
+
+                                        <p className={classes.text}>
+                                            Total: {purchaseQuantity > 0 ? purchaseQuantity * offer.price : 0} CZK
+                                        </p>
+
+                                        <button onClick={handleSubmitPurchase} className={classes.PurchaseButton}>
+                                            Confirm Purchase
+                                        </button>
+                                        <button
+                                            onClick={() => setPurchaseOffer(null)}
+                                            className={classes.CancelButton}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => handlePurchaseClick(offer)}
+                                        className={classes.PurchaseButton}
+                                    >
+                                        Buy
+                                    </button>
+                                )}
                                 
                                     <button
                                         onClick={() => handlePurchaseClick(offer)}
@@ -224,6 +280,7 @@ export default function FarmerPage() {
                                         )}
                                     </div>
                             </div>
+                            <div className={classes.separator}></div>
                         </li>
                     ))}
                 </div>
@@ -256,5 +313,6 @@ export default function FarmerPage() {
 
             {successMessage && <p className="success-message">{successMessage}</p>}
         </div>
+
     );
 };

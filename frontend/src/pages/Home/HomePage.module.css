@@ -77,6 +77,11 @@
     margin-bottom: 20px;
 }
 
+.HomePage .userCompo:hover {
+    cursor: pointer;
+    background-color: #ebedf0;
+}
+
 .HomePage .compo p {
     font-size: 40px;
     font-family: poppins, sans-serif;

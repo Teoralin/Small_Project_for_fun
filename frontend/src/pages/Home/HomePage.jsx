@@ -27,6 +27,10 @@ export default function HomePage() {
         navigate(path);
     };
 
+    const handleFarmerClick = (farmerId) => {
+        navigate(`/farmer/${farmerId}`);
+    };
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
@@ -153,7 +157,7 @@ export default function HomePage() {
                             >
                                 {filteredUsers.map((user) => (
                                     <li key={user.user_id} className={classes.userCompo}>
-                                        <div className={classes.UserInfo}>
+                                        <div className={classes.UserInfo} onClick={() => handleFarmerClick(user.user_id)}>
                                             {user.name} <br/>
                                             {user.surname}
                                         </div>
@@ -204,12 +208,6 @@ export default function HomePage() {
                         />
                     </div>
                 </div>
-
-                {userRole === "Administrator" && (
-                    <div>
-                        <Link to="/users">Users</Link>
-                    </div>
-                )}
             </div>
 
     );

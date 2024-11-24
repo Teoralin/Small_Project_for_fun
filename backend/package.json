@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "nodemon app.js",
-    "app": "node app.js"
+    "app": "node app.js",
+    "init-db": "node app.js --init-db"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
