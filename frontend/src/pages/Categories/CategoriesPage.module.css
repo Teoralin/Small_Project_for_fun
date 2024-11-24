@@ -16,6 +16,12 @@
     padding: 10px;
 }
 
+.CategoriesPage .CategoryName2 {
+    font-size: 30px;
+    width: fit-content;
+    padding: 10px;
+}
+
 .CategoriesPage .CategoryName:hover {
     transform: scale(1.2);
 }
@@ -362,4 +368,10 @@
     justify-content: center;
     gap: 30px;
     margin-top: 10px;
+}
+
+.CategoriesPage .CategoryDescription {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    font-size: 20px;
 }

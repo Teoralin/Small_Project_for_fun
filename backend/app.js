@@ -20,7 +20,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS
 app.use(cors());
 
 app.use(express.json());
@@ -32,33 +31,26 @@ app.use('/products', productRoutes);
 app.use('/offers', offerRoutes);
 app.use('/orders', orderRoutes);
 app.use('/harvests', harvestRoutes);
-// Add the auth routes
 app.use('/auth', authRoutes);
-// Add the cart routes
 app.use('/cart', cartRoutes);
 app.use('/reviews', reviewRoutes);
 
-// Test route to confirm server is running
 app.get('/', (req, res) => {
     res.send('Server is up');
 });
 
-// Database initialization function
 async function initializeDatabase(force = false, seed = false) {
     try {
-        // Authenticate database connection
         await sequelize.authenticate();
         console.log('Database connection established successfully.');
 
-        // Synchronize models
-        await sequelize.sync({ force }); // Drop and recreate tables if force is true
+        await sequelize.sync({ force });
         if (force) {
             console.log('Database has been initialized with an empty schema (tables dropped and recreated).');
         } else {
             console.log('Models synchronized with the database.');
         }
 
-        // If seed flag is provided, populate the database
         if (seed) {
             console.log('Seeding database with default users...');
             await seedUsers();
@@ -76,7 +68,7 @@ const seedUsers = async () => {
                 name: 'Admin',
                 surname: 'Admin',
                 email: 'admin@gmail.com',
-                password: await bcrypt.hash('Admin', 10), // Hash the password
+                password: await bcrypt.hash('Admin', 10),
                 contact_info: '123456789',
                 role: 'Administrator',
                 is_farmer: true,
@@ -85,7 +77,7 @@ const seedUsers = async () => {
                 name: 'Moderator',
                 surname: 'Moderator',
                 email: 'moderator@gmail.com',
-                password: await bcrypt.hash('Moderator', 10), // Hash the password
+                password: await bcrypt.hash('Moderator', 10),
                 contact_info: '987654321',
                 role: 'Moderator',
                 is_farmer: false,
@@ -94,7 +86,7 @@ const seedUsers = async () => {
                 name: 'Customer',
                 surname: 'Customer',
                 email: 'customer@gmail.com',
-                password: await bcrypt.hash('Customer', 10), // Hash the password
+                password: await bcrypt.hash('Customer', 10),
                 contact_info: '555555555',
                 role: 'Registered User',
                 is_farmer: false,
@@ -103,17 +95,15 @@ const seedUsers = async () => {
                 name: 'Farmer',
                 surname: 'Farmer',
                 email: 'farmer@gmail.com',
-                password: await bcrypt.hash('Farmer', 10), // Hash the password
+                password: await bcrypt.hash('Farmer', 10),
                 contact_info: '444444444',
                 role: 'Registered User',
                 is_farmer: true,
             },
         ];
 
-        // Create users
         const createdUsers = await User.bulkCreate(users);
 
-        // Add addresses for users
         const addresses = [
             {
                 user_id: createdUsers[0].user_id,
@@ -132,7 +122,6 @@ const seedUsers = async () => {
 
         ];
 
-        // Use bulkCreate to insert addresses into the database
         await Address.bulkCreate(addresses);
 
         console.log('Users and addresses seeded successfully.');
@@ -141,9 +130,7 @@ const seedUsers = async () => {
     }
 };
 
-// App initialization function
 async function initializeApp() {
-    // Check for flags
     const forceInit = process.argv.includes('--init-db');
     const seedData = process.argv.includes('--fill');
 
@@ -151,13 +138,12 @@ async function initializeApp() {
         console.log(
             `Initializing database with an empty schema ${seedData ? ' and seed data' : ''}...`
         );
-        await initializeDatabase(forceInit, seedData); // Pass flags to initializeDatabase
+        await initializeDatabase(forceInit, seedData);
     } else {
         console.log('Starting application without reinitializing the database...');
-        await initializeDatabase(false); // Sync models without dropping tables or seeding
+        await initializeDatabase(false);
     }
 
-    // Start the server
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
     });
