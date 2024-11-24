@@ -220,7 +220,7 @@ export default function RegisterPage() {
                             checked={formData.isFarmer}
                             onChange={handleChange}
                         />
-                        <p>Are you a farmer?</p>
+                        <p>I am a farmer and want to sell goods</p>
                     </label>
                 </div>
 

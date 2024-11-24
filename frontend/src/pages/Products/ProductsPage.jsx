@@ -237,17 +237,7 @@ export default function ProductsPage() {
                                     />
                                 </label>
                             </div>
-                            <div>
-                                <label className={classes.Update}>
-                                    Pickable:
-                                    <input
-                                        type="checkbox"
-                                        name="is_pickable"
-                                        checked={newOffer.is_pickable}
-                                        onChange={handleInputChange}
-                                    />
-                                </label>
-                            </div>
+                           
                             <button onClick={handleAddOffer} className={classes.SubmitButton}>Submit</button>
                             <button onClick={() => setShowForm(false)} className={classes.CancelButton}>Cancel</button>
                         </div>
