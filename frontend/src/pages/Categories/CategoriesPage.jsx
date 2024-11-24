@@ -72,7 +72,6 @@ export default function CategoriesPage() {
                 setCategories(approvedSubcategories);  
                 setSuggestedCategory(unapprovedSubcategories);  
             
-                // Fetch products for the category
                 const productResponse = await api.get('/products');
                 const categoryProducts = productResponse.data.filter(
                     (product) => product.category_id === parseInt(id)
@@ -87,7 +86,6 @@ export default function CategoriesPage() {
 
                 setSuggestedCategory(unapprovedCategories);
             
-                // Fetch and set top-level parent categories (if needed)
                 const categoryResponse = await api.get('/categories');
                 const parentCategories = categoryResponse.data.filter(
                     (cat) => !cat.parent_category_id && cat.was_approved
@@ -249,10 +247,10 @@ export default function CategoriesPage() {
             {id ? (
                 <>
                     <div>
-                        <p onClick={() => handleNavigate(parentCategory?.category_id)} className={classes.CategoryName}>
+                        <p onClick={() => handleNavigate(parentCategory?.category_id)} className={classes.CategoryName2}>
                             {parentCategory?.name}
                         </p>
-                        <p>{parentCategory?.description}</p>
+                        <p className={classes.CategoryDescription} >{parentCategory?.description}</p>
 
                         {categories.length > 0 && (
                             <div className={classes.ProductsList}>

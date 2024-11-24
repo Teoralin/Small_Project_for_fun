@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import api from '../../api';
 import { jwtDecode } from 'jwt-decode';
 import classes from './ProductsPage.module.css';
@@ -21,6 +21,7 @@ export default function ProductsPage() {
     });
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const checkUserRole = () => {
@@ -92,6 +93,7 @@ export default function ProductsPage() {
             });
 
             setSuccessMessage('Product removed successfully!');
+            navigate('categories/');
             setError('');
         } catch (err) {
             console.error('Error removing product:', err);
