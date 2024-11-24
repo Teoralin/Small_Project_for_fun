@@ -273,9 +273,10 @@ export default function ProductsPage() {
                                     />
                                 </label>
                             </div>
-                           
-                            <button onClick={handleAddOffer} className={classes.SubmitButton}>Submit</button>
-                            <button onClick={() => setShowForm(false)} className={classes.CancelButton}>Cancel</button>
+                            <div className={classes.Buttons2}>
+                                <button onClick={handleAddOffer} className={classes.SubmitButton}>Submit</button>
+                                <button onClick={() => setShowForm(false)} className={classes.CancelButton}>Cancel</button>
+                            </div>
                         </div>
                     ) : (
                         <button onClick={() => setShowForm(true)} className={classes.AddOfferButton}>
@@ -287,24 +288,16 @@ export default function ProductsPage() {
 
             <div className={classes.separator}></div>
 
-
             {offers.length > 0 ? (
-                <ul className={classes.OfferList}>
+                <div className={classes.OfferGrid}>
                     {offers.map((offer) => (
                         <li key={offer.offer_id} className={classes.OfferItem}>
                             <div className={classes.OfferCompo}>
-                                <p className={classes.Text}>
-                                    Price: {offer.price} CZK
-                                </p>
-                                <p className={classes.Text}>
-                                    Quantity: {offer.quantity}
-                                </p>
-                                <p className={classes.Text}>
-                                    Pickable: {offer.is_pickable ? 'Yes' : 'No'}
-                                </p>
-                                <p className={classes.Text}>
-                                    Average Rating: {offerRatings[offer.offer_id] || 'No ratings yet'}
-                                </p>
+                                <p className={classes.Text}>Price: {offer.price} CZK</p>
+                                <p className={classes.Text}>Quantity: {offer.quantity}</p>
+                                <p className={classes.Text}>Pickable: {offer.is_pickable ? 'Yes' : 'No'}</p>
+                                <p className={classes.Text}>Average Rating: {offerRatings[offer.offer_id] || 'No ratings yet'}</p>
+
                                 <div className={classes.selfHarvestEvents}>
                                     <h4>Self-Harvest Events</h4>
                                     {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
@@ -342,16 +335,17 @@ export default function ProductsPage() {
                                         <p className={classes.Text}>
                                             Total: {purchaseQuantity > 0 ? purchaseQuantity * offer.price : 0} CZK
                                         </p>
-
-                                        <button onClick={handleSubmitPurchase} className={classes.PurchaseButton}>
-                                            Add to cart
-                                        </button>
-                                        <button
-                                            onClick={() => setPurchaseOffer(null)}
-                                            className={classes.CancelButton}
-                                        >
-                                            Cancel
-                                        </button>
+                                        <div className={classes.Buttons}>
+                                            <button onClick={handleSubmitPurchase} className={classes.PurchaseButton}>
+                                                Add to cart
+                                            </button>
+                                            <button
+                                                onClick={() => setPurchaseOffer(null)}
+                                                className={classes.CancelButton}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
                                     </div>
                                 ) : (
                                     <button
@@ -362,10 +356,9 @@ export default function ProductsPage() {
                                     </button>
                                 )}
                             </div>
-                            <div className={classes.separator}></div>
                         </li>
                     ))}
-                </ul>
+                </div>
             ) : (
                 <p>No offers available for this product.</p>
             )}
@@ -373,5 +366,6 @@ export default function ProductsPage() {
             {successMessage && <p className={classes.SuccessMessage}>{successMessage}</p>}
         </div>
     );
+
 
 }
