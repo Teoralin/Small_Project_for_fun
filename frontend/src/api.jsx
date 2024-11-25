@@ -2,8 +2,8 @@ import axios from 'axios';
 
 // Create an Axios instance
 const api = axios.create({
-    baseURL: 'https://backend-4g4p.onrender.com', // Replace with your API base URL
-    timeout: 10000,                  // Set a timeout for requests (optional)
+    baseURL: 'https://backend-4g4p.onrender.com', 
+    timeout: 10000,                  
 });
 
 // Request Interceptor: Add Authorization Token

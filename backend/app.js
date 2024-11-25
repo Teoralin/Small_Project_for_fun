@@ -44,7 +44,7 @@ async function initializeDatabase(force = false, seed = false) {
         await sequelize.authenticate();
         console.log('Database connection established successfully.');
 
-        await sequelize.sync({ force: false });
+        await sequelize.sync({force: false});
         if (force) {
             console.log('Database has been initialized with an empty schema (tables dropped and recreated).');
         } else {

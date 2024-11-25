@@ -42,6 +42,6 @@ const SelfHarvestEvent = sequelize.define('SelfHarvestEvent', {
 });
 
 SelfHarvestEvent.belongsTo(Offer, { foreignKey: 'offer_id' });
-SelfHarvestEvent.hasOne(Address, {foreignKey: 'address_id'});
+SelfHarvestEvent.belongsTo(Address, {foreignKey: 'address_id'});
 
 module.exports = SelfHarvestEvent;

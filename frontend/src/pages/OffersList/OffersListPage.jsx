@@ -32,13 +32,11 @@ export default function OffersListPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log(response);
             const addressId = response.data?.address_id;
             if (!addressId) {
                 setError('Address not found for this user.');
                 return;
             }
-            console.log(addressId);
             setModalOpen(true);
     
             setNewHarvest({
@@ -93,9 +91,6 @@ export default function OffersListPage() {
                 const decodedToken = jwtDecode(token);
                 const userId = decodedToken.userId; 
 
-                console.log(userId);
-                console.log(decodedToken.userId);
-
                 // Fetch offers from the backend
                 const response = await api.get(`/offers/user/${userId}`, {
                     headers: {
@@ -103,7 +98,6 @@ export default function OffersListPage() {
                     },
                 });
                 
-                console.log(response);
                 const offersWithHarvests = await Promise.all(response.data.map(async (offer) => {
                     if (offer.is_pickable) {
                         const selfHarvestEvents = await fetchSelfHarvestEvents(offer.offer_id);
@@ -133,7 +127,6 @@ export default function OffersListPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log("response from selfharm: ", response);
             const today = new Date();
             const filteredEvents = response.data.filter(event => {
                 const eventEndDate = new Date(event.end_date);
@@ -148,7 +141,7 @@ export default function OffersListPage() {
         }
     };
   
-    const handleSubmit = async (e, offerId) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
             if (!newHarvest.start_date || !newHarvest.end_date) {
             setError('Please fill all required fields.');
@@ -156,8 +149,9 @@ export default function OffersListPage() {
         }
     
         try {
+
             const token = localStorage.getItem('token');
-            const response = await api.post(
+            await api.post(
                 '/harvests',
                 {
                     start_date: newHarvest.start_date,
@@ -171,16 +165,6 @@ export default function OffersListPage() {
                     },
                 }
             );
-
-            console.log("response from post selfharm: ", response);
-
-            await api.put(`/offers/${offerId}`,
-                { is_pickable: true },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
     
             setSuccess('Self-harvest event created successfully!');
             setError('');
@@ -289,19 +273,26 @@ export default function OffersListPage() {
                 },
             });
 
-            await api.put(`/offers/${event.offer_id}`,
-                { is_pickable: false },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
+            const response = await api.get(`/harvests/offer/${event.offer_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if(response.data.length == 0 ){
+                await api.put(`/offers/${event.offer_id}`,
+                    { is_pickable: false },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+            }
 
             setUserOffers((prevOffers) =>
                 prevOffers.map((offer) => {
                     if (offer.selfHarvestEvents) {
                         offer.selfHarvestEvents = offer.selfHarvestEvents.filter(
-                            (event) => event.event_id !== event.event_id
+                            (selfHarvestEvent) => selfHarvestEvent.event_id !== event.event_id
                         );
                     }
                     return offer;
@@ -504,7 +495,7 @@ export default function OffersListPage() {
                                                     {error && <p className={classes.Error}>{error}</p>}
                                                     {success && <p className={classes.Success}>{success}</p>}
 
-                                                    <form onSubmit={(e) => handleSubmit(e, offer.offer_id)}>
+                                                    <form onSubmit={(e) => handleSubmit(e)}>
                                                         <div className={classes.ModalDate}>
                                                             <div>
                                                                 <label htmlFor="start_date">Start Date:</label>
