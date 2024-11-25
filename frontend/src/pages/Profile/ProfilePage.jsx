@@ -369,6 +369,76 @@ export default function ProfilePage() {
                         </div>
                     </div>
 
+                    <div className={classes.formGroup}>
+                        <label htmlFor="city">City</label>
+                        <div className={classes.form}>
+                            <div className={classes.formLeft}>
+                                {isEditing.city ? (
+                                    <input
+                                        type="text"
+                                        value={updatedAddress.city || ''}
+                                        onChange={(e) => handleInputChange('city', e.target.value)}
+                                    />
+                                ) : (
+                                    <span onClick={() => handleEdit('city')}>{addressData.city}</span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={classes.formGroup}>
+                        <label htmlFor="street">Street</label>
+                        <div className={classes.form}>
+                            <div className={classes.formLeft}>
+                                {isEditing.street ? (
+                                    <input
+                                        type="text"
+                                        value={updatedAddress.street || ''}
+                                        onChange={(e) => handleInputChange('street', e.target.value)}
+                                    />
+                                ) : (
+                                    <span onClick={() => handleEdit('street')}>{addressData.street}</span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={classes.formGroup}>
+                        <label htmlFor="houseNumber">House number</label>
+                        <div className={classes.form}>
+                            <div className={classes.formLeft}>
+                                {isEditing.house_number ? (
+                                    <input
+                                        type="text"
+                                        value={updatedAddress.house_number || ''}
+                                        onChange={(e) => handleInputChange('house_number', e.target.value)}
+                                    />
+                                ) : (
+                                    <span onClick={() => handleEdit('house_number')}>{addressData.house_number}</span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={classes.formGroup}>
+                        <label htmlFor="postCode">House number</label>
+                        <div className={classes.form}>
+                            <div className={classes.formLeft}>
+                                {isEditing.post_code ? (
+                                    <input
+                                        type="text"
+                                        value={updatedAddress.post_code || ''}
+                                        onChange={(e) => handleInputChange('post_code', e.target.value)}
+                                    />
+                                ) : (
+                                    <span onClick={() => handleEdit('post_code')}>{addressData.post_code}</span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+
+
 
                     <button onClick={handleSubmit} className={classes.Submit}>Submit Changes</button>
 

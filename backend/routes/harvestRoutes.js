@@ -42,21 +42,27 @@ router.get('/offer/:offer_id', async (req, res) => {
     try {
         const { offer_id } = req.params;
 
-        const events = await SelfHarvestEvent.findAll({
+        // Find the offer and include the user's address
+        const offerWithAddress = await Offer.findOne({
             where: { offer_id },
             include: [
-                { model: Offer, attributes: ['price', 'quantity', 'status'] },
-                { model: Address, attributes: ['street', 'city', 'post_code', 'house_number'] },
+                {
+                    model: Address,
+                    as: 'UserAddress', // Alias for clarity
+                    attributes: ['street', 'city', 'post_code', 'house_number'],
+                    where: { user_id: Offer.user_id }, // Ensure correct join condition
+                },
             ],
         });
 
-        if (events.length > 0) {
-            res.status(200).json(events);
-        } else {
-            res.status(404).json({ message: 'No self-harvest events found for this offer' });
+        if (!offerWithAddress) {
+            return res.status(404).json({ message: 'Offer not found or no address available' });
         }
+
+        // Return the address information
+        res.status(200).json(offerWithAddress);
     } catch (error) {
-        console.error('Error fetching self-harvest events:', error);
+        console.error('Error fetching offer with user address:', error);
         res.status(500).json({ error: error.message });
     }
 });

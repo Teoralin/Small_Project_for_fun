@@ -21,24 +21,24 @@ export default function OffersListPage() {
     });
     const [editHarvest, setEditHarvest] = useState(null); 
 
-
     const handleAddHarvest = async (offer) => {
         try {
   
             const token = localStorage.getItem('token');
             const userId = offer.user_id;  
+
             const response = await api.get(`/addresses/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
+            console.log(response);
             const addressId = response.data?.address_id;
             if (!addressId) {
                 setError('Address not found for this user.');
                 return;
             }
-    
+            console.log(addressId);
             setModalOpen(true);
     
             setNewHarvest({
@@ -93,6 +93,9 @@ export default function OffersListPage() {
                 const decodedToken = jwtDecode(token);
                 const userId = decodedToken.userId; 
 
+                console.log(userId);
+                console.log(decodedToken.userId);
+
                 // Fetch offers from the backend
                 const response = await api.get(`/offers/user/${userId}`, {
                     headers: {
@@ -100,6 +103,7 @@ export default function OffersListPage() {
                     },
                 });
                 
+                console.log(response);
                 const offersWithHarvests = await Promise.all(response.data.map(async (offer) => {
                     if (offer.is_pickable) {
                         const selfHarvestEvents = await fetchSelfHarvestEvents(offer.offer_id);
@@ -129,6 +133,7 @@ export default function OffersListPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            console.log("response from selfharm: ", response);
             const today = new Date();
             const filteredEvents = response.data.filter(event => {
                 const eventEndDate = new Date(event.end_date);
@@ -143,7 +148,7 @@ export default function OffersListPage() {
         }
     };
   
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e, offerId) => {
         e.preventDefault();
             if (!newHarvest.start_date || !newHarvest.end_date) {
             setError('Please fill all required fields.');
@@ -152,12 +157,11 @@ export default function OffersListPage() {
     
         try {
             const token = localStorage.getItem('token');
-            await api.post(
+            const response = await api.post(
                 '/harvests',
                 {
                     start_date: newHarvest.start_date,
                     end_date: newHarvest.end_date,
-                    quantity: newHarvest.quantity,
                     address_id: newHarvest.address_id,
                     offer_id: newHarvest.offer_id,
                 },
@@ -167,6 +171,16 @@ export default function OffersListPage() {
                     },
                 }
             );
+
+            console.log("response from post selfharm: ", response);
+
+            await api.put(`/offers/${offerId}`,
+                { is_pickable: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
     
             setSuccess('Self-harvest event created successfully!');
             setError('');
@@ -199,7 +213,6 @@ export default function OffersListPage() {
             address_id: '',
             start_date: '',
             end_date: '',
-            quantity: '',
         });
         setError('');
         setSuccess('');
@@ -267,20 +280,28 @@ export default function OffersListPage() {
         }
     };
 
-    const handleDeleteHarvest = async (harvestEventId) => {
+    const handleDeleteHarvest = async (event) => {
         try {
             const token = localStorage.getItem('token');
-            await api.delete(`/harvests/${harvestEventId}`, {
+            await api.delete(`/harvests/${event.event_id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
+            await api.put(`/offers/${event.offer_id}`,
+                { is_pickable: false },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+
             setUserOffers((prevOffers) =>
                 prevOffers.map((offer) => {
                     if (offer.selfHarvestEvents) {
                         offer.selfHarvestEvents = offer.selfHarvestEvents.filter(
-                            (event) => event.event_id !== harvestEventId
+                            (event) => event.event_id !== event.event_id
                         );
                     }
                     return offer;
@@ -476,6 +497,53 @@ export default function OffersListPage() {
                                         </button>
                                     </div>
 
+                                    {modalOpen && (
+                                            <div className={classes.ModalOverlay}>
+                                                <div className={classes.Modal}>
+                                                    <p className={classes.ModalText}>Create New Self-Harvest Event</p>
+                                                    {error && <p className={classes.Error}>{error}</p>}
+                                                    {success && <p className={classes.Success}>{success}</p>}
+
+                                                    <form onSubmit={(e) => handleSubmit(e, offer.offer_id)}>
+                                                        <div className={classes.ModalDate}>
+                                                            <div>
+                                                                <label htmlFor="start_date">Start Date:</label>
+                                                                <input
+                                                                    type="datetime-local"
+                                                                    id="start_date"
+                                                                    value={newHarvest.start_date || ''}
+                                                                    onChange={(e) => setNewHarvest({...newHarvest, start_date: e.target.value})}
+                                                                    required
+                                                                />
+                                                            </div>
+
+                                                            <div>
+                                                                <label htmlFor="end_date">End Date:</label>
+                                                                <input
+                                                                    type="datetime-local"
+                                                                    id="end_date"
+                                                                    value={newHarvest.end_date || ''}
+                                                                    onChange={(e) => setNewHarvest({...newHarvest, end_date: e.target.value})}
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <div className={classes.ModalActions}>
+                                                                <button type="submit" className={classes.ApproveButton}>
+                                                                    Create Event
+                                                                </button>
+                                                                <button type="button" onClick={handleCloseModal}
+                                                                        className={classes.DisapproveButton}>
+                                                                    Cancel
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        )}
+
                                     <div className={classes.SelfHarvestEvents}>
                                         <h4>Self-Harvest Events</h4>
                                         {offer.selfHarvestEvents && offer.selfHarvestEvents.length > 0 ? (
@@ -501,7 +569,7 @@ export default function OffersListPage() {
                                                                 Edit
                                                             </button>
                                                             <button
-                                                                onClick={() => handleDeleteHarvest(event.event_id)}
+                                                                onClick={() => handleDeleteHarvest(event)}
                                                                 className={classes.DisapproveButton}
                                                             >
                                                                 Delete
@@ -532,52 +600,7 @@ export default function OffersListPage() {
             </div>
 
 
-            {modalOpen && (
-                <div className={classes.ModalOverlay}>
-                    <div className={classes.Modal}>
-                        <p className={classes.ModalText}>Create New Self-Harvest Event</p>
-                        {error && <p className={classes.Error}>{error}</p>}
-                        {success && <p className={classes.Success}>{success}</p>}
-
-                        <form onSubmit={handleSubmit}>
-                            <div className={classes.ModalDate}>
-                                <div>
-                                    <label htmlFor="start_date">Start Date:</label>
-                                    <input
-                                        type="datetime-local"
-                                        id="start_date"
-                                        value={newHarvest.start_date || ''}
-                                        onChange={(e) => setNewHarvest({...newHarvest, start_date: e.target.value})}
-                                        required
-                                    />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="end_date">End Date:</label>
-                                    <input
-                                        type="datetime-local"
-                                        id="end_date"
-                                        value={newHarvest.end_date || ''}
-                                        onChange={(e) => setNewHarvest({...newHarvest, end_date: e.target.value})}
-                                        required
-                                    />
-                                </div>
-                                <div className={classes.ModalActions}>
-                                    <button type="submit" className={classes.ApproveButton}>
-                                        Create Event
-                                    </button>
-                                    <button type="button" onClick={handleCloseModal}
-                                            className={classes.DisapproveButton}>
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-
-
-                        </form>
-                    </div>
-                </div>
-            )}
+             
 
             {modalOpen && editHarvest && (
                 <div className={classes.ModalOverlay}>
