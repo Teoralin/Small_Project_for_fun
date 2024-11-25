@@ -369,6 +369,7 @@ export default function ProfilePage() {
                         </div>
                     </div>
 
+                    {farmer === true && (
                     <div className={classes.formGroup}>
                         <label htmlFor="city">City</label>
                         <div className={classes.form}>
@@ -385,7 +386,9 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     </div>
+                    )}
 
+                    {farmer === true && (
                     <div className={classes.formGroup}>
                         <label htmlFor="street">Street</label>
                         <div className={classes.form}>
@@ -402,7 +405,9 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     </div>
+                    )}
 
+                    {farmer === true && (
                     <div className={classes.formGroup}>
                         <label htmlFor="houseNumber">House number</label>
                         <div className={classes.form}>
@@ -419,7 +424,8 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     </div>
-
+                    )}
+                    {farmer === true && (
                     <div className={classes.formGroup}>
                         <label htmlFor="postCode">House number</label>
                         <div className={classes.form}>
@@ -436,6 +442,8 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     </div>
+                    )}
+
 
 
 
