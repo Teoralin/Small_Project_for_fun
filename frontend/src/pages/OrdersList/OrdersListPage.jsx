@@ -40,7 +40,6 @@ export default function OrdersListPage() {
 
 
 
-    // Fetch user orders
     useEffect(() => {
         const fetchOrders = async () => {
             const token = localStorage.getItem('token');

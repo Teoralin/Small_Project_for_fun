@@ -40,7 +40,6 @@
 
 .OffersListPage .Offers {
     display: grid;
-    justify-content: center;
     grid-column: span 3;
 }
 

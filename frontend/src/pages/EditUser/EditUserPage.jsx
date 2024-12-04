@@ -20,7 +20,6 @@ export default function EditUserPage() {
     const [userRole, setUserRole] = useState(null);
     const [farmer, setFarmer] = useState('');
 
-    // Check for token and user role
     useEffect(() => {
         const checkAuthorization = () => {
             const token = localStorage.getItem('token');

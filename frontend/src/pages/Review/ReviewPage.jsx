@@ -100,14 +100,12 @@ export default function ReviewPage() {
         fetchOffersAndReviews();
     }, []);
 
-    // Handle opening the modal
     const handleOpenModal = (offer) => {
         setModalData(offer);
         setRating(reviews[offer.offer_id]?.rating || '');
         setSuccessMessage('');
     };
 
-    // Handle closing the modal
     const handleCloseModal = () => {
         setModalData(null);
     };
@@ -116,7 +114,6 @@ export default function ReviewPage() {
         navigate(path);
     };
 
-    // Handle submitting the review
     const handleSubmitReview = async () => {
         const token = localStorage.getItem('token');
 

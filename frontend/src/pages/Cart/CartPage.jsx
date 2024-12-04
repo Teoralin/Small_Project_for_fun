@@ -33,7 +33,7 @@ export default function CartPage() {
 
                         try {
                             const offerResponse = await api.get(
-                                `/offers/${item.offer_id}`, // Fetch by offer_id
+                                `/offers/${item.offer_id}`,
                                 {
                                     headers: {
                                         Authorization: `Bearer ${token}`,

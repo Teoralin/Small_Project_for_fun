@@ -91,7 +91,6 @@ export default function OffersListPage() {
                 const decodedToken = jwtDecode(token);
                 const userId = decodedToken.userId; 
 
-                // Fetch offers from the backend
                 const response = await api.get(`/offers/user/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,

@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-// Create an Axios instance
 const api = axios.create({
     baseURL: 'https://backend-4g4p.onrender.com', 
     timeout: 10000,                  
 });
 
-// Request Interceptor: Add Authorization Token
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -20,9 +18,8 @@ api.interceptors.request.use(
     }
 );
 
-// Response Interceptor: Handle Global Errors
 api.interceptors.response.use(
-    (response) => response, // Pass successful responses
+    (response) => response,
     (error) => {
         if (error.response) {
             console.error('API Error:', error.response.data.message || error.response.statusText);
